@@ -3,6 +3,8 @@ import logo from './logo.svg';
 import './App.css';
 import { Avatar, Button, Checkbox, Col, Card, Form, Icon, Input, Layout, Row, Tabs } from 'antd';
 
+//check this import
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
@@ -120,7 +122,11 @@ class LoginForm extends Component {
 
 
         {/* THE SIGN UP TAB */}
-        <TabPane tab = "Sign up" key = "2">
+        <TabPane tab = "Sign up" key = "2" >
+        {/* CHECK THIS SHIT */}
+        <Link to ={'/hello'}>HELLO MAN</Link>
+        {/* <a href = "/hello">HELLO MAN</a> */}
+        
            <Form onSubmit = {this.handleSubmit} className = "login-form">
             
             <FormItem>
