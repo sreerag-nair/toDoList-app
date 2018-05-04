@@ -86,7 +86,7 @@ class LoginForm extends Component {
 
               {/* USERNAME INPUT FIELD */}
               <FormItem>
-                {getFieldDecorator('userName',{
+                {getFieldDecorator('userNameSignIn',{
                   rules : [{required : true, message : 'Required!'}],
                 })(
                   <Input placeholder = "User Name"/>            
@@ -95,7 +95,7 @@ class LoginForm extends Component {
 
 
               <FormItem>
-                {getFieldDecorator('password',{
+                {getFieldDecorator('passwordSignIn',{
                   rules : [{required : true, message : 'Password is required'}]
                 })(
                   <Input placeholder = "Password" type = "password"/>
@@ -134,7 +134,7 @@ class LoginForm extends Component {
             </FormItem>
 
             <FormItem>
-                {getFieldDecorator('userName',{
+                {getFieldDecorator('userNameSignUp',{
                   rules : [{required : true, message : 'Required!'}],
                 })(
                   <Input placeholder = "User Name"/>            
@@ -142,7 +142,7 @@ class LoginForm extends Component {
               </FormItem>
             
               <FormItem>
-          {getFieldDecorator('password', {
+          {getFieldDecorator('passwordSignUp', {
             rules: [{
               required: true, message: 'Please input your password!',
             }, 
