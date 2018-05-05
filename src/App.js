@@ -185,14 +185,14 @@ class LoginForm extends Component {
         <Link to = {'/'}>Log in</Link>
       </Button>
       <Button type="primary">
-       <Link to = {'/new'}> Sign up</Link>
+       <Link to = {'/new-user'}> Sign up</Link>
       </Button>
     </ButtonGroup>
       </Divider>
       
       <Switch>
         <Route exact path='/' render={() => <SignInComponent size = {this.state.size} getFieldDecorator = {getFieldDecorator} />} />
-        <Route exact path='/new' render={() => <SignUpComponent form = {this.props.form} size = {this.state.size} getFieldDecorator = {getFieldDecorator} />} />
+        <Route exact path='/new-user' render={() => <SignUpComponent form = {this.props.form} size = {this.state.size} getFieldDecorator = {getFieldDecorator} />} />
       </Switch>
 
      

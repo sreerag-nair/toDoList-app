@@ -11,7 +11,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 ReactDOM.render(
 
         <Router>
-            <CardComponent />
+            <CardComponent message = {"General Kenobi"} />
         </Router>
     
     , document.getElementById('root'));
