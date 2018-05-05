@@ -178,10 +178,6 @@ class LoginForm extends Component {
       // https://upload.wikimedia.org/wikipedia/commons/b/bd/Logo_xyz.svg
       >
 
-      {/* <SignInComponent size = {this.state.size} getFieldDecorator = {getFieldDecorator} /> */}
-      {/* <SignUpComponent form = {this.props.form} size = {this.state.size} getFieldDecorator = {getFieldDecorator} /> */}
-
-      
 
       <Divider>
       <ButtonGroup>
