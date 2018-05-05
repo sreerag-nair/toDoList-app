@@ -11,80 +11,11 @@ const TabPane = Tabs.TabPane;
 
 // THE LOGIN PAGE
 
-class LoginForm extends Component {
-
-  //error handling
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-      }
-    });
-  }
-
-
-  compareToFirstPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    // console.log("progress : " + form.getFieldValue('password'));
-    if(value && value !== form.getFieldValue('password')){
-      // console.log("Matched!")
-      callback('Passwords donot match!');
-    }
-    else{
-      callback();
-    }
-
-
-   /*
-    const form = this.props.form;
-    if (value && value !== form.getFieldValue('password')) {
-      console.log("password : " + form.getFieldValue())
-      callback('Two passwords that you enter is inconsistent!');
-    } else {
-      callback();
-    }
-   */
-  }
-
-  validateToNextPassword = (rule, value, callback) => {
-    const form = this.props.form;
-    if (value && this.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true });
-    }
-    callback();
-  }
-
-  handleConfirmBlur = (e) => {
-    const value = e.target.value;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-  }
-
-
-  state = {
-    size : 'default'
-  }
-
-  render() {
-    const { getFieldDecorator } = this.props.form; 
-    const size = this.state.size;
-
-    return (  
-
-      <div>
-         <Card
-      style = {{ width : 300 , display : 'table', textAlign : 'center', margin : '0 auto', paddingTop : '200' }}
-      // title = "card Title"
-      cover={<center><img alt="example" src="https://www.vectorlogo.zone/logos/w3_svg/w3_svg-icon.svg" style = {{marginTop : 30, height : 50, width : 50}}/></center>}
-      // https://upload.wikimedia.org/wikipedia/commons/b/bd/Logo_xyz.svg
-      >
-
-      {/* TABS START HERE */}
-      
-      <Tabs>
-        {/* THE LOGIN TAB */}
-        <TabPane tab = "Login" key = "1">
-            <Form onSubmit = {this.handleSubmit} className = "login-form">
+class SignInComponent extends React.Component{        //WORKING
+  render(){
+    const getFieldDecorator = this.props.getFieldDecorator
+    return(
+      <Form onSubmit = {this.handleSubmit} className = "login-form">
 
               {/* USERNAME INPUT FIELD */}
               <FormItem>
@@ -107,27 +38,54 @@ class LoginForm extends Component {
               <FormItem>
               <div>
                  <Row gutter = {{md : 3}}>
-                   <Col span={12}><p><Button type="primary" htmlType="submit" size={size} style = {{ width : '100%' }} >Log in</Button></p></Col>
-                   <Col span={12}><p><Button type="primary" size={size} style = {{ width : '100%', backgroundColor : 'black'}}><Icon type="github" />GitHub</Button></p></Col>
+                   <Col span={12}><p><Button type="primary" htmlType="submit" size={this.props.size} style = {{ width : '100%' }} >Log in</Button></p></Col>
+                   <Col span={12}><p><Button type="primary" size={this.props.size} style = {{ width : '100%', backgroundColor : 'black'}}><Icon type="github" />GitHub</Button></p></Col>
                  </Row>
              </div>
               </FormItem>
 
 
             </Form>
-        </TabPane>
-        {/* THE LOGIN TAB ENDS */}
-        
+    )
+  }
+}
 
 
+class SignUpComponent extends React.Component{        //WORKING
 
-        {/* THE SIGN UP TAB */}
-        <TabPane tab = "Sign up" key = "2" >
-        {/* CHECK THIS SHIT */}
-        <Link to ={'/hello'}>HELLO MAN</Link>
-        {/* <a href = "/hello">HELLO MAN</a> */}
-        
-           <Form onSubmit = {this.handleSubmit} className = "login-form">
+  compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    console.log("progress : " + form.getFieldValue('passwordSignUp'));
+    if(value && value !== form.getFieldValue('passwordSignUp')){
+      // console.log("Matched!")
+      callback('Passwords donot match!');
+    }
+    else{
+      callback();
+    }
+  }
+
+  state = {
+    confirmDirty : false
+  }
+
+    handleConfirmBlur = (e) => {
+    const value = e.target.value;
+    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+  }
+
+  validateToNextPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true });
+    }
+    callback();
+  }
+
+  render(){
+    const getFieldDecorator = this.props.getFieldDecorator;
+    return(
+      <Form onSubmit = {this.handleSubmit} className = "login-form">
             
             <FormItem>
               {getFieldDecorator('email',{
@@ -169,20 +127,75 @@ class LoginForm extends Component {
             }
           ],
           })(
-            <Input type="password" placeholder = "Confirm Password" /*onBlur={this.handleConfirmBlur}*/ />
+            <Input type="password" placeholder = "Confirm Password" onBlur={this.handleConfirmBlur} />
           )}
         </FormItem>
 
           <FormItem>
               <div>
                  <Row gutter = {{md : 3}}>
-                   <Col span={12}><p><Button type="primary" htmlType = "submit" size={size} style = {{ width : '100%' }} >Sign up</Button></p></Col>
-                   <Col span={12}><p><Button type="primary" size={size} style = {{ width : '100%', backgroundColor : 'black'}}><Icon type="github" />GitHub</Button></p></Col>
+                   <Col span={12}><p><Button type="primary" htmlType = "submit" size={this.props.size} style = {{ width : '100%' }} >Sign up</Button></p></Col>
+                   <Col span={12}><p><Button type="primary" size={this.props.size} style = {{ width : '100%', backgroundColor : 'black'}}><Icon type="github" />GitHub</Button></p></Col>
                  </Row>
              </div>
               </FormItem>    
 
             </Form>
+    )
+  }
+}
+
+
+class LoginForm extends Component {
+  
+  //error handling
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+      }
+    });
+  }
+
+  linkRoutingFunction = (e) =>{
+    console.log('Recvd : '  + e);
+  }
+
+
+
+  state = {
+    size : 'default'
+  }
+
+  render() {
+    const { getFieldDecorator } = this.props.form; 
+    const size = this.state.size;
+
+    return (  
+
+      <div>
+         <Card
+      style = {{ width : 300 , display : 'table', textAlign : 'center', margin : '0 auto', paddingTop : '200' }}
+      // title = "card Title"
+      cover={<center><img alt="example" src="https://www.vectorlogo.zone/logos/w3_svg/w3_svg-icon.svg" style = {{marginTop : 30, height : 50, width : 50}}/></center>}
+      // https://upload.wikimedia.org/wikipedia/commons/b/bd/Logo_xyz.svg
+      >
+
+      {/* TABS START HERE */}
+      
+      <Tabs onTabClick = { this.linkRoutingFunction }>
+        {/* THE LOGIN TAB */}
+        <TabPane tab = "Login" key = "1">
+            <SignInComponent size = {this.state.size} getFieldDecorator = {getFieldDecorator} />
+        </TabPane>
+        {/* THE LOGIN TAB ENDS */}
+        
+
+        {/* THE SIGN UP TAB */}
+        <TabPane tab = "Sign up" key = "2" >
+        
+           <SignUpComponent form = {this.props.form} size = {this.state.size} getFieldDecorator = {getFieldDecorator} />
 
         </TabPane>
         {/* THE SIGN UP TAB ENDS */}
