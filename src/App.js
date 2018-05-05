@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { Avatar, Button, Checkbox, Col, Card, Form, Icon, Input, Layout, Row, Tabs } from 'antd';
+import { Avatar, Button, Checkbox, Col, Card, Divider, Form, Icon, Input, Layout, Row, Tabs } from 'antd';
 
 //check this import
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
-
+const ButtonGroup = Button.Group;
 // THE LOGIN PAGE
 
 class SignInComponent extends React.Component{        //WORKING
@@ -158,11 +158,6 @@ class LoginForm extends Component {
     });
   }
 
-  linkRoutingFunction = (e) =>{
-    console.log('Recvd : '  + e);
-  }
-
-
 
   state = {
     size : 'default'
@@ -172,8 +167,9 @@ class LoginForm extends Component {
     const { getFieldDecorator } = this.props.form; 
     const size = this.state.size;
 
-    return (  
+    return (
 
+      // <Router>
       <div>
          <Card
       style = {{ width : 300 , display : 'table', textAlign : 'center', margin : '0 auto', paddingTop : '200' }}
@@ -182,44 +178,34 @@ class LoginForm extends Component {
       // https://upload.wikimedia.org/wikipedia/commons/b/bd/Logo_xyz.svg
       >
 
-      {/* TABS START HERE */}
+      {/* <SignInComponent size = {this.state.size} getFieldDecorator = {getFieldDecorator} /> */}
+      {/* <SignUpComponent form = {this.props.form} size = {this.state.size} getFieldDecorator = {getFieldDecorator} /> */}
+
       
-      <Tabs onTabClick = { this.linkRoutingFunction }>
-        {/* THE LOGIN TAB */}
-        <TabPane tab = "Login" key = "1">
-            <SignInComponent size = {this.state.size} getFieldDecorator = {getFieldDecorator} />
-        </TabPane>
-        {/* THE LOGIN TAB ENDS */}
-        
 
-        {/* THE SIGN UP TAB */}
-        <TabPane tab = "Sign up" key = "2" >
-        
-           <SignUpComponent form = {this.props.form} size = {this.state.size} getFieldDecorator = {getFieldDecorator} />
+      <Divider>
+      <ButtonGroup>
+      <Button type="primary">
+        <Link to = {'/'}>Log in</Link>
+      </Button>
+      <Button type="primary">
+       <Link to = {'/new'}> Sign up</Link>
+      </Button>
+    </ButtonGroup>
+      </Divider>
+      
+      <Switch>
+        <Route exact path='/' render={() => <SignInComponent size = {this.state.size} getFieldDecorator = {getFieldDecorator} />} />
+        <Route exact path='/new' render={() => <SignUpComponent form = {this.props.form} size = {this.state.size} getFieldDecorator = {getFieldDecorator} />} />
+      </Switch>
 
-        </TabPane>
-        {/* THE SIGN UP TAB ENDS */}
-      </Tabs>
-      {/* TABS END HERE */}
-
+     
       </Card>
-      </div>
 
+      </div>
+      // </Router>
     );
   }
 }
 
 export default Form.create()(LoginForm);
-
-// <p><Input placeholder = "User Name"/></p>
-//        <p><Input placeholder = "Password" type = "password"/></p>
-       
-
-//        {/* //THE LOGIN AND SERVICE LOGIN BUTTONS */}
-//        <p> <div>
-//       <Row gutter = {{md : 3}}>
-//       <Col span={12}><p><Button type="primary" size={size} style = {{ width : '100%'}} >Log in</Button></p></Col>
-//       <Col span={12}><p><Button type="primary submit" size={size} style = {{ width : '100%'}}>GitHub</Button></p>    </Col>
-//       </Row>
-//     </div>
-//     </p>   
