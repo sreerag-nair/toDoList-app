@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Checkbox, Icon, Tooltip } from 'antd';
+import { Card, Checkbox, Icon, Input, Tooltip } from 'antd';
 import './CardComponent.css'
 
 
@@ -26,23 +26,31 @@ class CardComponent extends React.Component{
 
         
         return(
-            <Card title="<<Note Name>>" bordered = 'false' extra= {<Tooltip title = {this.props.message}><Icon type="calendar" /></Tooltip>} hoverable = {'true'} style = {{ width : 300 , display : 'table',
-             textAlign : 'center', margin : '0 auto',
-              paddingTop : '200' }}>
-              
-              <div style = {{ background : 'azure' }}>
-                    <Checkbox onChange = { this.onChange } style = {{ textAlign : 'left' }}>
+
+            <Card title="<< NOTE NAME HERE>>" bordered={false} extra= {<Tooltip title = {this.props.dateVar}><Icon type="calendar" /></Tooltip>} hoverable = 'true' style = {{ textAlign : 'center',}}
+            actions = {[<Icon type="plus" />]}>
+                <div style = {{ background : 'azure' }}>
+                     <Checkbox onChange = { this.onChange } style = {{ textAlign : 'left',  }}>
+                     {this.content.label}
+                         {/* <Input placeholder = "Hello there" style = {{ border : 'none', border : 'transparent' }}/> */}
+                     </Checkbox>
+                     <Checkbox onChange = { this.onChange } style = {{ textAlign : 'left',  }}>
                         {this.content.label}
-                    </Checkbox>
-              </div>
+                         {/* <Input placeholder = "Hello there" style = {{ border : 'none', border : 'transparent' }}/> */}
+                     </Checkbox>
+                     <Checkbox onChange = { this.onChange } style = {{ textAlign : 'left',  }}>
+                        ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZz
+                         {/* <Input placeholder = "Hello there" style = {{ border : 'none', border : 'transparent' }}/> */}
+                     </Checkbox>
+                     
+               </div>
 
-              <div style = {{ background : 'azure' }}>
-                    <Checkbox onChange = { this.onChange } style = {{ textAlign : 'left' }}>
-                    Hello there is a damn is a checkbox under my mattress
-                    </Checkbox>
-              </div>
-
-              </Card>
+               <div style = {{ background : 'azure' }}>
+                     <Checkbox onChange = { this.onChange } style = {{ textAlign : 'left' }}>
+                     Hello there is a damn is a checkbox under my mattress
+                     </Checkbox>
+               </div>
+            </Card>
         );
     }
 }

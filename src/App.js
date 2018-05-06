@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { Avatar, Button, Checkbox, Col, Card, Divider, Form, Icon, Input, Layout, Row, Tabs } from 'antd';
+import GitHubComponent from './GitHubComponent';
 
-//check this import
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 const FormItem = Form.Item;
@@ -12,10 +12,13 @@ const ButtonGroup = Button.Group;
 // THE LOGIN PAGE
 
 class SignInComponent extends React.Component{        //WORKING
+  componentDidMount(){
+    this.props.changeProfilePicToDefault();
+  }
   render(){
     const getFieldDecorator = this.props.getFieldDecorator
     return(
-      <Form onSubmit = {this.handleSubmit} className = "login-form">
+      <Form onSubmit = {this.props.handleSubmit} className = "login-form" >
 
               {/* USERNAME INPUT FIELD */}
               <FormItem>
@@ -38,8 +41,12 @@ class SignInComponent extends React.Component{        //WORKING
               <FormItem>
               <div>
                  <Row gutter = {{md : 3}}>
-                   <Col span={12}><p><Button type="primary" htmlType="submit" size={this.props.size} style = {{ width : '100%' }} >Log in</Button></p></Col>
-                   <Col span={12}><p><Button type="primary" size={this.props.size} style = {{ width : '100%', backgroundColor : 'black'}}><Icon type="github" />GitHub</Button></p></Col>
+                   <Col span={12}>
+                      <p><Button type="primary" htmlType="submit" size={this.props.size} style = {{ width : '100%' }} >Log in</Button></p>
+                   </Col>
+                   <Col span={12}>
+                      <p><Link to = {'/git-login'}><Button type="primary" size={this.props.size} style = {{ width : '100%', backgroundColor : 'black'}}><Icon type="github" />GitHub</Button></Link></p>
+                   </Col>
                  </Row>
              </div>
               </FormItem>
@@ -63,6 +70,9 @@ class SignUpComponent extends React.Component{        //WORKING
     else{
       callback();
     }
+  }
+  componentDidMount(){
+    this.props.changeProfilePicToDefault();
   }
 
   state = {
@@ -135,7 +145,7 @@ class SignUpComponent extends React.Component{        //WORKING
               <div>
                  <Row gutter = {{md : 3}}>
                    <Col span={12}><p><Button type="primary" htmlType = "submit" size={this.props.size} style = {{ width : '100%' }} >Sign up</Button></p></Col>
-                   <Col span={12}><p><Button type="primary" size={this.props.size} style = {{ width : '100%', backgroundColor : 'black'}}><Icon type="github" />GitHub</Button></p></Col>
+                   <Col span={12}><p><Link to = {'/git-login'}><Button type="primary" size={this.props.size} style = {{ width : '100%', backgroundColor : 'black'}}><Icon type="github" />GitHub</Button></Link></p></Col>
                  </Row>
              </div>
               </FormItem>    
@@ -153,28 +163,42 @@ class LoginForm extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        fetch('http://localhost:8001/',{
+          method : 'POST',
+          body : "values"
+        })
         console.log('Received values of form: ', values);
       }
     });
   }
 
+  changeProfilePicToDefault = () =>{
+    this.setState({ img : 'https://www.vectorlogo.zone/logos/w3_svg/w3_svg-icon.svg' });
+  }
+
+  changeProfilePicToGitCat = () => {
+    this.setState({ img : 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Octicons-mark-github.svg/500px-Octicons-mark-github.svg.png' });
+  }
 
   state = {
-    size : 'default'
+    size : 'default',
+    img :  "https://www.vectorlogo.zone/logos/w3_svg/w3_svg-icon.svg" 
   }
+
+  
 
   render() {
     const { getFieldDecorator } = this.props.form; 
     const size = this.state.size;
-
+    
     return (
 
       // <Router>
       <div>
-         <Card
+         <Card hoverable = {'true'}
       style = {{ width : 300 , display : 'table', textAlign : 'center', margin : '0 auto', paddingTop : '200' }}
-      // title = "card Title"
-      cover={<center><img alt="example" src="https://www.vectorlogo.zone/logos/w3_svg/w3_svg-icon.svg" style = {{marginTop : 30, height : 50, width : 50}}/></center>}
+      // actions = { this.state.goBackBttn }
+      cover={<center><img alt="example" src = {this.state.img} style = {{marginTop : 30, height : 50, width : 50}}/></center>}
       // https://upload.wikimedia.org/wikipedia/commons/b/bd/Logo_xyz.svg
       >
 
@@ -191,8 +215,9 @@ class LoginForm extends Component {
       </Divider>
       
       <Switch>
-        <Route exact path='/' render={() => <SignInComponent size = {this.state.size} getFieldDecorator = {getFieldDecorator} />} />
-        <Route exact path='/new-user' render={() => <SignUpComponent form = {this.props.form} size = {this.state.size} getFieldDecorator = {getFieldDecorator} />} />
+        <Route exact path='/' render={() => <SignInComponent size = {this.state.size} handleSubmit = { this.handleSubmit }  getFieldDecorator = {getFieldDecorator} changeProfilePicToDefault = { this.changeProfilePicToDefault } />} />
+        <Route exact path='/new-user' render={() => <SignUpComponent form = {this.props.form} handleSubmit = { this.handleSubmit } size = {this.state.size} getFieldDecorator = {getFieldDecorator} changeProfilePicToDefault = { this.changeProfilePicToDefault } />} />
+        <Route exact path = '/git-login' render = { () => <GitHubComponent changeProfilePicToGitCat = { this.changeProfilePicToGitCat } /> }/>
       </Switch>
 
      
