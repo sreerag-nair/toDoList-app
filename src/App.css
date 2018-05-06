@@ -1,3 +1,8 @@
+
+@import '~antd/dist/antd.css';
+
+
+/* USELESS CSS AFTER THIS POINT */
 .App {
   text-align: center;
 }
