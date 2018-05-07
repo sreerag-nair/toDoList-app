@@ -39,7 +39,7 @@ class CardComponent extends React.Component{
                          {/* <Input placeholder = "Hello there" style = {{ border : 'none', border : 'transparent' }}/> */}
                      </Checkbox>
                      <Checkbox onChange = { this.onChange } style = {{ textAlign : 'left',  }}>
-                        ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZz
+                        This is what is wrong witht the world
                          {/* <Input placeholder = "Hello there" style = {{ border : 'none', border : 'transparent' }}/> */}
                      </Checkbox>
                      

@@ -20,36 +20,28 @@ class DashBoard extends React.Component{
       }
       render() {
         return (
-          <Layout style={{ height: '100vh' }}>
-            <Sider
-              collapsible
-              collapsed={this.state.collapsed}
-              onCollapse={this.onCollapse}
-            >
-              <div className="logo" />
-              <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-                <Menu.Item key="1">
-                  <Icon type="dashboard" />
-                  <span>Dashboard</span>
-                </Menu.Item>
-                <Menu.Item key="2">
-                  <Icon type="profile" />
-                  <span>Profile Pic</span>
-                </Menu.Item>
-                <Menu.Item key="9">
-                  <Icon type="logout" />
-                  <span>Logout</span>
-                </Menu.Item>
-              </Menu>
-            </Sider>
-
-
-            
-            <Layout>
-              <Header style={{ background: '#fff', padding: 0 }} >
-              <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>
-                  Bill is a cat.
-                  <div style={{ background: '#ECECEC', padding: '30px' }}>
+          <Layout>
+    <Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }}>
+      <div className="logo" />
+      <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+        <Menu.Item key="1">
+          <Icon type="dashboard" />
+          <span className="nav-text">Dashboard</span>
+        </Menu.Item>
+        <Menu.Item key="2">
+          <Icon type="profile" />
+          <span className="nav-text">Profile Info</span>
+        </Menu.Item>
+        <Menu.Item key="3">
+          <Icon type="logout" />
+          <span className="nav-text">Log out</span>
+        </Menu.Item>
+        
+      </Menu>
+    </Sider>
+    <Layout style={{ marginLeft: 200 }}>
+      <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
+      <div style={{ background: '#ECECEC', padding: '30px' }}>
                                     <Row gutter={16}>
                                         <Col span={8}>
                                             <CardComponent dateVar = {new Date().toString()} />
@@ -77,14 +69,68 @@ class DashBoard extends React.Component{
                                         </Col>
                                     </Row>
                             </div>
-                </div>
-                </Header>
-                
-              <Footer style={{ textAlign: 'center' }}>
-                Ant Design ©2016 Created by Ant UED
-              </Footer>
-            </Layout>
-          </Layout>
+                            <div style={{ background: '#ECECEC', padding: '30px' }}>
+                                    <Row gutter={16}>
+                                        <Col span={8}>
+                                            <CardComponent dateVar = {new Date().toString()} />
+                                        </Col>
+                                        <Col span={8}>
+                                            <CardComponent />
+                                        </Col>
+                                        <Col span={8}>
+                                        <CardComponent />
+                                            {/* <Card title="Card title" bordered={false}>Card content</Card> */}
+                                        </Col>
+                                    </Row>
+                            </div>
+                            <div style={{ background: '#ECECEC', padding: '30px' }}>
+                                    <Row gutter={16}>
+                                        <Col span={8}>
+                                            <CardComponent />
+                                        </Col>
+                                        <Col span={8}>
+                                            <CardComponent />
+                                        </Col>
+                                        <Col span={8}>
+                                        <CardComponent />
+                                            {/* <Card title="Card title" bordered={false}>Card content</Card> */}
+                                        </Col>
+                                    </Row>
+                            </div>
+                            <div style={{ background: '#ECECEC', padding: '30px' }}>
+                                    <Row gutter={16}>
+                                        <Col span={8}>
+                                            <CardComponent dateVar = {new Date().toString()} />
+                                        </Col>
+                                        <Col span={8}>
+                                            <CardComponent />
+                                        </Col>
+                                        <Col span={8}>
+                                        <CardComponent />
+                                            {/* <Card title="Card title" bordered={false}>Card content</Card> */}
+                                        </Col>
+                                    </Row>
+                            </div>
+                            <div style={{ background: '#ECECEC', padding: '30px' }}>
+                                    <Row gutter={16}>
+                                        <Col span={8}>
+                                            <CardComponent />
+                                        </Col>
+                                        <Col span={8}>
+                                            <CardComponent />
+                                        </Col>
+                                        <Col span={8}>
+                                        <CardComponent />
+                                            {/* <Card title="Card title" bordered={false}>Card content</Card> */}
+                                        </Col>
+                                    </Row>
+                            </div>
+      </Content>
+      <Footer style={{ textAlign: 'center' }}>
+        Ant Design ©2016 Created by Ant UED
+      </Footer>
+    </Layout>
+  </Layout>
         );
       }
 }

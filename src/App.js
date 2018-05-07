@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import { Avatar, Button, Checkbox, Col, Card, Divider, Form, Icon, Input, Layout, Row, Tabs } from 'antd';
 import GitHubComponent from './GitHubComponent';
-
+import axios from 'axios';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 const FormItem = Form.Item;
@@ -14,11 +14,13 @@ const ButtonGroup = Button.Group;
 class SignInComponent extends React.Component{        //WORKING
   componentDidMount(){
     this.props.changeProfilePicToDefault();
+   
+
   }
   render(){
     const getFieldDecorator = this.props.getFieldDecorator
     return(
-      <Form onSubmit = {this.props.handleSubmit} className = "login-form" >
+      <Form onSubmit = {this.props.handleSubmit} className = "login-form" action = "www.google.com" >
 
               {/* USERNAME INPUT FIELD */}
               <FormItem>
@@ -163,9 +165,12 @@ class LoginForm extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        fetch('http://localhost:8001/',{
-          method : 'POST',
-          body : "values"
+        axios.post('http://localhost:8001',{ 
+          'firstname' : "Sreerag",
+          'lastName' : "Nair"
+         })
+        .then((result) => {
+          console.log('SERVER RESPONDED');
         })
         console.log('Received values of form: ', values);
       }

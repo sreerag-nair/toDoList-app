@@ -8,3 +8,24 @@
   background: rgba(255,255,255,.2);
   margin: 16px;
 }
+
+#components-layout-demo-custom-trigger .trigger {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color .3s;
+}
+
+#components-layout-demo-custom-trigger .trigger:hover {
+  color: #1890ff;
+}
+
+
+#components-layout-demo-top-side .logo {
+  width: 120px;
+  height: 31px;
+  background: rgba(255,255,255,.2);  
+  margin: 16px 28px 16px 0;
+  float: left;
+}
