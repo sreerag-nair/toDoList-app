@@ -145,7 +145,7 @@ class SignUpComponent extends React.Component{        //WORKING
               <div>
                  <Row gutter = {{md : 3}}>
                    <Col span={12}><p><Button type="primary" htmlType = "submit" size={this.props.size} style = {{ width : '100%' }} >Sign up</Button></p></Col>
-                   <Col span={12}><p><Link to = {'/git-login'}><Button type="primary" size={this.props.size} style = {{ width : '100%', backgroundColor : 'black'}}><Icon type="github" />GitHub</Button></Link></p></Col>
+                   <Col span={12}><p><Button type="primary" size={this.props.size} style = {{ width : '100%', backgroundColor : 'black'}}><Icon type="github" />GitHub</Button></p></Col>
                  </Row>
              </div>
               </FormItem>    
@@ -217,7 +217,7 @@ class LoginForm extends Component {
       <Switch>
         <Route exact path='/' render={() => <SignInComponent size = {this.state.size} handleSubmit = { this.handleSubmit }  getFieldDecorator = {getFieldDecorator} changeProfilePicToDefault = { this.changeProfilePicToDefault } />} />
         <Route exact path='/new-user' render={() => <SignUpComponent form = {this.props.form} handleSubmit = { this.handleSubmit } size = {this.state.size} getFieldDecorator = {getFieldDecorator} changeProfilePicToDefault = { this.changeProfilePicToDefault } />} />
-        <Route exact path = '/git-login' render = { () => <GitHubComponent changeProfilePicToGitCat = { this.changeProfilePicToGitCat } /> }/>
+        {/* <Route exact path = '/git-login' render = { () => <GitHubComponent changeProfilePicToGitCat = { this.changeProfilePicToGitCat } /> }/> */}
       </Switch>
 
      

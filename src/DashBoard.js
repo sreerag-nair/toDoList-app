@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import './DashBoard.css';
-import { Button, Card, Col, Icon, Layout, Menu, Row } from 'antd';
+import { Breadcrumb, Button, Card, Col, Icon ,Layout, Menu, Row } from 'antd';
 import CardComponent from './CardComponent';
-const { Content, Header, Sider } = Layout
+import './DashBoard.css'
+const { Content, Header, Sider, Footer } = Layout
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
@@ -10,34 +11,45 @@ const MenuItemGroup = Menu.ItemGroup;
 
 class DashBoard extends React.Component{
 
+    state = {
+        collapsed: false,
+      };
+      onCollapse = (collapsed) => {
+        console.log(collapsed);
+        this.setState({ collapsed });
+      }
+      render() {
+        return (
+          <Layout style={{ height: '100vh' }}>
+            <Sider
+              collapsible
+              collapsed={this.state.collapsed}
+              onCollapse={this.onCollapse}
+            >
+              <div className="logo" />
+              <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+                <Menu.Item key="1">
+                  <Icon type="dashboard" />
+                  <span>Dashboard</span>
+                </Menu.Item>
+                <Menu.Item key="2">
+                  <Icon type="profile" />
+                  <span>Profile Pic</span>
+                </Menu.Item>
+                <Menu.Item key="9">
+                  <Icon type="logout" />
+                  <span>Logout</span>
+                </Menu.Item>
+              </Menu>
+            </Sider>
 
 
-    render(){
-        return(
-
-            <div>
-                <Layout style = {{ height : '100vh'}}>
-                {/* HEADER STARTS HERE */}
-                    <Header>
-                        <Menu mode = "horizontal"  theme = "dark">
-                            <Menu.Item key="add:bttn">
-                                <Icon type="plus-circle-o" />
-                            </Menu.Item> 
-
-                            <SubMenu title={<span><Icon type="profile" />//USERNAME COMES HERE//</span>}>
-                                <Menu.Item key="navbar:1"><a href = "http://www.google.com"><span><Icon type = "dashboard" /></span>Dash Board</a></Menu.Item>
-                                <Menu.Item key="navbar:2"><a href = "http://www.google.com"><span><Icon type = "profile" /></span>Profile Info</a></Menu.Item>
-                                <Menu.Item key="navbar:3"><a href = "http://www.google.com"><span><Icon type = "logout" /></span>Log Out</a></Menu.Item>
-                            </SubMenu>      
-                        </Menu>
-                    </Header>
-                    {/* HEADER ENDS HERE */}
-                    <Layout>
-                        <Sider></Sider>
-                        <Content>
-                            
-
-                            <div style={{ background: '#ECECEC', padding: '30px' }}>
+            
+            <Layout>
+              <Header style={{ background: '#fff', padding: 0 }} >
+              <div style={{ padding: 24, background: '#fff', minHeight: 360 }}>
+                  Bill is a cat.
+                  <div style={{ background: '#ECECEC', padding: '30px' }}>
                                     <Row gutter={16}>
                                         <Col span={8}>
                                             <CardComponent dateVar = {new Date().toString()} />
@@ -65,16 +77,16 @@ class DashBoard extends React.Component{
                                         </Col>
                                     </Row>
                             </div>
-
-                        </Content>
-                        <Sider></Sider>
-                    </Layout>
-                </Layout>
-            </div>
-
-           
+                </div>
+                </Header>
+                
+              <Footer style={{ textAlign: 'center' }}>
+                Ant Design ©2016 Created by Ant UED
+              </Footer>
+            </Layout>
+          </Layout>
         );
-    }
+      }
 }
 
 export default DashBoard;
