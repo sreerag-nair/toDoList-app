@@ -29,7 +29,7 @@ class SignInComponent extends React.Component{        //WORKING
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      console.log("VALUES : " + values);
+      console.log("VALUES : " , values);
       if (!err) {
         axios.post('http://localhost:8001', 
           values

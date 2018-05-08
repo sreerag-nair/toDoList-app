@@ -12,6 +12,17 @@ var passportJWT = require('passport-jwt')
 // app.use(bodyParser.urlencoded({extended : false}))
 
 
+
+
+
+// JSON FORMAT
+// {
+//      "asas" : "sdf" 
+// }
+// use double quotes only
+
+
+
 //very important as u are receiving a JSON object
 app.use(bodyParser.json())
 
@@ -41,8 +52,8 @@ var users ={
          pwd = req.body.password
     }
 
-    console.log("Username recvd : " + req.body);
-    console.log("Password recvd : " + req.body.password);
+    console.log("Username recvd : " , req.body);
+    console.log("Password recvd : " , req.body.password);
 
     if(name != users.name)
         res.status(401).json({ error : "USERNAME NOT FOUND! "})
@@ -76,14 +87,6 @@ app.post('/signup',function(req,res){
         res.send(req.body)
     })
 
-
-
-
-
-
-
-
-//THE TESTING FUNCTION
 
 
 
