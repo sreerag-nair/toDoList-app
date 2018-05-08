@@ -22,13 +22,18 @@ class CardComponent extends React.Component{
         label : 'Hello there is a damn idsfsdfs a checkbox under my mattress'
     }
 
+    displayFunction = () =>{
+        alert('MJ');
+    }
+
     render(){
 
         
         return(
 
-            <Card title="<< NOTE NAME HERE>>" bordered={false} extra= {<Tooltip title = {this.props.dateVar}><Icon type="calendar" /></Tooltip>} hoverable = 'true' style = {{ textAlign : 'center',}}
-            actions = {[<Icon type="plus" />]}>
+            <Card title="<< NOTE NAME HERE>>" bordered={false} extra= {<Tooltip title = {this.props.dateVar}><Icon type="calendar" /></Tooltip>}
+             hoverable = 'true' style = {{ textAlign : 'center',}}
+            actions = {[<Tooltip title = "Edit note"><Icon type="edit" onClick = {this.displayFunction} /></Tooltip>, <Tooltip title = "Delete note"><Icon type="delete" /></Tooltip>]}>
                 <div style = {{ background : 'azure' }}>
                      <Checkbox onChange = { this.onChange } style = {{ textAlign : 'left',  }}>
                      {this.content.label}
@@ -38,8 +43,8 @@ class CardComponent extends React.Component{
                         {this.content.label}
                          {/* <Input placeholder = "Hello there" style = {{ border : 'none', border : 'transparent' }}/> */}
                      </Checkbox>
-                     <Checkbox onChange = { this.onChange } style = {{ textAlign : 'left',  }}>
-                        This is what is wrong witht the world
+                     <Checkbox onChange = { this.onChange } style = {{ textAlign : 'left', paddingLeft : '0' }}>
+                        This is what is wrong witht the worldsdfsdfsdfg
                          {/* <Input placeholder = "Hello there" style = {{ border : 'none', border : 'transparent' }}/> */}
                      </Checkbox>
                      

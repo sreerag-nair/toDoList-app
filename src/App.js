@@ -5,22 +5,56 @@ import { Avatar, Button, Checkbox, Col, Card, Divider, Form, Icon, Input, Layout
 import GitHubComponent from './GitHubComponent';
 import axios from 'axios';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-
+import SpinnerClass from './SpinnerClass';
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 const ButtonGroup = Button.Group;
 // THE LOGIN PAGE
 
 class SignInComponent extends React.Component{        //WORKING
+
+  constructor(props){
+    super(props)
+  }
+
   componentDidMount(){
     this.props.changeProfilePicToDefault();
-   
-
   }
+
+  state = {
+    spinnerVar : false
+  };
+
+  //error handling
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      console.log("VALUES : " + values);
+      if (!err) {
+        axios.post('http://localhost:8001', 
+          values
+         )
+        .then((result) => {
+          // console.log('SERVER RESPONDED');
+          this.setState({ spinnerVar : true })
+        })
+        // console.log('Received values of form: ', values);
+      }
+    });
+  }
+
   render(){
+
+    let mo = null ;
+
+    if(this.state.spinnerVar){
+      mo = <SpinnerClass />
+    }
+
     const getFieldDecorator = this.props.getFieldDecorator
+    
     return(
-      <Form onSubmit = {this.props.handleSubmit} className = "login-form" action = "www.google.com" >
+      <Form onSubmit = {this.handleSubmit} className = "login-form" >
 
               {/* USERNAME INPUT FIELD */}
               <FormItem>
@@ -52,7 +86,12 @@ class SignInComponent extends React.Component{        //WORKING
                  </Row>
              </div>
               </FormItem>
-
+              
+              <FormItem>
+                <div>
+                { mo }
+                </div>
+              </FormItem>
 
             </Form>
     )
@@ -62,11 +101,27 @@ class SignInComponent extends React.Component{        //WORKING
 
 class SignUpComponent extends React.Component{        //WORKING
 
+  //error handling
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        axios.post('http://localhost:8001/signup', 
+          values
+         )
+        .then((result) => {
+          console.log("SIGNUP RESULT : " + result);
+        })
+        // console.log('Received values of form: ', values);
+      }
+    });
+  }
+
+
   compareToFirstPassword = (rule, value, callback) => {
     const form = this.props.form;
     console.log("progress : " + form.getFieldValue('passwordSignUp'));
     if(value && value !== form.getFieldValue('passwordSignUp')){
-      // console.log("Matched!")
       callback('Passwords donot match!');
     }
     else{
@@ -97,7 +152,7 @@ class SignUpComponent extends React.Component{        //WORKING
   render(){
     const getFieldDecorator = this.props.getFieldDecorator;
     return(
-      <Form onSubmit = {this.handleSubmit} className = "login-form">
+      <Form onSubmit = { this.handleSubmit } className = "login-form">
             
             <FormItem>
               {getFieldDecorator('email',{
@@ -159,23 +214,6 @@ class SignUpComponent extends React.Component{        //WORKING
 
 
 class LoginForm extends Component {
-  
-  //error handling
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        axios.post('http://localhost:8001',{ 
-          'firstname' : "Sreerag",
-          'lastName' : "Nair"
-         })
-        .then((result) => {
-          console.log('SERVER RESPONDED');
-        })
-        console.log('Received values of form: ', values);
-      }
-    });
-  }
 
   changeProfilePicToDefault = () =>{
     this.setState({ img : 'https://www.vectorlogo.zone/logos/w3_svg/w3_svg-icon.svg' });
@@ -220,8 +258,13 @@ class LoginForm extends Component {
       </Divider>
       
       <Switch>
-        <Route exact path='/' render={() => <SignInComponent size = {this.state.size} handleSubmit = { this.handleSubmit }  getFieldDecorator = {getFieldDecorator} changeProfilePicToDefault = { this.changeProfilePicToDefault } />} />
-        <Route exact path='/new-user' render={() => <SignUpComponent form = {this.props.form} handleSubmit = { this.handleSubmit } size = {this.state.size} getFieldDecorator = {getFieldDecorator} changeProfilePicToDefault = { this.changeProfilePicToDefault } />} />
+        {/* THE SIGN IN ROUTE */}
+        <Route exact path='/' render={() => <SignInComponent size = {this.state.size} form = {this.props.form}
+          getFieldDecorator = {getFieldDecorator} changeProfilePicToDefault = { this.changeProfilePicToDefault } />} />
+        
+        {/* THE SIGN UP ROUTE */}
+        <Route exact path='/new-user' render={() => <SignUpComponent form = {this.props.form}  size = {this.state.size}
+         getFieldDecorator = {getFieldDecorator} changeProfilePicToDefault = { this.changeProfilePicToDefault } />} />
         {/* <Route exact path = '/git-login' render = { () => <GitHubComponent changeProfilePicToGitCat = { this.changeProfilePicToGitCat } /> }/> */}
       </Switch>
 
