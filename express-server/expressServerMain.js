@@ -8,23 +8,55 @@ var configurationData = require('./config');
 var passport = require('passport')
 var passportJWT = require('passport-jwt')
 
+
+
 //THIS IS THE DEFAULT WAY OF PARSING POST REQUEST 
 // app.use(bodyParser.urlencoded({extended : false}))
 
 
+//         THE MIDDLEWARE FUNCTION         //
+
+function tokenChecker(req,res,next){
+    
+    switch(req.route.path){
+        case '/':
+        console.log("def path");
+        console.log("def path");
+        console.log("def path");
+        break;
+
+        case '/signup':
+        console.log("signup");
+        break;
+
+        case '/logout':
+        //call a function that deletes the token from
+        //the database
+        // the localstorage item will be deleted by the app after getting a specific request
+        //from here 
+        console.log("Logout");
+        break;
+
+        default:
+        console.log("DEFAULT STATE");
+        break;
+    }
+    console.log("TokenCheckingMiddleware : " , req.body);
+    next();     //THIS IS IMPORTANT
+}
+
+//         THE MIDDLEWARE FUNCTION ENDS   //
 
 
 
-// JSON FORMAT
-// {
-//      "test" : "sdf" 
-// }
-// use double quotes only
-
-
+app.post('/logout',function(req, res){
+    console.log("GOT LOGOUT");
+    res.end();
+})
 
 //very important as u are receiving a JSON object
 app.use(bodyParser.json())
+
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -33,8 +65,7 @@ app.use(function(req, res, next) {
   });
 
 
-  
-// ------------------MOCK METHODS AND DATA--------------
+
 var users ={
     id: 1,
     name: 'Sreerag',
@@ -42,20 +73,18 @@ var users ={
   }
   
 
-  app.post('/test',function(req,res){
-    // res.json({message : 'All set and working'});
+  app.post('/',tokenChecker ,function(req,res){
 
+    // res.json({ hello : 'There' })
     var name, pwd;
 
-    if(req.body.username && req.body.password){
-         name = req.body.username
-         pwd = req.body.password
+    if(req.body.userNameSignIn && req.body.passwordSignIn){
+         name = req.body.userNameSignIn
+         pwd = req.body.passwordSignIn
     }
+    
 
-    console.log("Username recvd : " , req.body.username);
-    console.log("Password recvd : " , req.body.password);
-
-    if(name != users.name)
+    if(name != users.name)      //TALK TO THE DATABASE
         res.status(401).json({ error : "USERNAME NOT FOUND! "})
 
     if(pwd === users.password){
@@ -67,34 +96,36 @@ var users ={
     }
 
 })
-// ------------------MOCK METHODS AND DATA-------------
 
 
 //THE DEFAULT PATH ie. FOR LOGGING IN
-app.post('/',function(req,res){
-        console.log("SIGN IN");
-        // Storage
-        console.log(req.body)
+// app.post('/',function(req,res){
+//         console.log("SIGN IN");
+//         // Storage
+//         console.log(req.body)
 
-        //TO SIMULATE THE SPINNERCLASS ADDITION AND REMOVAL FROM THE APP
-        // setTimeout(function(){
-        //     res.send(req.body)
-        // }
-        // ,5000);
+//         // TO SIMULATE THE SPINNERCLASS ADDITION AND REMOVAL FROM THE APP
+//         // setTimeout(function(){
+//         //     res.send(req.body)
+//         // }
+//         // ,3000);
 
-        res.send(req.body)
+//         res.send(req.body)
         
-    })
+//     })
 
 // FOR SIGNING UP
-app.post('/signup',function(req,res){
+app.post('/signup', tokenChecker ,function(req,res){
         console.log("SIGN UP");
 
         //THE req object recieved is not json
-        console.log(req.body.email)
-        res.send(req.body)
+        // console.log(req.route.path)
+        // res.send(req)
     })
 
+app.post('/logout', function(req,res){
+    console.log('Logged out')
+})
 
 
 

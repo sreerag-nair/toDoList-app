@@ -8,12 +8,15 @@ import registerServiceWorker from './registerServiceWorker';
 
 import { BrowserRouter as Router } from 'react-router-dom';
 
-ReactDOM.render(
+var x = 20;
 
+
+ReactDOM.render(
+                
         <Router>
             {/* <CardComponent dateVar = {new Date().toString()} /> */}
-            {/* <DashBoard /> */}
-            <App />
+            <DashBoard />
+            {/* <App /> */}
         </Router>
     
     , document.getElementById('root'));
