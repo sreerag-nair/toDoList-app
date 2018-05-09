@@ -17,7 +17,7 @@ var passportJWT = require('passport-jwt')
 
 // JSON FORMAT
 // {
-//      "asas" : "sdf" 
+//      "test" : "sdf" 
 // }
 // use double quotes only
 
@@ -52,7 +52,7 @@ var users ={
          pwd = req.body.password
     }
 
-    console.log("Username recvd : " , req.body);
+    console.log("Username recvd : " , req.body.username);
     console.log("Password recvd : " , req.body.password);
 
     if(name != users.name)
@@ -75,7 +75,15 @@ app.post('/',function(req,res){
         console.log("SIGN IN");
         // Storage
         console.log(req.body)
+
+        //TO SIMULATE THE SPINNERCLASS ADDITION AND REMOVAL FROM THE APP
+        // setTimeout(function(){
+        //     res.send(req.body)
+        // }
+        // ,5000);
+
         res.send(req.body)
+        
     })
 
 // FOR SIGNING UP

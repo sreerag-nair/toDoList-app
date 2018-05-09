@@ -27,6 +27,7 @@ class SignInComponent extends React.Component{        //WORKING
 
   //error handling
   handleSubmit = (e) => {
+    this.setState({ spinnerVar : true })
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       console.log("VALUES : " , values);
@@ -36,7 +37,8 @@ class SignInComponent extends React.Component{        //WORKING
          )
         .then((result) => {
           // console.log('SERVER RESPONDED');
-          this.setState({ spinnerVar : true })
+          
+          this.setState({ spinnerVar : false })
         })
         // console.log('Received values of form: ', values);
       }
