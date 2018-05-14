@@ -22,19 +22,24 @@ class SignInComponent extends React.Component {        //WORKING
     this.props.form.validateFields((err, values) => {
       if (!err) {
         axios.post('http://localhost:8001',
-          values
-        )
+          values,{
+            headers : {
+              'jwtTokenHeader' : localStorage.getItem('jwtToken')
+            }
+          })
           .then((result) => {
 
-            //save it in localStorage
+            if(!localStorage.jwtToken){
+              //save it in localStorage
             localStorage.setItem('jwtToken', JSON.stringify(result.data));
             console.log("Saved in localStorage");
             console.log('jwtToken : ', localStorage.getItem('jwtToken'));
-
-
-
-
             this.setState({ spinnerVar: false })
+            }
+            else{
+
+            }
+
           })
         // console.log('Received values of form: ', values);
       }

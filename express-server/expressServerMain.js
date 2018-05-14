@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var configurationData = require('./config');
 var passport = require('passport')
 var passportJWT = require('passport-jwt')
-
+// var dbComm = require('./dbCommunication');
 
 
 
@@ -22,9 +22,7 @@ function tokenChecker(req, res, next) {
 
     switch (req.route.path) {
         case '/':
-            console.log("def path");
-            console.log("def path");
-            console.log("def path");
+            console.log("default path");
             break;
 
         case '/signup':
@@ -36,14 +34,16 @@ function tokenChecker(req, res, next) {
             //the database
             // the localstorage item will be deleted by the app after getting a specific request
             //from here 
-            console.log("Logout");
+            console.log("Logout in TokenCheckerFunction");
             break;
 
         default:
             console.log("DEFAULT STATE");
             break;
     }
-    console.log("TokenCheckingMiddleware : ", req.body);
+
+    //you get a JSON object so u need to parse it back into object
+    console.log("TokenCheckingMiddleware : ", JSON.parse(req.headers.jwttokenheader).token);
     next();     //THIS IS IMPORTANT
 }
 
@@ -57,7 +57,8 @@ app.use(bodyParser.json())
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    // add jwtToken in the end to allow it in the header
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, jwtTokenHeader");
     next();
 });
 
@@ -90,13 +91,15 @@ app.post('/', tokenChecker, function (req, res) {
 
         //THE SIGNING FUNCTIONATLITY IE. THE TOKEN GENERATION
         var token = jwt.sign(payload, configurationData.secretKey)
+        // console.log("TOKEN GENERATED : " , token);
         res.json({ message: "OK", token: token })
+        // res.end();
     }
 
 })
 
 
-app.post('/logout', function (req, res) {
+app.post('/logout', tokenChecker , function (req, res) {
     console.log("GOT LOGOUT");
     res.end();
 })
@@ -106,63 +109,15 @@ app.post('/logout', function (req, res) {
 app.post('/signup', tokenChecker, function (req, res) {
     console.log("SIGN UP");
 
+    console.log(req.body)
+
     //THE req object recieved is not json
     // console.log(req.route.path)
     // res.send(req)
 })
 
-app.post('/logout', function (req, res) {
-    console.log('Logged out')
-})
 
 
-//----------------__DATABASE CONNECTION TESTING USING MONGOOSE__-----------------
-
-//get the database connection
-var db = mongoose.createConnection(configurationData.database);
-
-var localDB = db.useDb('local')
-
-var userTableSchema = new mongoose.Schema({
-
-    username : String,
-    name : String,
-    emailId : String,
-    // password will be hashed
-    password : String,
-    profilePhoto : Buffer
-
-})
-
-var userTableSchema = localDB.model('userTableSchema',userTableSchema)
-var usersObj = new userTableSchema({
-    username : 'anakin',
-    name : "Anakin Skywalker",
-    emailId : 'test123@gmail.com',
-    // password will be hashed
-    password : 'ThisIsAPassword',
-    // profilePhoto : Buffer
-
-})
-
-usersObj.save(function(err){
-    
-    if(err) throw err
-
-    console.log('Insert Successful!')
-
-})
-
-db.on('error',console.error.bind(console,"SOME CRAPPY ERROR OCCURED!"))
-
-db.once('open',function(){
-    console.log('PIZZAH!');
-    // this.close()
-
-})
-
-
-//-------------------------------------------------------------------------------
 
 app.listen(8001, function () {
     console.log("SERVER RUNNING AT 8001");

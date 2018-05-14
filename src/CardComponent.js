@@ -37,7 +37,8 @@ class CardComponent extends React.Component {
                 <Icon type="plus"  onClick={
                     () => {
                         console.log('ICON');
-                        this.props.setCurrentCard(this)
+                        this.props.cardToPopulate(this.state.checkBoxData)
+                        
                     }
                 }/>
                 </Tooltip> , <Tooltip title="Delete note"><Icon type="delete" /></Tooltip>]}>

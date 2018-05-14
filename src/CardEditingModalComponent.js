@@ -7,7 +7,7 @@ class CardEditingModalComponent extends Component {
 
     componentDidMount(){
         this.setState({ visible : true , currCard : this.props.component })
-        // this.setState({  })
+        // console.log("PROPS:  " , this.props)
     }
 
     state = { visible: false,
@@ -34,6 +34,7 @@ class CardEditingModalComponent extends Component {
         console.log("Inside showModal")
     }
 
+
         render(){
             return (
 
@@ -41,22 +42,14 @@ class CardEditingModalComponent extends Component {
                     <h1>MODAL COMPONENT</h1>
 
                     <Modal
-                        title="Basic Modal"
+                        title="Edit Card"
                         visible={this.state.visible}
                         onOk={this.handleOk}
                         onCancel={this.handleCancel}
+                        confirmLoading = {true}
                     >
-                        <p>...................some content</p>
-                        {/* <p>...................some content</p>
-                        <p>...................some content</p>
-                        <p>...................some content</p>
-                        <p>...................some content</p>
-                        <p>...................some content</p>
-                        <p>...................some content</p>
-                        <p>...................some content</p>
-                        <p>...................some content</p>
-                        <p>...................some content</p> */}
-                        {this.state.component}
+                    
+                        
                     </Modal>
                 </Layout>
 

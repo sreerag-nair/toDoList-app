@@ -40,7 +40,7 @@ class DashBoard extends React.Component {
 
             <Layout>
                 
-                { this.state.showModal && <CardEditingModalComponent component = {this.state.currentCard} show = { this.state.showModal }/>}
+                {  <CardEditingModalComponent component = {this.state.currentCard} show = { this.state.showModal }/>   }
                 
                 <Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }}>
                     <div className="logo" />
