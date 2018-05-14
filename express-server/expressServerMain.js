@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var configurationData = require('./config');
 var passport = require('passport')
 var passportJWT = require('passport-jwt')
-// var dbComm = require('./dbCommunication');
+var { create } = require('./dbCommunication');
 
 
 
@@ -26,7 +26,9 @@ function tokenChecker(req, res, next) {
             break;
 
         case '/signup':
-            console.log("signup");
+            // console.log("signup");
+            // console.log("ACQUIRED : " + req.body.userNameSignIn)
+            // next();
             break;
 
         case '/logout':
@@ -42,8 +44,8 @@ function tokenChecker(req, res, next) {
             break;
     }
 
-    //you get a JSON object so u need to parse it back into object
-    console.log("TokenCheckingMiddleware : ", JSON.parse(req.headers.jwttokenheader).token);
+    //you get a JSON object so u need to parse it back into object -_- LINE GIVING ERROR
+    // console.log("TokenCheckingMiddleware : ", JSON.parse(req.headers.jwttokenheader).token);
     next();     //THIS IS IMPORTANT
 }
 
@@ -57,6 +59,7 @@ app.use(bodyParser.json())
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
+
     // add jwtToken in the end to allow it in the header
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, jwtTokenHeader");
     next();
@@ -66,12 +69,47 @@ app.use(function (req, res, next) {
 
 
 var users = {
-    id: 1,
     name: 'Sreerag',
     password: 'qwerty'
 }
 
+var userObjArray = [
+    {
+        username : 'anakin',
+        name : 'Anakin Skywalker',
+        emailId : 'abc@test.com',
+        password : 'abc'
+    },
+    {
+        
+        username : 'leia',
+        name : 'Leia Organa',
+        emailId : 'jkl@test.com',
+        password : 'edf'
+    },
+    {
+        username : 'mace',
+        name : 'Mace Windu', 
+        emailId : 'ghi@test.com',
+        password : 'ghi'
+    },
+    {
+        username : 'yoda',
+        name : 'Master Yoda',
+        emailId : 'jkl@test.com',
+        password : 'jkl'
+    },
+    {
+        
+        username : 'palpatine',
+        name : 'Emperor Palpatine',
+        emailId : 'hij@test.com',
+        password : 'hij'
+    }
+]
 
+
+//SIGNIN ROUTE
 app.post('/', tokenChecker, function (req, res) {
 
     // res.json({ hello : 'There' })
@@ -106,14 +144,17 @@ app.post('/logout', tokenChecker , function (req, res) {
 
 
 // FOR SIGNING UP
-app.post('/signup', tokenChecker, function (req, res) {
+app.post('/signup', tokenChecker ,function (req, res) {
     console.log("SIGN UP");
 
     console.log(req.body)
 
-    //THE req object recieved is not json
-    // console.log(req.route.path)
-    // res.send(req)
+    for(var i = 0; i < userObjArray.length; i++){
+        // console.log(userObjArray[i])
+        create(userObjArray[i]);
+    }
+    
+    console.log('INSERTED - from middleware')
 })
 
 

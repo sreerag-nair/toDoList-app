@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import './DashBoard.css'
 import axios from 'axios';
 import CardEditingModalComponent from './CardEditingModalComponent';
+import ProfileComponent from './ProfileComponent';
 const { Content, Sider, Footer } = Layout
 
 
@@ -40,24 +41,30 @@ class DashBoard extends React.Component {
 
             <Layout>
                 
-                {  <CardEditingModalComponent component = {this.state.currentCard} show = { this.state.showModal }/>   }
+                {/* {  <CardEditingModalComponent component = {this.state.currentCard} show = { this.state.showModal }/>   } */}
                 
                 <Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }}>
                     <div className="logo" />
                     <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
                         <Menu.Item key="1">
+                        <Link to = {'/dashboard'}>
                             <Icon type="dashboard" />
                             <span className="nav-text">Dashboard</span>
+                        </Link>
                         </Menu.Item>
-                        <Menu.Item key="2">
+                        <Menu.Item key="2" >
+                        <Link to = {'/profile'}>
                             <Icon type="profile" />
                             <span className="nav-text">Profile Info</span>
+                        </Link>
                         </Menu.Item>
                         <Menu.Item key="3">
+                        <Link to = {'/logout'}>
                             {/* <div onClick={ () => this.loggingOutFunction() }> */}
                             <Icon type="logout" />
                             <span className="nav-text">Log out</span>
                             {/* </div> */}
+                        </Link>
                         </Menu.Item>
 
                     </Menu>

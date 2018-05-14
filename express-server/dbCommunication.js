@@ -12,18 +12,7 @@ var mongoose = require('mongoose');
 // var localDB = db.useDb('local')
 
 
-// var userTableSchema = new mongoose.Schema({
 
-//     username : String,
-//     name : String,
-//     emailId : String,
-//     // 'password' will be hashed 
-//     password : String,
-//     profilePhoto : Buffer,
-//     // the token of the user
-//     key : String
-
-// })
 
 
 // var notesTableSchema = new mongoose.Schema({
@@ -46,121 +35,218 @@ var mongoose = require('mongoose');
 
 // })
 
+// var userTableSchema = new mongoose.Schema({
 
+//     username : String,
+//     name : String,
+//     emailId : String,
+//     // 'password' will be hashed 
+//     password : String,
+//     profilePhoto : Buffer,
+//     // the token of the user
+//     key : String
 
-var userTableSchema = localDB.model('userTableSchema',userTableSchema)
-var usersObj = new userTableSchema({
-    username : 'leia',
-    name : "Leia Skywalker",
-    emailId : 'leiaben@gmail.com',
-    // password will be hashed
-    password : 'ThisIsAPassword',
-    // profilePhoto : Buffer
+// })
 
-})
+// var userTableSchema = localDB.model('userTableSchema', userTableSchema)
+// var usersObj = new userTableSchema({
+//     username: 'leia',
+//     name: "Leia Skywalker",
+//     emailId: 'leiaben@gmail.com',
+//     // password will be hashed
+//     password: 'ThisIsAPassword',
+//     // profilePhoto : Buffer
 
-usersObj.save(function(err){
-    
-    if(err) throw err
+// })
 
-    console.log('Insert Successful!')
+// usersObj.save(function (err) {
 
-})
+//     if (err) throw err
 
-db.on('error',console.error.bind(console,"SOME CRAPPY ERROR OCCURED!"))
+//     console.log('Insert Successful!')
 
-db.once('open',function(){
-    console.log('PIZZAH!');
-    // this.close()
+// })
 
-})
+// db.on('error', console.error.bind(console, "SOME CRAPPY ERROR OCCURED!"))
 
-// ----------------------------THE DB SCHEMA-----------------------------
+// db.once('open', function () {
+//     console.log('PIZZAH!');
+//     // this.close()
 
-            
-var userTableSchema = new mongoose.Schema({
+// })
 
-    username : String,
-    name : String,
-    emailId : String,
-    // 'password' will be hashed 
-    password : String,
-    profilePhoto : Buffer,
-    // the token of the user
-    key : String
-
-})
-
-
-var notesTableSchema = new mongoose.Schema({
-
-    // id of the user who created it
-    uId : String,
-    title : String,
-    date : Date,
-    isDeleted : Boolean 
-
-})
-
-var contentTableSchema = new mongoose.Schema({
-
-
-    // the id of the note it is present in
-    notesID : String,     
-    content : String,        
-    isChecked : Boolean
-
-})
-
-//----------------------------------------------------------------------- 
 
 
 // ---------------------------THE ACTUAL CRUD OPS------------------------
 
-var createDatabaseConnection = (function(){
-        //establish connection to the db with 'local' as db name    
-        var db;
 
-        function createConnection(){
-            var dbase = mongoose.createConnection(configurationData.database);
-            var db = dbase.useDb('local')
+// ---------------------------SINGLETON OBJECTS---------------------------
+var createDatabaseConnection = (function () {
+    //establish connection to the db with 'local' as db name    
+    var db;
+
+    function createConnection() {
+        var dbase = mongoose.createConnection(configurationData.database);
+        var db = dbase.useDb('local')
+        return db;
+    }
+
+    return {
+        getInstance: function () {
+            if (!db)
+                db = createConnection();
             return db;
         }
-
-        return {
-            getInstance : function(){
-                    if(!db)
-                        db = createInstance();
-                    return db;
-            }
-        }
+    }
 })();
 
-export function create(userCredentialsJSONObject){
+var queryObject = (function () {
+    var query;
+
+    function createQuery() {
+        // var dbHandle = createDatabaseConnection.getInstance();
+        query = new mongoose.Query();
+        return query;
+    }
+
+    return {
+        getInstance: function () {
+            if (!query)
+                query = createQuery();
+            return query;
+        }
+    }
+})();
+
+
+//used to return a handle of a singleton 'userTableSchema' collection
+var userTableSchemaHandle = (function () {
+    var userTableSchemaHandle;
+
+    function mountUserTableSchema(db) {
+        userTableSchemaHandle = new mongoose.Schema({
+
+            username: String,
+            name: String,
+            emailId: String,
+            // 'password' will be hashed 
+            password: String,
+            profilePhoto: Buffer,
+            // the token of the user
+            key: String
+
+        })
+        // console.log("utS : " , userTableSchemaHandle)
+        return userTableSchemaHandle;
+    }
+
+    return {
+        getInstance: function (db) {
+            if (!userTableSchemaHandle)
+                userTableSchemaHandle = mountUserTableSchema(db)
+            
+            return userTableSchemaHandle;
+        }
+    }
+})();
+
+//used to return a handle of a singleton 'userTableSchema' collection
+var notesTableSchemaHandle = (function () {
+    var notesTableSchemaHandle;
+
+    function mountNotesTableSchema(db) {
+        notesTableSchemaHandle = new mongoose.Schema({
+
+            // id of the user who created it
+            uId: String,
+            title: String,
+            date: Date,
+            isDeleted: Boolean
+
+        })
+        return notesTableSchemaHandle;
+    }
+
+    return {
+        getInstance: function (db) {
+            if (!notesTableSchemaHandle)
+                notesTableSchemaHandle = mountNotesTableSchema(db)
+
+            return notesTableSchemaHandle;
+        }
+    }
+})();
+
+//used to return a handle of a singleton 'userTableSchema' collection
+var contentTableSchemaHandle = (function () {
+    var contentTableSchemaHandle;
+
+    function mountUserTableSchema(db) {
+        contentTableSchemaHandle = new mongoose.Schema({
+
+            username: String,
+            name: String,
+            emailId: String,
+            // 'password' will be hashed 
+            password: String,
+            profilePhoto: Buffer,
+            // the token of the user
+            key: String
+
+        })
+    }
+
+    return {
+        getInstance: function (db) {
+            if (!contentTableSchemaHandle)
+                contentTableSchemaHandle = mountUserTableSchema(db)
+
+            return contentTableSchemaHandle;
+        }
+    }
+})();
+
+// ---------------------------------SINGLETON OBJECTS-----------------------
+
+
+exports.create = function (userCredentialsJSONObject) {
     //insert operation
 
-    // JSON OBJ {
-    //     usernameSignUp : ... ,
-    //     passwordSignUp : ...
-    // }
-
     var dbHandle = createDatabaseConnection.getInstance();
-    var userTableSchema = dbHandle.model('userTableSchema',userTableSchema)
+    var userTableSchemaz = dbHandle.model('userTableSchemaHandle', userTableSchemaHandle.getInstance());  
+    var u = new userTableSchemaz(userCredentialsJSONObject)
 
-    
+    //TRY USING THE ALTERNATE - CREATE()!!
+    u.save(function (err) {
+        if (err) throw err
+
+        console.log("INSERTED : " , userCredentialsJSONObject)
+    })
+
 }
 
 
-export function read(){
-    
+exports.read = function () {
+
 }
 
-export function update(){
+exports.update = function () {
 
 }
 
 //  delete is a keyword
-export function remove(){
+exports.remove = function () {
+
+}
+
+function searchUserCreds(emailId) {
+
+    // var dbHandle = createDatabaseConnection.getInstance();
+
+    //generate query object for a specific collection - userTableSchema in this case
+    var query = userTableSchema.find();
+
+
 
 }
 
