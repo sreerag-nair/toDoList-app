@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var configurationData = require('./config');
 var passport = require('passport')
 var passportJWT = require('passport-jwt')
-var { create } = require('./dbCommunication');
+var { create, read } = require('./dbCommunication');
 
 
 
@@ -147,12 +147,16 @@ app.post('/logout', tokenChecker , function (req, res) {
 app.post('/signup', tokenChecker ,function (req, res) {
     console.log("SIGN UP");
 
-    console.log(req.body)
+    // console.log(req.body)
 
-    for(var i = 0; i < userObjArray.length; i++){
-        // console.log(userObjArray[i])
-        create(userObjArray[i]);
-    }
+    // for(var i = 0; i < userObjArray.length; i++){
+    //     // console.log(userObjArray[i])
+    //     create(userObjArray[i]);
+    // }
+
+    // read("Sreerag")
+    create({_id : '5af9d26a6f7c4f5060e57573', key : 'THISISASECRETKEY'})
+
     
     console.log('INSERTED - from middleware')
 })

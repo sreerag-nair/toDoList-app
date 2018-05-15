@@ -81,6 +81,8 @@ var mongoose = require('mongoose');
 
 
 // ---------------------------SINGLETON OBJECTS---------------------------
+
+//used to return a handle of a singleton database connection
 var createDatabaseConnection = (function () {
     //establish connection to the db with 'local' as db name    
     var db;
@@ -99,25 +101,6 @@ var createDatabaseConnection = (function () {
         }
     }
 })();
-
-var queryObject = (function () {
-    var query;
-
-    function createQuery() {
-        // var dbHandle = createDatabaseConnection.getInstance();
-        query = new mongoose.Query();
-        return query;
-    }
-
-    return {
-        getInstance: function () {
-            if (!query)
-                query = createQuery();
-            return query;
-        }
-    }
-})();
-
 
 //used to return a handle of a singleton 'userTableSchema' collection
 var userTableSchemaHandle = (function () {
@@ -181,7 +164,7 @@ var notesTableSchemaHandle = (function () {
 var contentTableSchemaHandle = (function () {
     var contentTableSchemaHandle;
 
-    function mountUserTableSchema(db) {
+    function mountContentTableSchema(db) {
         contentTableSchemaHandle = new mongoose.Schema({
 
             username: String,
@@ -194,30 +177,45 @@ var contentTableSchemaHandle = (function () {
             key: String
 
         })
+        return contentTableSchemaHandle;
     }
 
     return {
         getInstance: function (db) {
             if (!contentTableSchemaHandle)
-                contentTableSchemaHandle = mountUserTableSchema(db)
+                contentTableSchemaHandle = mountContentTableSchema(db)
 
             return contentTableSchemaHandle;
         }
     }
 })();
 
+
+// call and destructure to get all ready-to-use handles....
+function getHandles(){
+    //get the singleton instance of db
+    var dbHandle = createDatabaseConnection.getInstance();
+
+    //get the singleton instance of all the 3 collections...
+    var userCollection = dbHandle.model('userTableCollection', userTableSchemaHandle.getInstance());
+    var notesCollection = dbHandle.model('notesTableCollection', notesTableSchemaHandle.getInstance());
+    var contentCollection = dbHandle.model('contentTableCollection', contentTableSchemaHandle.getInstance());
+    return { userCollection , notesCollection , contentCollection }
+}
 // ---------------------------------SINGLETON OBJECTS-----------------------
 
+
+var { userCollection , notesCollection , contentCollection } = getHandles()
 
 exports.create = function (userCredentialsJSONObject) {
     //insert operation
 
-    var dbHandle = createDatabaseConnection.getInstance();
-    var userTableSchemaz = dbHandle.model('userTableSchemaHandle', userTableSchemaHandle.getInstance());  
-    var u = new userTableSchemaz(userCredentialsJSONObject)
+    // var dbHandle = createDatabaseConnection.getInstance();
+    // var userTableSchemaz = dbHandle.model('userTableCollection', userTableSchemaHandle.getInstance());  
+    var mountedObj = new userCollection(userCredentialsJSONObject)
 
     //TRY USING THE ALTERNATE - CREATE()!!
-    u.save(function (err) {
+    mountedObj.save({upsert : true} , function (err) {
         if (err) throw err
 
         console.log("INSERTED : " , userCredentialsJSONObject)
@@ -227,6 +225,11 @@ exports.create = function (userCredentialsJSONObject) {
 
 
 exports.read = function () {
+
+    userCollection.find({username : 'yoda'}, function(err, msg){
+        if(err) throw err
+        console.log("msg : " , msg)
+    })
 
 }
 
@@ -251,4 +254,3 @@ function searchUserCreds(emailId) {
 }
 
 // ----------------------------------------------------------------------
-
