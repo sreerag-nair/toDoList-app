@@ -62,7 +62,7 @@ class SignUpComponent extends React.Component{        //WORKING
         <Form onSubmit = { this.handleSubmit } className = "login-form">
               
               <FormItem>
-                {getFieldDecorator('email',{
+                {getFieldDecorator('emailSignUp',{
                   rules : [{required : true, message : 'Email is required'},
                 {type : 'email', message : 'Invalid email'}],
                 })(

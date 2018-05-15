@@ -61,10 +61,10 @@ class SignInComponent extends React.Component {        //WORKING
 
         {/* USERNAME INPUT FIELD */}
         <FormItem>
-          {getFieldDecorator('userNameSignIn', {
+          {getFieldDecorator('emailSignIn', {
             rules: [{ required: true, message: 'Required!' }],
           })(
-            <Input placeholder="User Name" />
+            <Input placeholder="Email id" />
           )}
         </FormItem>
 

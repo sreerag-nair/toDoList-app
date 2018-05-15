@@ -109,7 +109,7 @@ var userTableSchemaHandle = (function () {
     function mountUserTableSchema(db) {
         userTableSchemaHandle = new mongoose.Schema({
 
-            username: String,
+            userName: String,
             name: String,
             emailId: String,
             // 'password' will be hashed 
@@ -127,7 +127,7 @@ var userTableSchemaHandle = (function () {
         getInstance: function (db) {
             if (!userTableSchemaHandle)
                 userTableSchemaHandle = mountUserTableSchema(db)
-            
+
             return userTableSchemaHandle;
         }
     }
@@ -140,11 +140,13 @@ var notesTableSchemaHandle = (function () {
     function mountNotesTableSchema(db) {
         notesTableSchemaHandle = new mongoose.Schema({
 
-            // id of the user who created it
+            // id of the owner
             uId: String,
             title: String,
             date: Date,
-            isDeleted: Boolean
+            isDeleted: Boolean,
+            //collaborators of the note
+            sharedWith: Array
 
         })
         return notesTableSchemaHandle;
@@ -167,14 +169,10 @@ var contentTableSchemaHandle = (function () {
     function mountContentTableSchema(db) {
         contentTableSchemaHandle = new mongoose.Schema({
 
-            username: String,
-            name: String,
-            emailId: String,
-            // 'password' will be hashed 
-            password: String,
-            profilePhoto: Buffer,
-            // the token of the user
-            key: String
+            // the id of the note it is present in
+            notesID: String,
+            content: String,
+            isChecked: Boolean
 
         })
         return contentTableSchemaHandle;
@@ -192,7 +190,7 @@ var contentTableSchemaHandle = (function () {
 
 
 // call and destructure to get all ready-to-use handles....
-function getHandles(){
+function getHandles() {
     //get the singleton instance of db
     var dbHandle = createDatabaseConnection.getInstance();
 
@@ -200,57 +198,76 @@ function getHandles(){
     var userCollection = dbHandle.model('userTableCollection', userTableSchemaHandle.getInstance());
     var notesCollection = dbHandle.model('notesTableCollection', notesTableSchemaHandle.getInstance());
     var contentCollection = dbHandle.model('contentTableCollection', contentTableSchemaHandle.getInstance());
-    return { userCollection , notesCollection , contentCollection }
+    return { userCollection, notesCollection, contentCollection }
 }
 // ---------------------------------SINGLETON OBJECTS-----------------------
 
 
-var { userCollection , notesCollection , contentCollection } = getHandles()
+var { userCollection, notesCollection, contentCollection } = getHandles()
 
 exports.create = function (userCredentialsJSONObject) {
-    //insert operation
 
-    // var dbHandle = createDatabaseConnection.getInstance();
-    // var userTableSchemaz = dbHandle.model('userTableCollection', userTableSchemaHandle.getInstance());  
-    var mountedObj = new userCollection(userCredentialsJSONObject)
-
-    //TRY USING THE ALTERNATE - CREATE()!!
-    mountedObj.save({upsert : true} , function (err) {
-        if (err) throw err
-
-        console.log("INSERTED : " , userCredentialsJSONObject)
-    })
 
 }
 
 
-exports.read = function () {
+exports.read = function (notesObjArray) {
+    //check if the user exists in the db
+    userCollection.findOne({ username: 'yoda' }, function (err, msg) {
+        if (err) throw err
+        var yoda_id = msg._id;
+        // insert notes for the particular user
+        notesObjArray.map(x => {
 
-    userCollection.find({username : 'yoda'}, function(err, msg){
-        if(err) throw err
-        console.log("msg : " , msg)
+            var temp = {};
+            temp.uId = yoda_id;
+            temp.title = x.title;
+            temp.date = new Date();
+            temp.isDeleted = Math.random() % 2 == 0 ? true : false;
+
+            new notesCollection(temp).save(function (err, obj) {
+                if (err) throw err
+
+                x.list.map(content => {
+
+                    var t = {}
+                    t.notesID = obj._id
+                    t.content = content.content
+                    t.isChecked = content.isChecked
+
+                    new contentCollection(t).save(function (err, obj) {
+                        if (err) throw err
+
+                        console.log("SUCCESS!")
+                    })
+
+                })
+
+            })
+        })
+
     })
 
 }
 
 exports.update = function () {
-
+    //insert notes or update user profile
 }
 
 //  delete is a keyword
 exports.remove = function () {
-
+    //delete a note 
 }
 
-function searchUserCreds(emailId) {
+exports.searchUserCreds = function (emailId, password) {
 
-    // var dbHandle = createDatabaseConnection.getInstance();
-
-    //generate query object for a specific collection - userTableSchema in this case
-    var query = userTableSchema.find();
-
-
-
+   return userCollection.findOne({ emailId: emailId, password: password }, function (err, obj) {
+        if (err) throw err;
+    })
 }
 
+exports.newUser = function(userCredObject){
+    //return the promise object
+    return userCollection(userCredObject).save();
+}
 // ----------------------------------------------------------------------
