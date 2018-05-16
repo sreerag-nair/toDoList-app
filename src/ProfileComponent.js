@@ -11,8 +11,8 @@ class ProfileComponent extends Component {
         return (
             <Row>
                 <Col xs={12}>
-                    <Row center="xs">
-                        <Col xl={6} style = {{ background : 'grey', height : '100vh' }}>
+                    <Row center="xs" style = {{  background: 'lightblue' }}>
+                        <Col xl={6} style = {{  height : '100vh' }}>
                         <div style = {{ paddingTop : '100px' , }} >
                             <Avatar src = { this.imgSrc.src } size = "large" shape = "circle" style = {{ height : '200px', width : '200px' }}/>
                             <Input style = {{ marginTop : '10px' , }} placeholder = "Username"/>

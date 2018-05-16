@@ -10,7 +10,7 @@ class CardComponent extends React.Component {
     state = {
         checked: true,
         disabled: false,
-        checkBoxData: this.props.checkBoxData ||  ['Hello there is a damn idsfsdfs a checkbox under my mattress',
+        checkBoxData: this.props.checkBoxData || ['Hello there is a damn idsfsdfs a checkbox under my mattress',
             'Hello there is a damn idsfsdfs a checkbox under my mattress',
             'Hello there is a damn idsfsdfs a checkbox under my mattress',
             'Hello there is a damn idsfsdfs a checkbox under my mattress',
@@ -31,37 +31,26 @@ class CardComponent extends React.Component {
 
         return (
 
-            <Card title="<< NOTE NAME HERE>>" bordered={false} extra={<Tooltip title={this.props.dateVar}><Icon type="calendar" /></Tooltip>}
-                hoverable='true' style={{ textAlign: 'center', }}
+            <Card title={this.props.noteObj.title} bordered={false} extra={<Tooltip title={this.props.dateVar}><Icon type="calendar" /></Tooltip>}
+                hoverable='true' style={{  }}
                 actions={[<Tooltip title="Add note">
-                <Icon type="plus"  onClick={
-                    () => {
-                        console.log('ICON');
-                        this.props.cardToPopulate(this.state.checkBoxData)
-                        
-                    }
-                }/>
-                </Tooltip> , <Tooltip title="Delete note"><Icon type="delete" /></Tooltip>]}>
+                    <Icon type="plus" onClick={ () => alert('Add Clicked!') } />
+                </Tooltip>, <Tooltip title="Delete note"><Icon type="delete" /></Tooltip>]}>
                 <div>
-
+                    {console.log("noteObj : ", this.props.noteObj)}
                     {/* THE FIRST CHECKBOX ELEMENT REQUIRES A MARGINLEFT TO 8px STYLE TO ALIGN PROPERTY */}
 
-                    {this.state.checkBoxData.map((e, index) => {
+                    {this.props.noteObj.list.map((e, index) => {
 
-                        if (index == 0) {
+                        // console.log("E : ", e)
                             return (
-                                <Checkbox key={index} onChange={this.onChange} style={{ textAlign: 'left', marginLeft : '8px'}}>
-                                    {e}
-                                </Checkbox>
+                                <div>
+                                    <Checkbox key={index} onChange={this.onChange} style={{ textAlign: 'left' }}>
+                                        {e.content}
+                                    </Checkbox>
+                                </div>
                             )
-                        }
-                        else {
-                            return (
-                                <Checkbox key={index} onChange={this.onChange} style={{ textAlign: 'left', }}>
-                                    {e}
-                                </Checkbox>
-                            )
-                        }
+                        
 
                     })}
 

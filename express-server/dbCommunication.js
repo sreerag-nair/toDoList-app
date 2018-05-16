@@ -259,6 +259,10 @@ exports.remove = function () {
     //delete a note 
 }
 
+
+
+
+
 exports.searchUserCreds = function (emailId, password) {
 
    return userCollection.findOne({ emailId: emailId, password: password }, function (err, obj) {
@@ -269,5 +273,11 @@ exports.searchUserCreds = function (emailId, password) {
 exports.newUser = function(userCredObject){
     //return the promise object
     return userCollection(userCredObject).save();
+}
+
+exports.insertNoteEntry = function(userCredObject){
+    //1. Get user id
+    //2. Get the note id into which the note entry is to be inserted.
+    //3. Insert into the contenttable collection
 }
 // ----------------------------------------------------------------------
