@@ -5,7 +5,6 @@ const { Content } = Layout;
 
 class CardPopulatorDashBoardComponent extends Component {
 
-    recvdObjectArray = [];
     notesObjArray = [
         {
             title: 'Shopping List',
