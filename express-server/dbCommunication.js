@@ -6,77 +6,6 @@ var mongoose = require('mongoose');
 
 
 
-//get the database connection
-// var db = mongoose.createConnection(configurationData.database);
-
-// var localDB = db.useDb('local')
-
-
-
-
-
-// var notesTableSchema = new mongoose.Schema({
-
-//     // id of the user who created it
-//     uId : String,
-//     title : String,
-//     date : Date,
-//     isDeleted : Boolean 
-
-// })
-
-// var contentTableSchema = new mongoose.Schema({
-
-
-//     // the id of the note it is present in
-//     notesID : String,     
-//     content : String,        
-//     isChecked : Boolean
-
-// })
-
-// var userTableSchema = new mongoose.Schema({
-
-//     username : String,
-//     name : String,
-//     emailId : String,
-//     // 'password' will be hashed 
-//     password : String,
-//     profilePhoto : Buffer,
-//     // the token of the user
-//     key : String
-
-// })
-
-// var userTableSchema = localDB.model('userTableSchema', userTableSchema)
-// var usersObj = new userTableSchema({
-//     username: 'leia',
-//     name: "Leia Skywalker",
-//     emailId: 'leiaben@gmail.com',
-//     // password will be hashed
-//     password: 'ThisIsAPassword',
-//     // profilePhoto : Buffer
-
-// })
-
-// usersObj.save(function (err) {
-
-//     if (err) throw err
-
-//     console.log('Insert Successful!')
-
-// })
-
-// db.on('error', console.error.bind(console, "SOME CRAPPY ERROR OCCURED!"))
-
-// db.once('open', function () {
-//     console.log('PIZZAH!');
-//     // this.close()
-
-// })
-
-
-
 // ---------------------------THE ACTUAL CRUD OPS------------------------
 
 
@@ -262,7 +191,7 @@ exports.remove = function () {
 
 
 
-
+// search for the user in the database -> sign in functionality
 exports.searchUserCreds = function (emailId, password) {
 
    return userCollection.findOne({ emailId: emailId, password: password }, function (err, obj) {
@@ -270,14 +199,24 @@ exports.searchUserCreds = function (emailId, password) {
     })
 }
 
+
+//insert new users into the database -. sign up functionality
 exports.newUser = function(userCredObject){
     //return the promise object
     return userCollection(userCredObject).save();
 }
 
-exports.insertNoteEntry = function(userCredObject){
-    //1. Get user id
-    //2. Get the note id into which the note entry is to be inserted.
-    //3. Insert into the contenttable collection
+// insert a new note title entry in the notesCollection
+exports.insertNoteTitle = function(userTableId, notesObj){
+    // return the promise object containing the 
+    // saved object as the return object...
+    return notesCollection({ uId : userTableId , title : notesObj.title , date : new Date() , isDeleted : false }).save()
+}
+
+
+// insert individual notes in a particular todo-note
+exports.insertNoteEntry = function(noteTitleId, individualNotesEntry){
+    return userCollection({ notesID : noteTitleId, content : individualNotesEntry, isChecked : false }).save()
+
 }
 // ----------------------------------------------------------------------

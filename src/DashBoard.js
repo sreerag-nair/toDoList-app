@@ -81,7 +81,7 @@ class DashBoard extends React.Component {
                         <Route exact path='/add-card' render={() => <CardComponent />} />
                         <Route exact path='/profile' component={ProfileComponent} />
                     </Switch>
-                    <Footer style={{ textAlign: 'center' }}>
+                    <Footer style={{ textAlign: 'center', }}>
                         Ant Design ©2018 Copied by SreeraG
       </Footer>
                 </Layout>

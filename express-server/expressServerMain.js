@@ -143,7 +143,7 @@ var notesObjArray = [
 //SIGNIN ROUTE
 app.post('/', function (req, res) {
 
-{
+
     // var name, pwd;
 
     // if (req.body.userNameSignIn && req.body.passwordSignIn) {
@@ -164,7 +164,7 @@ app.post('/', function (req, res) {
     //     res.json({ message: "OK", token: token })
     //     // res.end();
     // }
-}
+
     var form_username, form_pwd;
     // userNameSignIn here is the email id
     if (req.body.emailSignIn && req.body.passwordSignIn) {
@@ -174,8 +174,30 @@ app.post('/', function (req, res) {
 
     //talk to the database and get the promise
     searchUserCreds(form_username, form_pwd).then(x => console.log("z : ", x))
+    console.log("DISPLAYING AFTER!!!!")
 
+})
 
+// adding new note - create operation
+app.post('/addnewnote', function(req, res){
+
+})
+
+//get all the notes of a specific user - read/retrieve operation
+app.get('', function(req, res){
+
+})
+
+// update an existing card - update operation
+app.put('/update/:id', function(req,res){
+
+})
+
+//for deletion operation
+app.post('/deletenote/:id', function (req, res) {
+    res.write("GOT THE HANDLE!");
+    res.write("GOT THE HANDLE!");
+    res.end();
 })
 
 
@@ -206,14 +228,14 @@ app.post('/signup', function (req, res) {
 
 })
 
-//for deletion operation
-app.post('/d', function (req, res) {
-    res.write("GOT THE HANDLE!");
-    res.write("GOT THE HANDLE!");
-    res.end();
-})
 
 
 app.listen(8001, function () {
     console.log("SERVER RUNNING AT 8001");
 });
+
+
+
+// -----------LINKS------------
+
+// https://www.callicoder.com/node-js-express-mongodb-restful-crud-api-tutorial/
