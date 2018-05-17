@@ -1,138 +1,93 @@
 import React, { Component } from 'react';
 import './DashBoard.css';
-import { Breadcrumb, Button, Card, Col, Icon ,Layout, Menu, Row } from 'antd';
+import { Button, Col, Icon, Layout, Menu, Modal, Row } from 'antd';
 import CardComponent from './CardComponent';
+import { Link, Switch, Route } from 'react-router-dom';
 import './DashBoard.css'
-const { Content, Header, Sider, Footer } = Layout
-const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
+import axios from 'axios';
+import CardEditingModalComponent from './CardEditingModalComponent';
+import ProfileComponent from './ProfileComponent';
+import CardPopulatorDashBoardComponent from './CardPopulatorDashBoardComponent';
+const { Content, Sider, Footer } = Layout
 
 
 
-class DashBoard extends React.Component{
+class DashBoard extends React.Component {
+
+    loggingOutFunction = () => {
+        console.log("Logging out function");
+    }
+
 
     state = {
-        collapsed: false,
-      };
-      onCollapse = (collapsed) => {
-        console.log(collapsed);
-        this.setState({ collapsed });
-      }
-      render() {
+        loading: false,
+        visible: false,
+        showModal: false,
+        currentCard: null
+    }
+
+    setCurrentCard = (thisValue) => {
+
+        this.setState({ currentCard: thisValue })
+        this.setState({ showModal: true });
+        console.log('thisVal : ', this.state);
+
+    }
+
+    render() {
+
+        const { loading, visible } = this.state
+
         return (
-          <Layout>
-    <Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }}>
-      <div className="logo" />
-      <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-        <Menu.Item key="1">
-          <Icon type="dashboard" />
-          <span className="nav-text">Dashboard</span>
-        </Menu.Item>
-        <Menu.Item key="2">
-          <Icon type="profile" />
-          <span className="nav-text">Profile Info</span>
-        </Menu.Item>
-        <Menu.Item key="3">
-          <Icon type="logout" />
-          <span className="nav-text">Log out</span>
-        </Menu.Item>
-        
-      </Menu>
-    </Sider>
-    <Layout style={{ marginLeft: 200 }}>
-      <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
-      <div style={{ background: '#ECECEC', padding: '30px' }}>
-                                    <Row gutter={16}>
-                                        <Col span={8}>
-                                            <CardComponent dateVar = {new Date().toString()} />
-                                        </Col>
-                                        <Col span={8}>
-                                            <CardComponent />
-                                        </Col>
-                                        <Col span={8}>
-                                        <CardComponent />
-                                            {/* <Card title="Card title" bordered={false}>Card content</Card> */}
-                                        </Col>
-                                    </Row>
-                            </div>
-                            <div style={{ background: '#ECECEC', padding: '30px' }}>
-                                    <Row gutter={16}>
-                                        <Col span={8}>
-                                            <CardComponent />
-                                        </Col>
-                                        <Col span={8}>
-                                            <CardComponent />
-                                        </Col>
-                                        <Col span={8}>
-                                        <CardComponent />
-                                            {/* <Card title="Card title" bordered={false}>Card content</Card> */}
-                                        </Col>
-                                    </Row>
-                            </div>
-                            <div style={{ background: '#ECECEC', padding: '30px' }}>
-                                    <Row gutter={16}>
-                                        <Col span={8}>
-                                            <CardComponent dateVar = {new Date().toString()} />
-                                        </Col>
-                                        <Col span={8}>
-                                            <CardComponent />
-                                        </Col>
-                                        <Col span={8}>
-                                        <CardComponent />
-                                            {/* <Card title="Card title" bordered={false}>Card content</Card> */}
-                                        </Col>
-                                    </Row>
-                            </div>
-                            <div style={{ background: '#ECECEC', padding: '30px' }}>
-                                    <Row gutter={16}>
-                                        <Col span={8}>
-                                            <CardComponent />
-                                        </Col>
-                                        <Col span={8}>
-                                            <CardComponent />
-                                        </Col>
-                                        <Col span={8}>
-                                        <CardComponent />
-                                            {/* <Card title="Card title" bordered={false}>Card content</Card> */}
-                                        </Col>
-                                    </Row>
-                            </div>
-                            <div style={{ background: '#ECECEC', padding: '30px' }}>
-                                    <Row gutter={16}>
-                                        <Col span={8}>
-                                            <CardComponent dateVar = {new Date().toString()} />
-                                        </Col>
-                                        <Col span={8}>
-                                            <CardComponent />
-                                        </Col>
-                                        <Col span={8}>
-                                        <CardComponent />
-                                            {/* <Card title="Card title" bordered={false}>Card content</Card> */}
-                                        </Col>
-                                    </Row>
-                            </div>
-                            <div style={{ background: '#ECECEC', padding: '30px' }}>
-                                    <Row gutter={16}>
-                                        <Col span={8}>
-                                            <CardComponent />
-                                        </Col>
-                                        <Col span={8}>
-                                            <CardComponent />
-                                        </Col>
-                                        <Col span={8}>
-                                        <CardComponent />
-                                            {/* <Card title="Card title" bordered={false}>Card content</Card> */}
-                                        </Col>
-                                    </Row>
-                            </div>
-      </Content>
-      <Footer style={{ textAlign: 'center' }}>
-        Ant Design ©2016 Created by Ant UED
+
+            <Layout>
+                <Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }}>
+                    <div className="logo" />
+                    <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+                        <Menu.Item key="0">
+                            <Link to={'/addnote'}>
+                                <Icon type="plus" />
+                                <span className="nav-text">Add</span>
+                            </Link>
+                        </Menu.Item>
+                        <Menu.Item key="1">
+                            <Link to={'/dashboard'}>
+                                <Icon type="dashboard" />
+                                <span className="nav-text">Dashboard</span>
+                            </Link>
+                        </Menu.Item>
+                        <Menu.Item key="2" >
+                            <Link to={'/profile'}>
+                                <Icon type="profile" />
+                                <span className="nav-text">Profile Info</span>
+                            </Link>
+                        </Menu.Item>
+                        <Menu.Item key="3">
+                            <Link to={'/logout'}>
+                                {/* <div onClick={ () => this.loggingOutFunction() }> */}
+                                <Icon type="logout" />
+                                <span className="nav-text">Log out</span>
+                                {/* </div> */}
+                            </Link>
+                        </Menu.Item>
+
+                    </Menu>
+                </Sider>
+
+
+                <Layout style={{ marginLeft: 200 }}>
+                    <Switch >
+                        <Route exact path='/dashboard' render={() => <CardPopulatorDashBoardComponent />} />
+                        <Route exact path='/add-card' render={() => <CardComponent />} />
+                        <Route exact path='/profile' component={ProfileComponent} />
+                    </Switch>
+                    <Footer style={{ textAlign: 'center', }}>
+                        Ant Design ©2018 Copied by SreeraG
       </Footer>
-    </Layout>
-  </Layout>
+                </Layout>
+            </Layout>
         );
-      }
+    }
 }
 
 export default DashBoard;
