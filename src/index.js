@@ -16,8 +16,8 @@ ReactDOM.render(
                 
         <Router>
             {/* <CardComponent dateVar = {new Date().toString()} /> */}
-            <DashBoard />
-            {/* <App /> */}
+            {/* <DashBoard /> */}
+            <App />
             {/* <ProfileComponent /> */}
         </Router>
     

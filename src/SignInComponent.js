@@ -24,7 +24,7 @@ class SignInComponent extends React.Component {        //WORKING
         axios.post('http://localhost:8001',
           values,{
             headers : {
-              'jwtTokenHeader' : localStorage.getItem('jwtToken')
+              'Authorization' : "Bearer "+ localStorage.getItem('jwtToken')
             }
           })
           .then((result) => {

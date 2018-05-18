@@ -9,6 +9,7 @@ const user = require('./user');
 
 require('./passport');
 
+
 // app.use(b.urlencoded({extended : true}))
 app.use(b.json())
 app.use('/auth', auth)

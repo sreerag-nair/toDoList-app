@@ -174,7 +174,7 @@ app.post('/', function (req, res) {
 
     //talk to the database and get the promise
     searchUserCreds(form_username, form_pwd).then(x => console.log("z : ", x))
-    console.log("DISPLAYING AFTER!!!!")
+    console.log("req.headers : " , req.headers.authorization)
 
 })
 

@@ -203,7 +203,7 @@ class CardPopulatorDashBoardComponent extends Component {
 
     toReduce(a) {
         // this function breaks the acquired object array into 
-        // an array of array each containing 3 elements
+        // an array of arrays each containing 3 elements
         // The outer array will be of length Math.ceil( recvObj.length() / 3 )
         return a.reduce((rows, value, index) =>
             (index % 3 == 0 ? rows.push([value]) : rows[rows.length - 1].push(value)) && rows, [])
@@ -212,7 +212,7 @@ class CardPopulatorDashBoardComponent extends Component {
     render() {
         return (
             //generate cards
-            <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
+            <Content style={{ /* margin: '24px 16px 0',*/ overflow: 'initial' }}>
 
                 {
                     this.toReduce(this.notesObjArray).map(
