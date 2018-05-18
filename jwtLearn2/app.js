@@ -18,8 +18,8 @@ app.use(passport.initialize())
 
 
 var user = {
-    // email: 'sree',
-    email : 'abc@test.com',
+    email: 'sree',
+    // email : 'abc@test.com',
     password: 'abc'
 }
 
@@ -46,7 +46,6 @@ passport.use(new jwtStrategy(opts, function (jwtpload, done) {
 
     if(user.email == jwtpload.emailId){
         return done(null, user)
-        
     }
         else{
 
@@ -82,7 +81,7 @@ passport.use('testUse', new LocalStrategy({
 app.post('/',
     // console.log("HERE ME OUT!")
     passport.authenticate('jwt'), function (req, res) {
-        console.log("REQUEST.BODY : ", req.headers)
+        console.log("REQUEST.BODY : ", req)
     }
 )
 
