@@ -225,7 +225,7 @@ class CardPopulatorDashBoardComponent extends Component {
                                                 (note, idx) => {
                                                     return (
                                                         <Col key={idx} span={8}>
-                                                            <CardComponent noteObj={note} dateVar={new Date().toString()} />
+                                                            <CardComponent key = {idx} noteObj={note} dateVar={new Date().toString()} />
                                                         </Col>
                                                     )
                                                 }

@@ -7,18 +7,15 @@ import CardComponent from './CardComponent';
 import ProfileComponent from './ProfileComponent';
 import registerServiceWorker from './registerServiceWorker';
 
-import { BrowserRouter as Router } from 'react-router-dom';
-
-var x = 20;
+import { BrowserRouter as Router , Switch} from 'react-router-dom';
 
 
 ReactDOM.render(
                 
         <Router>
-            {/* <CardComponent dateVar = {new Date().toString()} /> */}
             {/* <DashBoard /> */}
-            <App />
-            {/* <ProfileComponent /> */}
+            
+                <App />    
         </Router>
     
     , document.getElementById('root'));

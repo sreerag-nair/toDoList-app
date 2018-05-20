@@ -44,8 +44,8 @@ class CardComponent extends React.Component {
 
                         // console.log("E : ", e)
                             return (
-                                <div>
-                                    <Checkbox key={index} onChange={this.onChange} style={{ textAlign: 'left' }}>
+                                <div key = {index}>
+                                    <Checkbox onChange={this.onChange} style={{ textAlign: 'left' }}>
                                         {e.content}
                                     </Checkbox>
                                 </div>

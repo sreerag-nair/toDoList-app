@@ -36,11 +36,7 @@ class LoginForm extends Component {
 
   state = {
     size : 'default',
-    img :  require('./logo.svg') ,
-    JWTtoken : {
-        message : null,
-        token : null
-    }
+    img :  require('./logo.svg') 
   }
 
   

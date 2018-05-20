@@ -40,7 +40,10 @@ var userTableSchemaHandle = (function () {
 
             userName: String,
             name: String,
-            emailId: String,
+            emailId: {
+                type : String
+                // unique : true     
+            },
             // 'password' will be hashed 
             password: String,
             profilePhoto: Buffer,
@@ -203,7 +206,7 @@ exports.searchUserCreds = function (emailId, password) {
 //insert new users into the database -. sign up functionality
 exports.newUser = function(userCredObject){
     //return the promise object
-    return userCollection(userCredObject).save();
+    return userCollection(userCredObject);
 }
 
 // insert a new note title entry in the notesCollection

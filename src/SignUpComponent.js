@@ -19,7 +19,7 @@ class SignUpComponent extends React.Component{        //WORKING
             values
            )
           .then((result) => {
-            console.log("SIGNUP RESULT : " + result);
+            console.log("SIGNUP RESULT : " , result);
           })
           // console.log('Received values of form: ', values);
         }
