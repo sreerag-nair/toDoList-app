@@ -28,7 +28,7 @@ class CardComponent extends React.Component {
 
     render() {
 
-
+        
         return (
 
             <Card title={this.props.noteObj.title} bordered={false} extra={<Tooltip title={this.props.dateVar}><Icon type="calendar" /></Tooltip>}

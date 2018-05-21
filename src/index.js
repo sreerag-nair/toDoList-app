@@ -9,13 +9,15 @@ import registerServiceWorker from './registerServiceWorker';
 
 import { BrowserRouter as Router , Switch, Link, Route} from 'react-router-dom';
 
-
+// APP ENTRY POINT
 import { Button } from 'antd';
+import AddNoteComponent from './AddNoteComponent';
 
 ReactDOM.render(
     
         <Router>
-            <AppComponent />
+            {/* <AppComponent /> */}
+            <AddNoteComponent />
         </Router>
     
     , document.getElementById('root'));
