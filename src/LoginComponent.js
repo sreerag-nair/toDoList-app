@@ -48,27 +48,27 @@ class LoginComponent extends Component {
 
 
           <Divider>
-            {/* <ButtonGroup> */}
-              {/* <Button type="primary"> */}
-                <h1><Link to={'/'}>Log in</Link></h1>
-              {/* </Button> */}
-              {/* <Button type="primary" onClick={() => alert('Clicked')}> */}
-              <h1><Link to={'/new-user'} > Sign up</Link></h1>
-              {/* </Button> */}
-            {/* </ButtonGroup> */}
+            <ButtonGroup>
+              <Link to={'/'}><Button type="primary">
+                Log in
+              </Button></Link>
+              <Link to={'/new-user'}><Button type="primary">
+                Sign up
+              </Button></Link>
+            </ButtonGroup>
           </Divider>
 
           <Switch>
-          {/* THE SIGN IN ROUTE */}
-          <Route exact path='/' render={() => <SignInComponent size={this.state.size} form={this.props.form}
-            getFieldDecorator={getFieldDecorator} setToken={this.setToken} />} />
+            {/* THE SIGN IN ROUTE */}
+            <Route exact path='/' render={() => <SignInComponent size={this.state.size} form={this.props.form}
+              getFieldDecorator={getFieldDecorator} setToken={this.setToken} />} />
 
-          {/* THE SIGN UP ROUTE */}
-          <Route exact path='/new-user' render={() => <SignUpComponent form={this.props.form} size={this.state.size}
-            getFieldDecorator={getFieldDecorator} />} />
+            {/* THE SIGN UP ROUTE */}
+            <Route exact path='/new-user' render={() => <SignUpComponent form={this.props.form} size={this.state.size}
+              getFieldDecorator={getFieldDecorator} />} />
 
 
-          {/* <Route exact path = '/git-login' render = { () => <GitHubComponent changeProfilePicToGitCat = { this.changeProfilePicToGitCat } /> }/> */}
+            {/* <Route exact path = '/git-login' render = { () => <GitHubComponent changeProfilePicToGitCat = { this.changeProfilePicToGitCat } /> }/> */}
           </Switch>
 
 
