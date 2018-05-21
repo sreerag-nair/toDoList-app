@@ -21,15 +21,15 @@ class App extends Component {
   // }
 
   render() {
-    
+
     return (
 
       <div>
-        {/* <Switch> */}
-        <Route exact path = "/" component = { LoginComponent } />
-        <Route exact path = "/dashboard" component = { DashBoard } />
-          {/* </Switch> */}
-        </div>
+        <Switch>
+          <Route path="/card" component={LoginComponent} />
+          <Route path="/dashboard" component={DashBoard} />
+        </Switch>
+      </div>
     );
   }
 }

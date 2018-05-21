@@ -205,7 +205,7 @@ exports.searchUserCreds = function (emailId, password) {
 
 //insert new users into the database -. sign up functionality
 exports.newUser = function(userCredObject){
-    //return the promise object
+
     return userCollection(userCredObject);
 }
 

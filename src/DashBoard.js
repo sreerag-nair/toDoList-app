@@ -45,7 +45,7 @@ class DashBoard extends React.Component {
                     <div className="logo" />
                     <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
                         <Menu.Item key="0">
-                            <Link to={'/addnote'}>
+                            <Link to={'/dashboard/addnote'}>
                                 <Icon type="plus" />
                                 <span className="nav-text">Add</span>
                             </Link>
@@ -57,7 +57,7 @@ class DashBoard extends React.Component {
                             </Link>
                         </Menu.Item>
                         <Menu.Item key="2" >
-                            <Link to={'/profile'}>
+                            <Link to={'/dashboard/profile'}>
                                 <Icon type="profile" />
                                 <span className="nav-text">Profile Info</span>
                             </Link>
@@ -78,8 +78,8 @@ class DashBoard extends React.Component {
                 <Layout style={{ marginLeft: 200 }}>
                     <Switch >
                         <Route exact path='/dashboard' render={() => <CardPopulatorDashBoardComponent />} />
-                        <Route exact path='/add-card' render={() => <CardComponent />} />
-                        <Route exact path='/profile' component={ProfileComponent} />
+                        <Route exact path='/dashboard/addnote' render={() => <CardComponent />} />
+                        <Route exact path='/dashboard/profile' render ={() => <ProfileComponent />} />
                     </Switch>
                     <Footer style={{ textAlign: 'center', }}>
                         Ant Design ©2018 Copied by SreeraG
@@ -91,3 +91,4 @@ class DashBoard extends React.Component {
 }
 
 export default DashBoard;
+ 
