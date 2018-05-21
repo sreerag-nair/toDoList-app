@@ -26,8 +26,8 @@ class App extends Component {
 
       <div>
         <Switch>
-          <Route path="/card" component={LoginComponent} />
           <Route path="/dashboard" component={DashBoard} />
+          <Route path="/" component={LoginComponent} />
         </Switch>
       </div>
     );
