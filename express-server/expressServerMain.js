@@ -12,15 +12,15 @@ const jwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const cors = require('cors')
 // to import the database functions
-const { create, newUser, read, searchUserCreds } = require('./dbCommunication');
-
+const { create, newUser, read, searchUserCreds, searchUserEmail } = require('./dbCommunication');
+const { generateToken } = require('./tokenGenerator')
 
 
 //THIS IS THE DEFAULT WAY OF PARSING POST REQUEST 
 // app.use(bodyParser.urlencoded({extended : false}))
 
 
-//----------------THE MIDDLEWARE FUNCTIONS BLOCK-----------//
+//----------------THE MIDDLEWARE FUNCTION BLOCK-----------//
 
 //very important as u are receiving a JSON object
 app.use(bodyParser.json())
@@ -35,9 +35,9 @@ app.use(function (req, res, next) {
     next();
 });
 
-//---------------THE MIDDLEWARE FUNCTIONS BLOCK-------------//
+//---------------THE MIDDLEWARE FUNCTION BLOCK-------------//
 
-
+// --------------PASSPORT CUSTOM JWT STRATEGY------------//
 var opts = {}
 // opts.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme('bearer');
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
@@ -45,12 +45,324 @@ opts.secretOrKey = configurationData.secretKey;
 opts.algorithms = 'HS256 ';
 
 // the passport strategy for handling jwt auth requests
-passport.use(new jwtStrategy(opts, function(jwttoken, done){
+passport.use(new jwtStrategy(opts, function (jwttoken, done) {
 
     console.log("TOKEN : ", jwttoken)
     // done(null,"sedfs")
 
 }))
+// --------------PASSPORT CUSTOM JWT STRATEGY---------------//
+
+
+
+//SIGNIN ROUTE
+app.post('/', function (req, res, next) {
+
+    //check if the header has an auth bearer
+    if (!req.headers.authorization) {
+
+        var hashedPassword = crypto.createHash('sha256').update(req.body.passwordSignIn).digest('hex');
+
+        // used promise
+        searchUserCreds(req.body.emailSignIn, hashedPassword)
+            .then(function (doc) {
+                console.log("doc : ", doc)
+            })
+
+        generateToken(req.body.emailSignIn, hashedPassword)
+
+        // 1. authenticate the user
+        // 2.  generate a token with an expiry of 2hrs
+        // 3. return the token( and perhaps save it?) and redirect the user
+    }
+    // next();
+},
+    passport.authenticate('jwt', {
+        session: false
+        , successRedirect: 'http://www.google.com',
+        failureRedirect: '/'
+    }));
+
+
+
+
+
+// adding new note - create operation
+app.post('/addnewnote', function (req, res) { })
+
+
+//get all the notes of a specific user - read/retrieve operation
+app.get('', function (req, res) { })
+
+// update an existing card - update operation
+app.put('/update/:id', function (req, res) { })
+
+//for deletion operation
+app.post('/deletenote/:id', function (req, res) {
+    res.write("GOT THE HANDLE!");
+    res.end();
+})
+
+
+app.post('/logout', function (req, res) {
+    console.log("GOT LOGOUT");
+    res.end();
+})
+
+
+// FOR SIGNING UP  - creating user accounts
+app.post('/signup', function (req, res) {
+
+    // create a user object to push to the db
+    var userCredObject = {}
+    userCredObject.userName = req.body.userNameSignUp
+    userCredObject.password = crypto.createHash('sha256').update(req.body.passwordSignUp).digest('hex');
+    userCredObject.emailId = req.body.emailSignUp
+
+    //PROMISE CHAINING
+    searchUserEmail(userCredObject.emailId)
+        .then(function (doc, err) {
+            // it means that there is no user with the matching emailId in the db
+            if (!doc) {
+                newUser(userCredObject).then(function (doc, err) {
+                    if (err) throw err
+
+                    console.log('doc : ', doc)
+
+                    // :-> redirect the user
+                    // res.redirect('/dashboard')
+
+                    // res.send({ message: "NOONE TO BE FOUND... INSERT SUCCESSFUL" });
+                    res.redirect('/dfgnhjdsujgyh')
+                })
+            }
+            // the emailId exists in the db... throw error or notice
+            else {
+                //send this error in a fancy way back to the app
+                // res.write({ message: 'SOMEONE IS THERE..... INSERT UNSUCCESSFUL' })
+                res.redirect('/xzd')
+                // res.end();
+            }
+        })
+
+})
+
+app.post('/dash', function (req, res) {
+    //auth bearer is absent
+    // if(!res.headers.authorization){
+    //     res.
+    // }   
+    console.log("GOT DASH LINK!")
+    setTimeout(function () {
+        res.send(notesObjArray = [
+            {
+                title: 'Shopping List',
+                list: [
+                    {
+                        content: 'Eggs are required for the body',
+                        isChecked: true
+                    },
+                    {
+                        content: 'Milk is white in color',
+                        isChecked: true
+                    },
+                    {
+                        content: 'Cereals always require milk.',
+                        isChecked: false
+                    },
+                    {
+                        content: 'Bread and butter make a man\'s breakfast',
+                        isChecked: true
+                    },
+                ]
+            },
+            {
+                title: 'Word List',
+                list: [
+                    {
+                        content: 'Cornucopia means too many in number',
+                        isChecked: false
+                    },
+                    {
+                        content: 'Abtruse means to interpret in a specific way',
+                        isChecked: false
+
+                    },
+                    {
+                        content: 'Orwellian is a term associated with a dystopian world',
+                        isChecked: true
+                    },
+                    {
+                        content: 'Obtuse means slow to understand',
+                        isChecked: false
+                    },
+                ]
+            },
+            {
+                title: 'Villain List',
+                list: [
+                    {
+                        content: 'Joker',
+                        isChecked: false
+                    },
+                    {
+                        content: 'Copperhead',
+                        isChecked: true
+                    },
+                    {
+                        content: 'Prometheus',
+                        isChecked: false
+                    },
+                    {
+                        content: 'Harley Quinn',
+                        isChecked: true
+                    }
+                ]
+            },
+            {
+                title: 'Shopping List',
+                list: [
+                    {
+                        content: 'Bring eggs',
+                        isChecked: true
+                    },
+                    {
+                        content: 'DONOT FORGET MILK!',
+                        isChecked: true
+                    },
+                    {
+                        content: 'ALWAYS BRING BREAD!!',
+                        isChecked: false
+                    },
+                    {
+                        content: 'NEVER FORGET THE KID!!',
+                        isChecked: true
+                    },
+                ]
+            },
+            {
+                title: 'Word List',
+                list: [
+                    {
+                        content: 'Cornucopia',
+                        isChecked: false
+                    },
+                    {
+                        content: 'Abtruse',
+                        isChecked: false
+
+                    },
+                    {
+                        content: 'Orwellian',
+                        isChecked: true
+                    },
+                    {
+                        content: 'Obtruse',
+                        isChecked: false
+                    },
+                ]
+            },
+            {
+                title: 'Villain List',
+                list: [
+                    {
+                        content: 'Joker',
+                        isChecked: false
+                    },
+                    {
+                        content: 'Copperhead',
+                        isChecked: true
+                    },
+                    {
+                        content: 'Prometheus',
+                        isChecked: false
+                    },
+                    {
+                        content: 'Harley Quinn',
+                        isChecked: true
+                    }
+                ]
+            },
+            {
+                title: 'Shopping List',
+                list: [
+                    {
+                        content: 'Eggs',
+                        isChecked: true
+                    },
+                    {
+                        content: 'Milk',
+                        isChecked: true
+                    },
+                    {
+                        content: 'Cereals',
+                        isChecked: false
+                    },
+                    {
+                        content: 'Bread',
+                        isChecked: true
+                    },
+                ]
+            },
+            {
+                title: 'Word List',
+                list: [
+                    {
+                        content: 'Cornucopia',
+                        isChecked: false
+                    },
+                    {
+                        content: 'Abtruse',
+                        isChecked: false
+
+                    },
+                    {
+                        content: 'Orwellian',
+                        isChecked: true
+                    },
+                    {
+                        content: 'Obtruse',
+                        isChecked: false
+                    },
+                ]
+            },
+            {
+                title: 'Villain List',
+                list: [
+                    {
+                        content: 'Joker',
+                        isChecked: false
+                    },
+                    {
+                        content: 'Copperhead',
+                        isChecked: true
+                    },
+                    {
+                        content: 'Prometheus',
+                        isChecked: false
+                    },
+                    {
+                        content: 'Harley Quinn',
+                        isChecked: true
+                    }
+                ]
+            }
+        ])
+        res.end();
+    }, 5000)
+})
+
+app.listen(8001, function () {
+    console.log("SERVER RUNNING AT 8001 - expressServerMain.js");
+});
+
+
+
+// -----------LINKS------------
+
+// https://www.callicoder.com/node-js-express-mongodb-restful-crud-api-tutorial/
+
+/*
 
 var users = {
     name: 'Sreerag',
@@ -158,84 +470,5 @@ var notesObjArray = [
         ]
     }
 ]
-
-//SIGNIN ROUTE
-app.post('/', function(req, res, next) {
-
-    //check if the header has an auth bearer
-    if(req.headers.authorization){
-        console.log("PROCEEDING TO CREATE A NEW USER...");
-        console.log(req.body)
-    }
-    // next();
-  } ,
-  passport.authenticate('jwt', { session: false
-    // , successRedirect : 'http://www.google.com', 
-    // failureRedirect : '/' 
-}));
-
-
-
-
-
-// adding new note - create operation
-app.post('/addnewnote', function(req, res){
-
-})
-
-//get all the notes of a specific user - read/retrieve operation
-app.get('', function(req, res){
-
-})
-
-// update an existing card - update operation
-app.put('/update/:id', function(req,res){
-
-})
-
-//for deletion operation
-app.post('/deletenote/:id', function (req, res) {
-    res.write("GOT THE HANDLE!");
-    res.end();
-})
-
-
-app.post('/logout', function (req, res) {
-    console.log("GOT LOGOUT");
-    res.end();
-})
-
-
-// FOR SIGNING UP  - creating user accounts
-app.post('/signup', function (req, res) {
-
-    // create a user object to push to the db
-    var userCredObject = {}
-    userCredObject.userName = req.body.userNameSignUp
-    userCredObject.password = crypto.createHash('sha256').update(req.body.passwordSignUp).digest('hex');
-    userCredObject.emailId = req.body.emailSignUp
-
-    // newUser(userCredObject).then(x => console.log("INSERT SUCCESSFUL").catch(a => console.log("ERROR")))
-
-    //sync function
-    newUser(userCredObject).save(function(err,d){
-        //send this error in a fancy way back to the app
-        if(err) throw err
-
-        
-
-    })
-    res.end();
-})
-
-
-
-app.listen(8001, function () {
-    console.log("SERVER RUNNING AT 8001 - expressServerMain.js");
-});
-
-
-
-// -----------LINKS------------
-
-// https://www.callicoder.com/node-js-express-mongodb-restful-crud-api-tutorial/
+ 
+ */

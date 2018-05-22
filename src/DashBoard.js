@@ -18,6 +18,7 @@ class DashBoard extends React.Component {
         console.log("Logging out function");
     }
 
+    
 
     state = {
         loading: false,

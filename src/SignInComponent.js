@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Icon, Input, Row } from 'antd';
-import { Link , Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import SpinnerClass from './SpinnerClass';
 import axios from 'axios';
 const FormItem = Form.Item;
@@ -13,7 +13,7 @@ class SignInComponent extends React.Component {        //WORKING
 
   state = {
     spinnerVar: false,
-    
+
   };
 
   //error handling
@@ -23,22 +23,22 @@ class SignInComponent extends React.Component {        //WORKING
     this.props.form.validateFields((err, values) => {
       if (!err) {
         axios.post('http://localhost:8001',
-          values,{
-            headers : {
+          values, {
+            headers: {
               // 'Authorization' : "Bearer "+ localStorage.getItem('jwtToken')
-              'Authorization' : "Bearer "+ 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbFNpZ25JbiI6ImFuYWtpbiIsInBhc3N3b3JkU2lnbkluIjoiYWJjIiwianRpIjoiZDFkMDBmYzItN2ZjNC00NzZlLTkxMWQtNGNmNzYxMTdjOGQ5IiwiaWF0IjoxNTI2NzU5NjIzLCJleHAiOjE1MjY3NjMyMjN9.A1K3k8D-3rdrlvV7b8V2T_wHz-TAqiLwYidxTMBbI7I'
+              'Authorization': "Bearer " + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbFNpZ25JbiI6ImFuYWtpbiIsInBhc3N3b3JkU2lnbkluIjoiYWJjIiwianRpIjoiZDFkMDBmYzItN2ZjNC00NzZlLTkxMWQtNGNmNzYxMTdjOGQ5IiwiaWF0IjoxNTI2NzU5NjIzLCJleHAiOjE1MjY3NjMyMjN9.A1K3k8D-3rdrlvV7b8V2T_wHz-TAqiLwYidxTMBbI7I'
             }
           })
           .then((result) => {
 
-            if(!localStorage.jwtToken){
+            if (!localStorage.jwtToken) {
               //save it in localStorage
-            localStorage.setItem('jwtToken', JSON.stringify(result.data));
-            console.log("Saved in localStorage");
-            console.log('jwtToken : ', localStorage.getItem('jwtToken'));
-            this.setState({ spinnerVar: false })
+              localStorage.setItem('jwtToken', JSON.stringify(result.data));
+              console.log("Saved in localStorage");
+              console.log('jwtToken : ', localStorage.getItem('jwtToken'));
+              this.setState({ spinnerVar: false })
             }
-            else{
+            else {
               console.log("IN ELSE")
             }
 

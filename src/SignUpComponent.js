@@ -18,8 +18,9 @@ class SignUpComponent extends React.Component{        //WORKING
           axios.post('http://localhost:8001/signup', 
             values
            )
-          .then((result) => {
+          .then((result, err) => {
             console.log("SIGNUP RESULT : " , result);
+            console.log("Err : ", err)
           })
           // console.log('Received values of form: ', values);
         }
