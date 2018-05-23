@@ -14,16 +14,18 @@ class AddNoteComponent extends Component {
             // { value: 'Third' },
             // { value: 'Fourth' },
             // { value: 'Fifth' }
+
         ]
     }
 
-
+ // {isChecked : , value : },
 
     genElem() {
         // if (this.state.x)
         //     return (<Input style={{ marginBottom: '10px' }}
         //         prefix={<Checkbox style={{ marginRight: '20px' }} />} placeholder="Hello there" />)
-        // 
+        
+        // This line generated boxes as many times as  u click it...
         this.setState({ enteredDataTest: [...this.state.enteredDataTest, { value: 'zDFSsdfg ' }] })
         console.log(this.state)
     }
@@ -34,13 +36,16 @@ class AddNoteComponent extends Component {
 
     render() {
         return (
-            <Card title={this.state.title} style={{ width: '30vw', height: '90vh', background: 'white', textAlign: 'center' }}>
+            <Card title={<div onClick = {() => prompt('title')}>{this.state.title}</div>} style={{ width: '30vw', height: '90vh', background: 'white', textAlign: 'center' }}>
 
-                // input box - only 1 at a time
-                <Row style = {{ marginBottom : '20px' }}>
-                    <Col xs={12} sm={3} md={2} lg={1}><Checkbox /></Col>
-                    <Col xs={6} sm={6} md={8} lg={10}><Input size = 'small' /></Col>
-                    <Col xs={6} sm={3} md={2} lg={1}><Button shape = "circle" size = "small" onClick = { () => alert('clicked') }>+</Button></Col>
+                {/*  input box - only 1 at a time */}
+                <Row style = {{ marginBottom : '20px' }} onChange = { (e) => {
+                    console.log("current Target : " , e.currentTarget)
+                    console.log("target : " , e.target)
+                } } >
+                    <Col idx = '55' xs={12} sm={3} md={2} lg={1}><Checkbox /></Col>
+                    <Col xs={12} sm={9} md={10} lg={11}><Input size = 'small' /></Col>
+                    {/* <Col xs={6} sm={3} md={2} lg={1}><Button shape = "circle" size = "small" onClick = { () => alert('clicked') }>+</Button></Col> */}
                 </Row>
 
 
