@@ -1,204 +1,22 @@
 import React, { Component } from 'react';
 import { Col, Layout, Row } from 'antd';
 import CardComponent from './CardComponent';
+import axios from 'axios';
 const { Content } = Layout;
 
 class CardPopulatorDashBoardComponent extends Component {
 
-    notesObjArray = [
-        {
-            title: 'Shopping List',
-            list: [
-                {
-                    content: 'Eggs are required for the body',
-                    isChecked: true
-                },
-                {
-                    content: 'Milk is white in color',
-                    isChecked: true
-                },
-                {
-                    content: 'Cereals always require milk.',
-                    isChecked: false
-                },
-                {
-                    content: 'Bread and butter make a man\'s breakfast',
-                    isChecked: true
-                },
-            ]
-        },
-        {
-            title: 'Word List',
-            list: [
-                {
-                    content: 'Cornucopia means too many in number',
-                    isChecked: false
-                },
-                {
-                    content: 'Abtruse means to interpret in a specific way',
-                    isChecked: false
+    state = {
+        notesObjArray: null
+    }
 
-                },
-                {
-                    content: 'Orwellian is a term associated with a dystopian world',
-                    isChecked: true
-                },
-                {
-                    content: 'Obtuse means slow to understand',
-                    isChecked: false
-                },
-            ]
-        },
-        {
-            title: 'Villain List',
-            list: [
-                {
-                    content: 'Joker',
-                    isChecked: false
-                },
-                {
-                    content: 'Copperhead',
-                    isChecked: true
-                },
-                {
-                    content: 'Prometheus',
-                    isChecked: false
-                },
-                {
-                    content: 'Harley Quinn',
-                    isChecked: true
-                }
-            ]
-        },
-        {
-            title: 'Shopping List',
-            list: [
-                {
-                    content: 'Bring eggs',
-                    isChecked: true
-                },
-                {
-                    content: 'DONOT FORGET MILK!',
-                    isChecked: true
-                },
-                {
-                    content: 'ALWAYS BRING BREAD!!',
-                    isChecked: false
-                },
-                {
-                    content: 'NEVER FORGET THE KID!!',
-                    isChecked: true
-                },
-            ]
-        },
-        {
-            title: 'Word List',
-            list: [
-                {
-                    content: 'Cornucopia',
-                    isChecked: false
-                },
-                {
-                    content: 'Abtruse',
-                    isChecked: false
-
-                },
-                {
-                    content: 'Orwellian',
-                    isChecked: true
-                },
-                {
-                    content: 'Obtruse',
-                    isChecked: false
-                },
-            ]
-        },
-        {
-            title: 'Villain List',
-            list: [
-                {
-                    content: 'Joker',
-                    isChecked: false
-                },
-                {
-                    content: 'Copperhead',
-                    isChecked: true
-                },
-                {
-                    content: 'Prometheus',
-                    isChecked: false
-                },
-                {
-                    content: 'Harley Quinn',
-                    isChecked: true
-                }
-            ]
-        },
-        {
-            title: 'Shopping List',
-            list: [
-                {
-                    content: 'Eggs',
-                    isChecked: true
-                },
-                {
-                    content: 'Milk',
-                    isChecked: true
-                },
-                {
-                    content: 'Cereals',
-                    isChecked: false
-                },
-                {
-                    content: 'Bread',
-                    isChecked: true
-                },
-            ]
-        },
-        {
-            title: 'Word List',
-            list: [
-                {
-                    content: 'Cornucopia',
-                    isChecked: false
-                },
-                {
-                    content: 'Abtruse',
-                    isChecked: false
-
-                },
-                {
-                    content: 'Orwellian',
-                    isChecked: true
-                },
-                {
-                    content: 'Obtruse',
-                    isChecked: false
-                },
-            ]
-        },
-        {
-            title: 'Villain List',
-            list: [
-                {
-                    content: 'Joker',
-                    isChecked: false
-                },
-                {
-                    content: 'Copperhead',
-                    isChecked: true
-                },
-                {
-                    content: 'Prometheus',
-                    isChecked: false
-                },
-                {
-                    content: 'Harley Quinn',
-                    isChecked: true
-                }
-            ]
-        }
-    ]
+    componentWillMount() {
+        axios.post('http://localhost:8001/dash').
+            then(message => {
+                console.log("CONSOLE DATA : ", message)
+                this.setState({ notesObjArray: message.data })
+            })
+    }
 
 
     toReduce(a) {
@@ -210,35 +28,42 @@ class CardPopulatorDashBoardComponent extends Component {
     }
 
     render() {
-        return (
-            //generate cards
-            <Content style={{ /* margin: '24px 16px 0',*/ overflow: 'initial' }}>
+        if (this.state.notesObjArray) {
+            return (
+                //generate cards
+                <Content style={{ /* margin: '24px 16px 0',*/ overflow: 'initial' }}>
 
-                {
-                    this.toReduce(this.notesObjArray).map(
-                        (collection_of_three_notes, idx) => {
-                            return (
-                                <div key={idx} style={{ background: '#ECECEC', padding: '30px' }}>
-                                    <Row gutter={16}>
-                                        {
-                                            collection_of_three_notes.map(
-                                                (note, idx) => {
-                                                    return (
-                                                        <Col key={idx} span={8}>
-                                                            <CardComponent key = {idx} noteObj={note} dateVar={new Date().toString()} />
-                                                        </Col>
-                                                    )
-                                                }
-                                            )
-                                        }
-                                    </Row>
-                                </div>
-                            )
-                        }
-                    )
-                }
-            </Content>
-        )
+                    {
+                        this.toReduce(this.state.notesObjArray).map(
+                            (collection_of_three_notes, idx) => {
+                                return (
+                                    <div key={idx} style={{ background: '#ECECEC', padding: '30px' }}>
+                                        <Row gutter={16}>
+                                            {
+                                                collection_of_three_notes.map(
+                                                    (note, idx) => {
+                                                        return (
+                                                            <Col key={idx} span={8}>
+                                                                <CardComponent key={idx} noteObj={note} dateVar={new Date().toString()} />
+                                                            </Col>
+                                                        )
+                                                    }
+                                                )
+                                            }
+                                        </Row>
+                                    </div>
+                                )
+                            }
+                        )
+                    }
+                </Content>
+            )
+        }
+        else {
+            return (
+                <h1>NOTHING TO SHOW</h1>
+            )
+        }
     }
 
 }
