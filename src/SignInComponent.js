@@ -33,11 +33,10 @@ class SignInComponent extends React.Component {        //WORKING
             if (!localStorage.JWT_TOKEN) {
 
               //save it in localStorage
-              // localStorage.setItem('JWT_TOKEN', (result.data.token));
               localStorage.setItem('JWT_TOKEN', (result.data.token));
-              // console.log("Saved in localStorage : ", result.data.token);
-              // console.log('JWT_TOKEN : ', localStorage.getItem('JWT_TOKEN'));
-              this.setState({ spinnerVar: false })
+              console.log("Saved in localStorage ");
+              this.setState({ spinnerVar: false });
+              <Redirect to = '/dashboard'/>
             }
           })
         // console.log('Received values of form: ', values);

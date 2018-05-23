@@ -22,9 +22,8 @@ const { generateToken } = require('./tokenGenerator')
 //----------------THE MIDDLEWARE FUNCTION BLOCK-----------//
 
 //very important as u are receiving a JSON object
-app.options('*', cors())
 app.use(bodyParser.json())
-app.use(cors())
+app.use(cors({ origin: 'http://localhost:3000' }))
 app.use(passport.initialize())
 
 app.use(function (req, res, next) {
@@ -49,10 +48,10 @@ passport.use(new jwtStrategy(opts, function (jwttoken, done) {
 
     // console.log("TOKEN : ", jwttoken)
 
-    if( !(jwttoken.emailId = 'sree@test.com'))
-    done(null,jwttoken,"sedfs")
+    if (!(jwttoken.emailId = 'sree@test.com'))
+        done(null, jwttoken, "sedfs")
     else
-    done(null,false,{message : "this is a problem"})
+        done(null, false, { message: "this is a problem" })
 
 }))
 // --------------PASSPORT CUSTOM JWT STRATEGY---------------//
@@ -66,34 +65,33 @@ app.post('/', function (req, res, next) {
     if (req.headers.authorization.includes('null')) {
 
         var hashedPassword = crypto.createHash('sha256').update(req.body.passwordSignIn).digest('hex');
-        // console.log('hashedpassword : ', hashedPassword)
         // used promise
         searchUserCreds(req.body.emailSignIn, hashedPassword)
             .then(function (doc, err) {
                 // console.log("doc : ", doc)
-                if(doc){ //got something , so generate token and send it to the user
-                   var token = generateToken(req.body.emailSignIn, hashedPassword)
-                    res.json({token : token})
+                if (doc) { //got something , so generate token and send it to the user
+                    var token = generateToken(req.body.emailSignIn, hashedPassword)
+                    res.json({ redirect : '/dashboard', token: token })
                 }
             })
 
         // 1. authenticate the user
-        // 2.  generate a token with an expiry of 2hrs
+        // 2. generate a token with an expiry of 2hrs
         // 3. return the token( and perhaps save it?) and redirect the user
     }
-    else{
+    else {
         console.log("HEADER FOUND")
         //decrypt the token
         // console.log("JWT DECRYPTED : ", req.headers.authorization.slice(7))
-        console.log(jwt.verify(req.headers.authorization.slice(7),configurationData.secretKey))
+        console.log(jwt.verify(req.headers.authorization.slice(7), configurationData.secretKey))
         next();
     }
-    
+
 },
     passport.authenticate('jwt', {
         session: false
-        , successRedirect: 'http://www.google.com',
-        failureRedirect: 'http://localhost:3000/dashboard'
+        // , successRedirect: 'http://www.google.com',
+        // failureRedirect: 'http://localhost:3000/dashboard'
     }));
 
 
