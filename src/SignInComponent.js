@@ -25,23 +25,19 @@ class SignInComponent extends React.Component {        //WORKING
         axios.post('http://localhost:8001',
           values, {
             headers: {
-              // 'Authorization' : "Bearer "+ localStorage.getItem('jwtToken')
-              'Authorization': "Bearer " + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbFNpZ25JbiI6ImFuYWtpbiIsInBhc3N3b3JkU2lnbkluIjoiYWJjIiwianRpIjoiZDFkMDBmYzItN2ZjNC00NzZlLTkxMWQtNGNmNzYxMTdjOGQ5IiwiaWF0IjoxNTI2NzU5NjIzLCJleHAiOjE1MjY3NjMyMjN9.A1K3k8D-3rdrlvV7b8V2T_wHz-TAqiLwYidxTMBbI7I'
+              "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
             }
           })
           .then((result) => {
 
-            if (!localStorage.jwtToken) {
-              //save it in localStorage
-              localStorage.setItem('jwtToken', JSON.stringify(result.data));
-              console.log("Saved in localStorage");
-              console.log('jwtToken : ', localStorage.getItem('jwtToken'));
-              this.setState({ spinnerVar: false })
-            }
-            else {
-              console.log("IN ELSE")
-            }
+            if (!localStorage.JWT_TOKEN) {
 
+              //save it in localStorage
+              localStorage.setItem('JWT_TOKEN', (result.data.token));
+              console.log("Saved in localStorage ");
+              this.setState({ spinnerVar: false });
+              <Redirect to = '/dashboard'/>
+            }
           })
         // console.log('Received values of form: ', values);
       }

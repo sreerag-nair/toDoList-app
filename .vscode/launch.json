@@ -9,7 +9,7 @@
             "type": "node",
             "request": "launch",
             "name": "start server",
-            "program": "${workspaceFolder}/jwtLearn2/app.js"
+            "program": "${workspaceFolder}/express-server/expressServerMain.js"
         },
         {
             "type": "node",
