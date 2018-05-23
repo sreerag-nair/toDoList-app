@@ -40,7 +40,7 @@ class AddNoteComponent extends Component {
         console.log( '---------------------START------------------------' )
         console.log( 'e.currentTarget : ', e.currentTarget )
         console.log( 'e.target : ', e.target.parentElement )
-        console.log( '----------------------END----------------------' )
+        console.log( '----------------------END-------------------------' )
     }
 
     
