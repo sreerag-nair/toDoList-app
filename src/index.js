@@ -16,8 +16,8 @@ import AddNoteComponent from './AddNoteComponent';
 ReactDOM.render(
     
         <Router>
-            <AppComponent />
-            {/* <AddNoteComponent /> */}
+            {/* <AppComponent /> */}
+            <AddNoteComponent />
         </Router>
     
     , document.getElementById('root'));

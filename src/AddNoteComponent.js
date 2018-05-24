@@ -3,12 +3,14 @@ import { Button, Card, Checkbox, Divider, Icon, Input, } from 'antd';
 import { Col, Row } from 'react-flexbox-grid'
 import axios from 'axios';
 
+const CheckboxGroup = Checkbox.Group;
+
 class AddNoteComponent extends Component {
 
 
-    submitNote() {
+    submitNote(noteObj) {
 
-        axios.post('http://localhost:8001/addnewnote',       
+        axios.post('http://localhost:8001/addnewnote',
             noteObj,
             {
                 headers: {
@@ -22,13 +24,11 @@ class AddNoteComponent extends Component {
     state = {
         title: "Hello There",
         isAddInputBoxVisible: false,
+
         notesCollectionObject: [
-            { isChecked: false, value: 'First' },
-            { isChecked: false, value: 'Second' },
-            { isChecked: false, value: 'Third' },
-            { isChecked: false, value: 'Fourth' },
 
         ],
+
         newValueToAdd: ''
     }
 
@@ -40,22 +40,24 @@ class AddNoteComponent extends Component {
         //         prefix={<Checkbox style={{ marginRight: '20px' }} />} placeholder="Hello there" />)
 
         // This line generated boxes as many times as  u click it...
-        this.setState({ enteredDataTest: [...this.state.enteredDataTest, { value: 'zDFSsdfg ' }] })
+        // this.setState({ enteredDataTest: [...this.state.enteredDataTest, { value: 'zDFSsdfg ' }] })
+
         console.log(this.state)
     }
 
     tbChanged(e) {
         // console.log("Added! e : ", e.target.value)
         this.setState({ newValueToAdd: e.target.value })
+
     }
 
     addNewNoteEntry(e) {
-        this.setState({ notesCollectionObject: [...this.state.notesCollectionObject, { isChecked: false, value: this.state.newValueToAdd }] })
+        this.setState({ notesCollectionObject: [...this.state.notesCollectionObject, { label: this.state.newValueToAdd, isChecked: false }] })
         // this.setState({newValueToAdd : ''})
-        console.log('---------------------START------------------------')
-        console.log('e.currentTarget : ', e.currentTarget)
-        console.log('e.target : ', e.target.parentElement)
-        console.log('----------------------END-------------------------')
+        // console.log('---------------------START------------------------')
+        // console.log('e.currentTarget : ', e.currentTarget)
+        // console.log('e.target : ', e.target.parentElement)
+        // console.log('----------------------END-------------------------')
     }
 
 
@@ -83,6 +85,13 @@ class AddNoteComponent extends Component {
 
     }
 
+    toDeleteEntry(i, event){
+        console.log("i : ", i)
+        var slicedArray = this.state.notesCollectionObject.slice()
+        
+        
+    }
+
     render() {
         return (
             <Card title={<div onClick={() => prompt('title')}>{this.state.title}</div>} style={{ width: '30vw', height: '90vh', background: 'white', }}>
@@ -94,9 +103,8 @@ class AddNoteComponent extends Component {
                                 console.log("current Target : ", e.currentTarget)
                                 console.log("target : ", e.target)
                             }} >
-                                <Col xs={24} sm={12} md={12} lg={12}><Checkbox onChange={this.onChecked}> {entry.value} </Checkbox> </Col>
-                                {/* <Col xs={12} sm={9} md={10} lg={11}><Input size = 'small' /></Col> */}
-                                {/* <Col xs={6} sm={3} md={2} lg={1}><Button shape = "circle" size = "small" onClick = { () => alert('clicked') }>+</Button></Col> */}
+                                <Col xs={22} sm={11} md={11} lg={11}><Checkbox onChange={this.onChecked}> {entry.label} </Checkbox> </Col>
+                                <Col xs={2} sm={1} md={1} lg={1}><Button onClick = { this.toDeleteEntry.bind(this,idx) } shape="circle"><Icon type='close' /></Button></Col>
                             </Row>
                         )
                     })
@@ -105,7 +113,7 @@ class AddNoteComponent extends Component {
                 {/*  input box - only 1 at a time */}
                 {this.genInputBox()}
 
-                <Button onClick={() => this.setState({ isAddInputBoxVisible: true })} style={{ width: '100%' }} type="primary">ADD</Button>
+                <Button onClick={() => this.setState({ isAddInputBoxVisible: !this.state.isAddInputBoxVisible })} style={{ width: '100%' }} type="primary">ADD</Button>
             </Card>
         )
     }
