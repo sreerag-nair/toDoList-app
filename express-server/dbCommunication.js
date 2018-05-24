@@ -46,9 +46,7 @@ var userTableSchemaHandle = (function () {
             },
             // 'password' will be hashed 
             password: String,
-            profilePhoto: Buffer,
-            // the token of the user
-            key: String
+            profilePhoto: Buffer
 
         })
         // console.log("utS : " , userTableSchemaHandle)
@@ -221,8 +219,8 @@ exports.insertNoteTitle = function (userTableId, notesObj) {
 
 
 // insert individual notes in a particular todo-note
-exports.insertNoteEntry = function (noteTitleId, individualNotesEntry) {
-    return userCollection({ notesID: noteTitleId, content: individualNotesEntry, isChecked: false }).save()
+exports.insertNoteEntry = function (noteTitleId, individualNotesEntry, checkBoxStatus) {
+    return contentCollection({ notesID: noteTitleId, content: individualNotesEntry, isChecked: checkBoxStatus }).save()
 
 }
 // ----------------------------------------------------------------------

@@ -11,7 +11,12 @@ class CardPopulatorDashBoardComponent extends Component {
     }
 
     componentWillMount() {
-        axios.post('http://localhost:8001/dash').
+        axios.post('http://localhost:8001/dashboard',{},
+            {
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
+                }
+            }).
             then(message => {
                 console.log("CONSOLE DATA : ", message)
                 this.setState({ notesObjArray: message.data })

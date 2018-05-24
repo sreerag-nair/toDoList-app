@@ -33,7 +33,7 @@ class SignInComponent extends React.Component {        //WORKING
             // if (!localStorage.JWT_TOKEN) {
 
               //save it in localStorage
-              // localStorage.setItem('JWT_TOKEN', (result.data.token));
+              localStorage.setItem('JWT_TOKEN', (result.data.token));
               console.log("Saved in localStorage ");
               this.setState({ spinnerVar: false, redirectVar : true });
               
@@ -100,9 +100,9 @@ class SignInComponent extends React.Component {        //WORKING
             {mo}
           </div>
         </FormItem>
-        <FormItem>
+        {/* <FormItem> */}
         {this.displayRedirect()}
-        </FormItem>
+        {/* </FormItem> */}
 
       </Form>
     )
@@ -116,8 +116,8 @@ export default SignInComponent;
 
 //****************************************************************/
 //SINGLETON DESIGN PATTERN
-let instance = new SignInComponent()
-export function getSingleInstance() {
-  return instance
-}
+// let instance = new SignInComponent()
+// export function getSingleInstance() {
+//   return instance
+// }
   //****************************************************************/

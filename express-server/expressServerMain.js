@@ -11,7 +11,7 @@ const jwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const cors = require('cors')
 // to import the database functions
-const { create, newUser, read, searchUserCreds, searchUserEmail } = require('./dbCommunication');
+const { create, insertNoteTitle, insertNoteEntry, newUser, read, searchUserCreds, searchUserEmail } = require('./dbCommunication');
 const { generateToken } = require('./tokenGenerator')
 
 
@@ -51,7 +51,7 @@ passport.use(new jwtStrategy(opts, function (jwttoken, done) {
     if (!(jwttoken.emailId = 'sree@test.com'))
         done(null, jwttoken, "sedfs")
     else
-        done(null, false, { message: "this is a problem" })
+        done({ message: "this is an error" }, null, { message: "this is a message" })
 
 }))
 // --------------PASSPORT CUSTOM JWT STRATEGY---------------//
@@ -61,7 +61,7 @@ passport.use(new jwtStrategy(opts, function (jwttoken, done) {
 //SIGNIN ROUTE
 app.post('/', function (req, res, next) {
 
-    //check if the header has an auth bearer
+    //check if the header has an auth bearer token value
     if (req.headers.authorization.includes('null')) {
 
         var hashedPassword = crypto.createHash('sha256').update(req.body.passwordSignIn).digest('hex');
@@ -71,7 +71,7 @@ app.post('/', function (req, res, next) {
                 // console.log("doc : ", doc)
                 if (doc) { //got something , so generate token and send it to the user
                     var token = generateToken(req.body.emailSignIn, hashedPassword)
-                    res.json({ redirect : '/dashboard', token: token })
+                    res.json({ redirect: '/dashboard', token: token })
                 }
             })
 
@@ -96,7 +96,29 @@ app.post('/', function (req, res, next) {
 
 
 // adding new note - create operation
-app.post('/addnewnote', function (req, res) { })
+app.post('/addnewnote', function (req, res) {
+    // authenticate the token and decrypt it to get the email id
+
+    var emailIdfromToken = 'abc@test.com'
+    var passwordFromToken = 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3'
+
+    searchUserCreds(emailIdfromToken, passwordFromToken)
+        .then(function (doc, err) {
+            if (err) throw err
+
+            insertNoteTitle(doc._id, req.body.title)
+                .then(function (doc, err) {   //returns the inserted document
+
+                    //loop over the entries array and insert each one by one
+                    req.body.entries.map(
+                        (entryObj,idx) => {
+                            insertNoteEntry(doc._id, entryObj.content , entryObj.isChecked )
+                        }
+                    )
+
+                })
+        })
+})
 
 
 //get all the notes of a specific user - read/retrieve operation
@@ -114,7 +136,7 @@ app.post('/deletenote/:id', function (req, res) {
 
 app.post('/logout', function (req, res) {
     console.log("GOT LOGOUT");
-    res.end();
+    res.json({ redirect: '/', message: 'OK' });
 })
 
 
@@ -138,7 +160,6 @@ app.post('/signup', function (req, res) {
                     console.log('doc : ', doc)
 
                     // :-> redirect the user
-                    // res.redirect('/dashboard')
 
                     // res.send({ message: "NOONE TO BE FOUND... INSERT SUCCESSFUL" });
                 })
@@ -153,12 +174,12 @@ app.post('/signup', function (req, res) {
 
 })
 
-app.post('/dash', function (req, res) {
+app.post('/dashboard', function (req, res) {
     //auth bearer is absent
     // if(!res.headers.authorization){
     //     res.
     // }   
-    console.log("GOT DASH LINK!")
+    console.log("AUTH BEARER : ", req.headers.authorization)
     setTimeout(function () {
         res.send(notesObjArray = [
             {

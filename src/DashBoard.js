@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './DashBoard.css';
 import { Button, Col, Icon, Layout, Menu, Modal, Row } from 'antd';
-import { Link, Switch, Route } from 'react-router-dom';
+import { Link, Switch, Route, Redirect } from 'react-router-dom';
 import './DashBoard.css'
 import axios from 'axios';
 import CardEditingModalComponent from './CardEditingModalComponent';
@@ -14,17 +14,20 @@ const { Content, Sider, Footer } = Layout
 
 class DashBoard extends React.Component {
 
-    loggingOutFunction = () => {
+    loggingOutFunction() {
         console.log("Logging out function");
+        localStorage.removeItem('JWT_TOKEN')
+        this.setState({ redirectVar: true })
+        console.log("this.state : ", this.state)
     }
 
-    
 
     state = {
         loading: false,
         visible: false,
         showModal: false,
-        currentCard: null
+        currentCard: null,
+        redirectVar: false
     }
 
     setCurrentCard = (thisValue) => {
@@ -32,6 +35,14 @@ class DashBoard extends React.Component {
         this.setState({ currentCard: thisValue })
         this.setState({ showModal: true });
         console.log('thisVal : ', this.state);
+
+    }
+
+    redirectToHomePage() {
+        if (this.state.redirectVar) {
+            // alert('PRESSED')
+            return <Redirect to='/' />
+        }
 
     }
 
@@ -64,32 +75,31 @@ class DashBoard extends React.Component {
                             </Link>
                         </Menu.Item>
                         <Menu.Item key="3">
-                            <Link to={'/logout'}>
-                                {/* <div onClick={ () => this.loggingOutFunction() }> */}
+                            <div onClick={this.loggingOutFunction.bind(this)} >
                                 <Icon type="logout" />
                                 <span className="nav-text">Log out</span>
-                                {/* </div> */}
-                            </Link>
+                            </div>
                         </Menu.Item>
 
                     </Menu>
                 </Sider>
 
-
+                {this.redirectToHomePage()}
                 <Layout style={{ marginLeft: 200 }}>
                     <Switch >
                         <Route exact path='/dashboard' render={() => <CardPopulatorDashBoardComponent />} />
                         <Route exact path='/dashboard/addnote' render={() => <AddNoteComponent />} />
-                        <Route exact path='/dashboard/profile' render ={() => <ProfileComponent />} />
+                        <Route exact path='/dashboard/profile' render={() => <ProfileComponent />} />
                     </Switch>
                     <Footer style={{ textAlign: 'center', }}>
                         Ant Design ©2018 Copied by SreeraG
       </Footer>
                 </Layout>
+
             </Layout>
+
         );
     }
 }
 
 export default DashBoard;
- 
