@@ -18,9 +18,9 @@ app.use(passport.initialize())
 
 
 var user = {
-    email: 'sree',
-    // email : 'abc@test.com',
-    password: 'abc'
+    // email: 'sree',
+    email: 'sree@test.com',
+    password: 'f6df658491720165c5d6c2afb1d0b75030eb807d323c7a1842a31c5794086c8d'
 }
 
 
@@ -38,18 +38,20 @@ opts.secretOrKey = '4F7B5BF51329D01AB51430575797C66B';
 opts.algorithms = 'HS256 ';
 
 passport.use(new jwtStrategy(opts, function (jwtpload, done) {
-    
-    
+
+
     console.log("JWT DATA : ", jwtpload)
 
-    if(user.email == jwtpload.emailId){
+    if (user.email == jwtpload.emailId) {
+        console.log("VALID")
         return done(null, user)
     }
-        else{
+    else {
+        console.log("INVALID")
+        return done({ message: "Hello there" })
+        // return done(null, false, { message: "Hello there" })
+    }
 
-        return done(null,false,{message : "Hello there"})
-        }
-    
 
 
 }))
@@ -76,12 +78,20 @@ passport.use('testUse', new LocalStrategy({
 }))
 
 
-app.post('/',
-    // console.log("HERE ME OUT!")
-    passport.authenticate('jwt'), function (req, res) {
-        console.log("REQUEST.BODY : ", req)
-    }
-)
+app.post('/', function (req, res, next) {
+    passport.authenticate('jwt', {
+        session: false
+    }, function (err, user, info) {
+
+        if (err) {      // err is set if any exception occurs
+            return req.json({ error: err });
+        }
+        if (user)    // the user object is set to false if the authentication fails
+            return res.json({ message: "SUCCESS" });
+        else
+            return res.json({ message: "FAILURE" });
+    })(req, res, next);
+})
 
 
 app.post('/failure', function (req, res) {
@@ -92,8 +102,40 @@ app.listen(8005, function () {
 })
 
 /*
-, {
-    successRedirect: '/success',
-    failureRedirect: '/failure'
-}
+//CUSTOM CALLBACK
+app.post('/', function (req, res, next) {
+    passport.authenticate('jwt', {
+        session: false
+    }, function (err, user, info) {
+
+        if (err) {      // err is set if any exception occurs
+            return req.json({ error: err });
+        }
+        if (user)    // the user object is set to false if the authentication fails
+            return res.json({ message: "SUCCESS" });
+        else
+            return res.json({ message: "FAILURE" });
+    })(req, res, next);
+})
 */
+
+
+/*
+//WORKING STOCK AUTHENTICATION
+app.post('/',
+    passport.authenticate('jwt', {
+        session : false,
+    }), function (req, res) {
+        console.log("REQUEST.BODY : ", req.body)
+    }
+)
+
+*/
+
+
+// LINKS -----------------------------
+// http://www.passportjs.org/docs/downloads/html/   - custom callback section
+// 
+// 
+// 
+// ----------------------------
