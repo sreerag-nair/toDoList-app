@@ -5,9 +5,6 @@ import { Route, Switch } from 'react-router-dom';
 import DashBoard from './DashBoard';
 import ProfileComponent from './ProfileComponent';
 
-const z = Route.Router
-
-
 
 
 class App extends Component {

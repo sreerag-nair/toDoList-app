@@ -13,7 +13,7 @@ class SignInComponent extends React.Component {        //WORKING
 
   state = {
     spinnerVar: false,
-
+    redirectVar : false,
   };
 
   //error handling
@@ -30,18 +30,24 @@ class SignInComponent extends React.Component {        //WORKING
           })
           .then((result) => {
 
-            if (!localStorage.JWT_TOKEN) {
+            // if (!localStorage.JWT_TOKEN) {
 
               //save it in localStorage
-              localStorage.setItem('JWT_TOKEN', (result.data.token));
+              // localStorage.setItem('JWT_TOKEN', (result.data.token));
               console.log("Saved in localStorage ");
-              this.setState({ spinnerVar: false });
-              <Redirect to = '/dashboard'/>
-            }
+              this.setState({ spinnerVar: false, redirectVar : true });
+              
+            // }
           })
         // console.log('Received values of form: ', values);
       }
     });
+  }
+
+  displayRedirect(){
+    if(this.state.redirectVar){
+      return <Redirect to = '/dashboard' />
+    }
   }
 
   render() {
@@ -55,6 +61,7 @@ class SignInComponent extends React.Component {        //WORKING
     const getFieldDecorator = this.props.getFieldDecorator
 
     return (
+      
       <Form onSubmit={this.handleSubmit} className="login-form" >
 
         {/* USERNAME INPUT FIELD */}
@@ -92,6 +99,9 @@ class SignInComponent extends React.Component {        //WORKING
           <div>
             {mo}
           </div>
+        </FormItem>
+        <FormItem>
+        {this.displayRedirect()}
         </FormItem>
 
       </Form>

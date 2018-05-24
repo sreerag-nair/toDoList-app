@@ -84,7 +84,7 @@ app.post('/', function (req, res, next) {
         //decrypt the token
         // console.log("JWT DECRYPTED : ", req.headers.authorization.slice(7))
         console.log(jwt.verify(req.headers.authorization.slice(7), configurationData.secretKey))
-        next();
+        // next();
     }
 
 },
@@ -141,14 +141,12 @@ app.post('/signup', function (req, res) {
                     // res.redirect('/dashboard')
 
                     // res.send({ message: "NOONE TO BE FOUND... INSERT SUCCESSFUL" });
-                    res.redirect('/dfgnhjdsujgyh')
                 })
             }
             // the emailId exists in the db... throw error or notice
             else {
                 //send this error in a fancy way back to the app
                 // res.write({ message: 'SOMEONE IS THERE..... INSERT UNSUCCESSFUL' })
-                res.redirect('/xzd')
                 // res.end();
             }
         })
