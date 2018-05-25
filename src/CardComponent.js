@@ -42,7 +42,6 @@ class CardComponent extends React.Component {
 
                     {this.props.noteObj.list.map((e, index) => {
 
-                        // console.log("E : ", e)
                             return (
                                 <div key = {index}>
                                     <Checkbox onChange={this.onChange} style={{ textAlign: 'left' }}>
@@ -50,12 +49,7 @@ class CardComponent extends React.Component {
                                     </Checkbox>
                                 </div>
                             )
-                        
-
                     })}
-
-
-
                 </div>
             </Card>
         );

@@ -12,7 +12,7 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 const cors = require('cors')
 // to import the database functions
 const { create, insertNoteTitle, insertNoteEntry, newUser, read, searchUserCreds, searchUserEmail } = require('./dbCommunication');
-const { generateToken } = require('./tokenGenerator')
+const { generateToken } = require('./tokenGenerator');
 
 
 //THIS IS THE DEFAULT WAY OF PARSING POST REQUEST 
