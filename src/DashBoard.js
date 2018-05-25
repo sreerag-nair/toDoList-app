@@ -8,7 +8,7 @@ import CardEditingModalComponent from './CardEditingModalComponent';
 import ProfileComponent from './ProfileComponent';
 import CardPopulatorDashBoardComponent from './CardPopulatorDashBoardComponent';
 import AddNoteComponent from './AddNoteComponent';
-const { Content, Sider, Footer } = Layout
+const { Content, Sider, Footer, Header } = Layout
 
 
 
@@ -86,11 +86,14 @@ class DashBoard extends React.Component {
 
                 {this.redirectToHomePage()}
                 <Layout style={{ marginLeft: 200 }}>
+                {/* <Header></Header> */}
+                    <Content>
                     <Switch >
                         <Route exact path='/dashboard' render={() => <CardPopulatorDashBoardComponent />} />
                         <Route exact path='/dashboard/addnote' render={() => <AddNoteComponent />} />
                         <Route exact path='/dashboard/profile' render={() => <ProfileComponent />} />
                     </Switch>
+                        </Content>
                     <Footer style={{ textAlign: 'center', }}>
                         Ant Design ©2018 Copied by SreeraG
       </Footer>

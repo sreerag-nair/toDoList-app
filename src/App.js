@@ -4,6 +4,7 @@ import LoginComponent from './LoginComponent';
 import { Route, Switch } from 'react-router-dom';
 import DashBoard from './DashBoard';
 import ProfileComponent from './ProfileComponent';
+import AddNoteComponent from './AddNoteComponent';
 
 
 

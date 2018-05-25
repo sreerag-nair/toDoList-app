@@ -99,25 +99,27 @@ app.post('/', function (req, res, next) {
 app.post('/addnewnote', function (req, res) {
     // authenticate the token and decrypt it to get the email id
 
-    var emailIdfromToken = 'abc@test.com'
-    var passwordFromToken = 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3'
+    console.log(req.body)
 
-    searchUserCreds(emailIdfromToken, passwordFromToken)
-        .then(function (doc, err) {
-            if (err) throw err
+    // var emailIdfromToken = 'abc@test.com'
+    // var passwordFromToken = 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3'
 
-            insertNoteTitle(doc._id, req.body.title)
-                .then(function (doc, err) {   //returns the inserted document
+    // searchUserCreds(emailIdfromToken, passwordFromToken)
+    //     .then(function (doc, err) {
+    //         if (err) throw err
 
-                    //loop over the entries array and insert each one by one
-                    req.body.entries.map(
-                        (entryObj,idx) => {
-                            insertNoteEntry(doc._id, entryObj.content , entryObj.isChecked )
-                        }
-                    )
+    //         insertNoteTitle(doc._id, req.body.title)
+    //             .then(function (doc, err) {   //returns the inserted document
 
-                })
-        })
+    //                 //loop over the entries array and insert each one by one
+    //                 req.body.entries.map(
+    //                     (entryObj,idx) => {
+    //                         insertNoteEntry(doc._id, entryObj.content , entryObj.isChecked )
+    //                     }
+    //                 )
+
+    //             })
+    //     })
 })
 
 
