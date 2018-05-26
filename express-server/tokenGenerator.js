@@ -18,6 +18,6 @@ exports.generateToken = function (emailId, password) {
 
     var token = jwt.sign(dataObj, opts.secretOrKey, { expiresIn: '2h' })
 
-    console.log("TOKEN GENERATED : ", token)
+    // console.log("TOKEN GENERATED : ", token)
     return token;
 }

@@ -30,7 +30,6 @@ app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     res.header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE, OPTIONS')
-    // res.header('Content-Type','application/x-www-form-urlencoded','text/html')
     next();
 });
 
@@ -45,14 +44,22 @@ opts.algorithms = 'HS256 ';
 
 // the passport strategy for handling jwt auth requests
 passport.use(new jwtStrategy(opts, function (jwttoken, done) {
-
-    // console.log("TOKEN : ", jwttoken)
-
-    if (!(jwttoken.emailId = 'sree@test.com'))
-        done(null, jwttoken, "sedfs")
-    else
-        done({ message: "this is an error" }, null, { message: "this is a message" })
-
+    
+    console.log("TOKEN : ", jwttoken)
+    
+    //make some db calls
+    searchUserCreds(jwttoken.emailSignIn, jwttoken.passwordSignIn)
+    .then(function(doc, err){
+        if(doc){
+            // valid case
+            console.log('jhnjygjn')
+            done(null, doc)
+        }
+        else{
+            done(err)
+        }
+    })
+    
 }))
 // --------------PASSPORT CUSTOM JWT STRATEGY---------------//
 
@@ -60,64 +67,108 @@ passport.use(new jwtStrategy(opts, function (jwttoken, done) {
 
 //SIGNIN ROUTE
 app.post('/', function (req, res, next) {
-
-    //check if the header has an auth bearer token value
-    if (req.headers.authorization.includes('null')) {
-
-        var hashedPassword = crypto.createHash('sha256').update(req.body.passwordSignIn).digest('hex');
-        // used promise
-        searchUserCreds(req.body.emailSignIn, hashedPassword)
+    
+    passport.authenticate('jwt', {
+        session : false
+    }, function(err, user, info){
+        
+        if(user){   // it means both the token and user are valid
+            res.status(200).send();
+            // return;
+        }
+        
+        if(info && (Object.keys(req.body) != 0)){    //it means there is no token in the app and something is in the body;
+            var hashedPassword = crypto.createHash('sha256').update(req.body.passwordSignIn).digest('hex');
+            // used promise
+            searchUserCreds(req.body.emailSignIn, 'f0e4c2f76c58916ec258f246851bea091d14d4247a2fc3e18694461b1816e13b')
             .then(function (doc, err) {
                 // console.log("doc : ", doc)
                 if (doc) { //got something , so generate token and send it to the user
-                    var token = generateToken(req.body.emailSignIn, hashedPassword)
-                    res.json({ redirect: '/dashboard', token: token })
+                    var token = generateToken(req.body.emailSignIn, 'f0e4c2f76c58916ec258f246851bea091d14d4247a2fc3e18694461b1816e13b')
+                    res.status(200).json({ token: token })
+                }else{
+                    // there is no such user in the db, send error
+                    res.status(404).json({userError : "Invalid email id or password"})
                 }
             })
+        }
+    })(req, res, next);
+});
 
-        // 1. authenticate the user
-        // 2. generate a token with an expiry of 2hrs
-        // 3. return the token( and perhaps save it?) and redirect the user
-    }
-    else {
-        console.log("HEADER FOUND")
-        //decrypt the token
-        // console.log("JWT DECRYPTED : ", req.headers.authorization.slice(7))
-        console.log(jwt.verify(req.headers.authorization.slice(7), configurationData.secretKey))
-        // next();
-    }
 
-},
+// FOR SIGNING UP  - creating user accounts
+app.post('/signup', function (req, res, next) {
+    
     passport.authenticate('jwt', {
-        session: false
-        // , successRedirect: 'http://www.google.com',
-        // failureRedirect: 'http://localhost:3000/dashboard'
-    }));
+        session : false
+    },  function(err, user, info){
+        console.log("err : ", err);
+        console.log("user : ", user);
+        console.log("info : ", info);
+        
+        if(user){    // a jwt token already exists
+            res.status(200).send();
+        }
+        else{
+            
+            // create a user object to push to the db
+            var userCredObject = {}
+            userCredObject.userName = req.body.userNameSignUp
+            userCredObject.emailId = req.body.emailSignUp
+            
+            searchUserEmail(userCredObject.emailId)
+            .then(function (doc, err) {
+                // it means that there is no user with the matching emailId in the db
+                if (!doc) {
+                    userCredObject.password = crypto.createHash('sha256').update(req.body.passwordSignUp).digest('hex');
+                    newUser(userCredObject).then(function (doc, err) {
+                        if (err) throw err
+                        
+                        console.log('created doc : ', doc)
+                        // :-> redirect the user
+                        res.status(201).send();
+                        
+                    })
+                }
+                // the emailId exists in the db... throw error or notice
+                else {
+                    //send this error in a fancy way back to the app
+                    res.status(400).send();
+                }
+            })
+            
+            
+        }
+        
+        
+    })(req, res, next);
+    
+})
 
 
 // adding new note - create operation
 app.post('/addnewnote', function (req, res) {
     // authenticate the token and decrypt it to get the email id
-
+    
     console.log(req.body)
-
+    
     // var emailIdfromToken = 'abc@test.com'
     // var passwordFromToken = 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3'
-
+    
     // searchUserCreds(emailIdfromToken, passwordFromToken)
     //     .then(function (doc, err) {
     //         if (err) throw err
-
+    
     //         insertNoteTitle(doc._id, req.body.title)
     //             .then(function (doc, err) {   //returns the inserted document
-
+    
     //                 //loop over the entries array and insert each one by one
     //                 req.body.entries.map(
     //                     (entryObj,idx) => {
     //                         insertNoteEntry(doc._id, entryObj.content , entryObj.isChecked )
     //                     }
     //                 )
-
+    
     //             })
     //     })
 })
@@ -142,45 +193,9 @@ app.post('/logout', function (req, res) {
 })
 
 
-// FOR SIGNING UP  - creating user accounts
-app.post('/signup', function (req, res) {
-
-    // create a user object to push to the db
-    var userCredObject = {}
-    userCredObject.userName = req.body.userNameSignUp
-    userCredObject.password = crypto.createHash('sha256').update(req.body.passwordSignUp).digest('hex');
-    userCredObject.emailId = req.body.emailSignUp
-
-    //PROMISE CHAINING
-    searchUserEmail(userCredObject.emailId)
-        .then(function (doc, err) {
-            // it means that there is no user with the matching emailId in the db
-            if (!doc) {
-                newUser(userCredObject).then(function (doc, err) {
-                    if (err) throw err
-
-                    console.log('doc : ', doc)
-
-                    // :-> redirect the user
-
-                    // res.send({ message: "NOONE TO BE FOUND... INSERT SUCCESSFUL" });
-                })
-            }
-            // the emailId exists in the db... throw error or notice
-            else {
-                //send this error in a fancy way back to the app
-                // res.write({ message: 'SOMEONE IS THERE..... INSERT UNSUCCESSFUL' })
-                // res.end();
-            }
-        })
-
-})
 
 app.post('/dashboard', function (req, res) {
-    //auth bearer is absent
-    // if(!res.headers.authorization){
-    //     res.
-    // }   
+    
     console.log("AUTH BEARER : ", req.headers.authorization)
     setTimeout(function () {
         res.send(notesObjArray = [
@@ -215,7 +230,7 @@ app.post('/dashboard', function (req, res) {
                     {
                         content: 'Abtruse means to interpret in a specific way',
                         isChecked: false
-
+                        
                     },
                     {
                         content: 'Orwellian is a term associated with a dystopian world',
@@ -279,7 +294,7 @@ app.post('/dashboard', function (req, res) {
                     {
                         content: 'Abtruse',
                         isChecked: false
-
+                        
                     },
                     {
                         content: 'Orwellian',
@@ -343,7 +358,7 @@ app.post('/dashboard', function (req, res) {
                     {
                         content: 'Abtruse',
                         isChecked: false
-
+                        
                     },
                     {
                         content: 'Orwellian',
@@ -406,7 +421,7 @@ var userObjArray = [
         password: 'abc'
     },
     {
-
+        
         userName: 'leia',
         name: 'Leia Organa',
         emailId: 'jkl@test.com',
@@ -425,7 +440,7 @@ var userObjArray = [
         password: 'jkl'
     },
     {
-
+        
         userName: 'palpatine',
         name: 'Emperor Palpatine',
         emailId: 'hij@test.com',
@@ -465,7 +480,7 @@ var notesObjArray = [
             {
                 content: 'Abtruse',
                 isChecked: false
-
+                
             },
             {
                 content: 'Orwellian',
@@ -499,5 +514,5 @@ var notesObjArray = [
         ]
     }
 ]
- 
- */
+
+*/
