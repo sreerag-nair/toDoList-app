@@ -28,7 +28,7 @@ class CardComponent extends React.Component {
 
     render() {
 
-
+        
         return (
 
             <Card title={this.props.noteObj.title} bordered={false} extra={<Tooltip title={this.props.dateVar}><Icon type="calendar" /></Tooltip>}
@@ -42,20 +42,14 @@ class CardComponent extends React.Component {
 
                     {this.props.noteObj.list.map((e, index) => {
 
-                        // console.log("E : ", e)
                             return (
-                                <div>
-                                    <Checkbox key={index} onChange={this.onChange} style={{ textAlign: 'left' }}>
+                                <div key = {index}>
+                                    <Checkbox onChange={this.onChange} style={{ textAlign: 'left' }}>
                                         {e.content}
                                     </Checkbox>
                                 </div>
                             )
-                        
-
                     })}
-
-
-
                 </div>
             </Card>
         );

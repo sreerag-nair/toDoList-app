@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Icon, Input, Row } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import SpinnerClass from './SpinnerClass';
 import axios from 'axios';
 const FormItem = Form.Item;
@@ -12,7 +12,8 @@ class SignInComponent extends React.Component {        //WORKING
   // componentDidMount(){}
 
   state = {
-    spinnerVar: false
+    spinnerVar: false,
+    redirectVar : false,
   };
 
   //error handling
@@ -22,28 +23,31 @@ class SignInComponent extends React.Component {        //WORKING
     this.props.form.validateFields((err, values) => {
       if (!err) {
         axios.post('http://localhost:8001',
-          values,{
-            headers : {
-              'jwtTokenHeader' : localStorage.getItem('jwtToken')
+          values, {
+            headers: {
+              "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
             }
           })
           .then((result) => {
 
-            if(!localStorage.jwtToken){
+            // if (!localStorage.JWT_TOKEN) {
+
               //save it in localStorage
-            localStorage.setItem('jwtToken', JSON.stringify(result.data));
-            console.log("Saved in localStorage");
-            console.log('jwtToken : ', localStorage.getItem('jwtToken'));
-            this.setState({ spinnerVar: false })
-            }
-            else{
-
-            }
-
+              localStorage.setItem('JWT_TOKEN', (result.data.token));
+              console.log("Saved in localStorage ");
+              this.setState({ spinnerVar: false, redirectVar : true });
+              
+            // }
           })
         // console.log('Received values of form: ', values);
       }
     });
+  }
+
+  displayRedirect(){
+    if(this.state.redirectVar){
+      return <Redirect to = '/dashboard' />
+    }
   }
 
   render() {
@@ -57,6 +61,7 @@ class SignInComponent extends React.Component {        //WORKING
     const getFieldDecorator = this.props.getFieldDecorator
 
     return (
+      
       <Form onSubmit={this.handleSubmit} className="login-form" >
 
         {/* USERNAME INPUT FIELD */}
@@ -95,6 +100,9 @@ class SignInComponent extends React.Component {        //WORKING
             {mo}
           </div>
         </FormItem>
+        {/* <FormItem> */}
+        {this.displayRedirect()}
+        {/* </FormItem> */}
 
       </Form>
     )
@@ -108,8 +116,8 @@ export default SignInComponent;
 
 //****************************************************************/
 //SINGLETON DESIGN PATTERN
-let instance = new SignInComponent()
-export function getSingleInstance() {
-  return instance
-}
+// let instance = new SignInComponent()
+// export function getSingleInstance() {
+//   return instance
+// }
   //****************************************************************/

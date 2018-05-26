@@ -40,12 +40,13 @@ var userTableSchemaHandle = (function () {
 
             userName: String,
             name: String,
-            emailId: String,
+            emailId: {
+                type: String
+                // unique : true     
+            },
             // 'password' will be hashed 
             password: String,
-            profilePhoto: Buffer,
-            // the token of the user
-            key: String
+            profilePhoto: Buffer
 
         })
         // console.log("utS : " , userTableSchemaHandle)
@@ -193,30 +194,33 @@ exports.remove = function () {
 
 // search for the user in the database -> sign in functionality
 exports.searchUserCreds = function (emailId, password) {
-
-   return userCollection.findOne({ emailId: emailId, password: password }, function (err, obj) {
-        if (err) throw err;
-    })
+    // return a promise
+    return userCollection.findOne({ emailId: emailId, password: password })
 }
 
+// to check if the email id supplied exists in the database -> signup functionality
+exports.searchUserEmail = function(emailId){
+    return userCollection.findOne({ emailId : emailId })
+}
 
 //insert new users into the database -. sign up functionality
-exports.newUser = function(userCredObject){
-    //return the promise object
+exports.newUser = function (userCredObject) {
+
+    //return a promise
     return userCollection(userCredObject).save();
 }
 
 // insert a new note title entry in the notesCollection
-exports.insertNoteTitle = function(userTableId, notesObj){
+exports.insertNoteTitle = function (userTableId, notesObj) {
     // return the promise object containing the 
-    // saved object as the return object...
-    return notesCollection({ uId : userTableId , title : notesObj.title , date : new Date() , isDeleted : false }).save()
+    // saved object as the returned object...
+    return notesCollection({ uId: userTableId, title: notesObj.title, date: new Date(), isDeleted: false }).save()
 }
 
 
 // insert individual notes in a particular todo-note
-exports.insertNoteEntry = function(noteTitleId, individualNotesEntry){
-    return userCollection({ notesID : noteTitleId, content : individualNotesEntry, isChecked : false }).save()
+exports.insertNoteEntry = function (noteTitleId, individualNotesEntry, checkBoxStatus) {
+    return contentCollection({ notesID: noteTitleId, content: individualNotesEntry, isChecked: checkBoxStatus }).save()
 
 }
 // ----------------------------------------------------------------------

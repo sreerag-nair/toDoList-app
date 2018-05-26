@@ -12,7 +12,7 @@ class ProfileComponent extends Component {
             <Row>
                 <Col xs={12}>
                     <Row center="xs" style = {{  background: '#0091FA' }}>
-                        <Col xl={6} style = {{  height : '100vh' }}>
+                        <Col xl={6} style = {{  height : '90vh' }}>
                         <div style = {{ paddingTop : '100px' , }} >
                             <Avatar src = { this.imgSrc.src } size = "large" shape = "circle" style = {{ height : '200px', width : '200px' }}/>
                             <Input style = {{ marginTop : '10px' , }} placeholder = "Username"/>

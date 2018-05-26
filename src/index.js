@@ -1,24 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import AppComponent from './App';
 import DashBoard from './DashBoard'
 import CardComponent from './CardComponent';
 import ProfileComponent from './ProfileComponent';
 import registerServiceWorker from './registerServiceWorker';
 
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router , Switch, Link, Route} from 'react-router-dom';
 
-var x = 20;
-
+// APP ENTRY POINT
+import { Button } from 'antd';
+import AddNoteComponent from './AddNoteComponent';
 
 ReactDOM.render(
-                
+    
         <Router>
-            {/* <CardComponent dateVar = {new Date().toString()} /> */}
-            <DashBoard />
-            {/* <App /> */}
-            {/* <ProfileComponent /> */}
+            <AppComponent />
+            {/* <AddNoteComponent /> */}
         </Router>
     
     , document.getElementById('root'));
