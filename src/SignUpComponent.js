@@ -52,14 +52,12 @@ handleSubmit = (e) => {
       }
       
       if(response.status == 200){
-        this.setState()
+        this.setState({ redirectVar : true })
       }
       
     })
-    .catch((error) =>{
-      if(error.response.status == 400){
-        
-      }
+    .catch((err) =>{
+      console.log(err)
     })
   }
 });
@@ -77,7 +75,7 @@ compareToFirstPassword = (rule, value, callback) => {
   }
 }
 
-
+//check if the email exists in the db
 checkEmailAvailability(e) {
   if(e.target.value.length == 0){
     this.setState({ emailValidateStatus : '' })

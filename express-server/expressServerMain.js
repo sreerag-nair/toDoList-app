@@ -75,7 +75,7 @@ app.post('/', function (req, res, next) {
         // console.log("err : ", err);
         // console.log("user : ", user);
         // console.log("info : ", info);
-
+        
         if(user){   // it means the pre-existing token is valid
             res.status(200).send();
         }
@@ -136,8 +136,11 @@ app.post('/signup', function (req, res, next) {
                 }
                 // the emailId exists in the db... throw error or notice
                 else {
+                    
+                    //-----NOTHING TO DO HERE.... THIS PROBLEM HAS BEEN SOLVED ELSEWHERE-----
+                    
                     //send this error in a fancy way back to the app
-                    res.status(400).send();
+                    // res.status(400).send();
                 }
             })
             
@@ -177,7 +180,7 @@ app.post('/profileinfo', function(req, res, next){
             // 401 - unauthorized request
             res.status(401).send();
         }
-
+        
     })(req,res,next);
 })
 
@@ -428,7 +431,7 @@ app.post('/dashboard', function (req, res) {
             }
         ])
         res.end();
-    }, 5000)
+    }, 3000)
 })
 
 app.listen(8001, function () {
