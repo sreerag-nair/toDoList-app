@@ -8,8 +8,8 @@ const FormItem = Form.Item;
 
 class SignUpComponent extends React.Component{        //WORKING
   
-  componentDidMount(){
-    
+  componentWillMount(){
+    this.setState({ emailValidateStatus : "" })
     axios.post('http://localhost:8001',{}, {
     headers: {
       "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
@@ -17,11 +17,23 @@ class SignUpComponent extends React.Component{        //WORKING
   }
 ).then((response) =>{
   if(response.status == 200 ){
-    this.setState({ redirectVar : true })
+    console.log("in here")
+    this.setState({ redirectVar : true });
   }
+  
+})
+.catch((err) =>{
+  console.log("err - componentWillMount -- SignUpComppnent : ",err)
 })
 }
 
+
+state = {
+  confirmDirty : false,
+  redirectVar : false,
+  emailValidateStatus : '' ,
+  emailHelpMessage : '' || false
+}
 
 
 //error handling
@@ -33,17 +45,21 @@ handleSubmit = (e) => {
       values
     )
     .then((response, err) => {
-      // console.log("SIGNUP RESULT : " , result);
-      // console.log("Err : ", err)
-      
       if(response.status == 201){ //redirect
+        localStorage.setItem('JWT_TOKEN', (response.data.token));
+        console.log("Saved in localStorage ");
         this.setState({ redirectVar : true })
       }
-
-      if(response.status == 400){
-        
+      
+      if(response.status == 200){
+        this.setState()
       }
       
+    })
+    .catch((error) =>{
+      if(error.response.status == 400){
+        
+      }
     })
   }
 });
@@ -62,9 +78,33 @@ compareToFirstPassword = (rule, value, callback) => {
 }
 
 
-state = {
-  confirmDirty : false,
-  redirectVar : false
+checkEmailAvailability(e) {
+  if(e.target.value.length == 0){
+    this.setState({ emailValidateStatus : '' })
+    return
+  }
+
+  // console.log("e : ", e.target.value)
+  // var timeout;
+  // clearTimeout(timeout);
+  // e.persist();
+  // timeout = setTimeout(function(){
+  //   console.log("Sending now....")
+  this.setState({ emailValidateStatus : "validating" })
+  axios.post('http://localhost:8001/checkEmailRedundancy',{ emailToCheck : e.target.value })
+  .then((response) =>{
+    // console.log("Response data : " , response)
+    if(response.status == 200)
+    this.setState({ emailValidateStatus : "success" })
+  })
+  .catch((error) =>{
+    // console.log("ERROR Body : ", error.response)
+    if(error.response.status == 409)
+    this.setState({ emailValidateStatus : "error" })
+  })
+  
+  // }
+  //   ,2000)
 }
 
 displayRedirect(){
@@ -92,12 +132,12 @@ render(){
   return(
     <Form onSubmit = { this.handleSubmit } className = "login-form">
     
-    <FormItem>
+    <FormItem hasFeedback = {true} validateStatus = { this.state.emailValidateStatus } >
     {getFieldDecorator('emailSignUp',{
       rules : [{required : true, message : 'Email is required'},
       {type : 'email', message : 'Invalid email'}],
     })(
-      <Input placeholder = "Email address" type = "email" />
+      <Input onChange = { this.checkEmailAvailability.bind(this) } placeholder = "Email address" type = "email" />
     )
   }
   </FormItem>

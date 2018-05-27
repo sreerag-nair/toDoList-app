@@ -48,11 +48,10 @@ passport.use(new jwtStrategy(opts, function (jwttoken, done) {
     console.log("TOKEN : ", jwttoken)
     
     //make some db calls
-    searchUserCreds(jwttoken.emailSignIn, jwttoken.passwordSignIn)
+    searchUserCreds(jwttoken.emailId, jwttoken.password)
     .then(function(doc, err){
         if(doc){
             // valid case
-            console.log('jhnjygjn')
             done(null, doc)
         }
         else{
@@ -72,19 +71,23 @@ app.post('/', function (req, res, next) {
         session : false
     }, function(err, user, info){
         
-        if(user){   // it means both the token and user are valid
+        
+        // console.log("err : ", err);
+        // console.log("user : ", user);
+        // console.log("info : ", info);
+
+        if(user){   // it means the pre-existing token is valid
             res.status(200).send();
-            // return;
         }
         
         if(info && (Object.keys(req.body) != 0)){    //it means there is no token in the app and something is in the body;
             var hashedPassword = crypto.createHash('sha256').update(req.body.passwordSignIn).digest('hex');
             // used promise
-            searchUserCreds(req.body.emailSignIn, 'f0e4c2f76c58916ec258f246851bea091d14d4247a2fc3e18694461b1816e13b')
+            searchUserCreds(req.body.emailSignIn, hashedPassword)
             .then(function (doc, err) {
-                // console.log("doc : ", doc)
+                console.log("doc : ", doc)
                 if (doc) { //got something , so generate token and send it to the user
-                    var token = generateToken(req.body.emailSignIn, 'f0e4c2f76c58916ec258f246851bea091d14d4247a2fc3e18694461b1816e13b')
+                    var token = generateToken(req.body.emailSignIn, hashedPassword)
                     res.status(200).json({ token: token })
                 }else{
                     // there is no such user in the db, send error
@@ -102,12 +105,12 @@ app.post('/signup', function (req, res, next) {
     passport.authenticate('jwt', {
         session : false
     },  function(err, user, info){
-        console.log("err : ", err);
-        console.log("user : ", user);
-        console.log("info : ", info);
+        // console.log("err : ", err);
+        // console.log("user : ", user);
+        // console.log("info : ", info);
         
         if(user){    // a jwt token already exists
-            res.status(200).send();
+            res.status(200).end();
         }
         else{
             
@@ -126,7 +129,8 @@ app.post('/signup', function (req, res, next) {
                         
                         console.log('created doc : ', doc)
                         // :-> redirect the user
-                        res.status(201).send();
+                        var token = generateToken(doc.emailId, doc.password)
+                        res.status(201).json({token : token});
                         
                     })
                 }
@@ -145,6 +149,37 @@ app.post('/signup', function (req, res, next) {
     
 })
 
+app.post('/checkEmailRedundancy', function(req, res){
+    // console.log("hgsfgsnuyfjvguynbgj : ", req.body.emailToCheck)
+    searchUserEmail(req.body.emailToCheck)
+    .then( (doc, err) =>{
+        if(doc)
+        res.status(409).send();
+        else
+        res.status(200).send();
+    }
+)
+})  
+
+app.post('/profileinfo', function(req, res, next){
+    passport.authenticate('jwt',{
+        session : false
+    }, function(err, user, info){
+        
+        // console.log("err : ", err);
+        console.log("user : ", user);
+        // console.log("info : ", info);
+        
+        if(user){
+            res.status(200).send({ userName : user.userName, emailId : user.emailId, password : user.password })
+        }
+        else{
+            // 401 - unauthorized request
+            res.status(401).send();
+        }
+
+    })(req,res,next);
+})
 
 // adding new note - create operation
 app.post('/addnewnote', function (req, res) {
