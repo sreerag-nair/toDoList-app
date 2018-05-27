@@ -9,6 +9,22 @@ const CheckboxGroup = Checkbox.Group;
 class AddNoteComponent extends Component {
 
 
+    componentWillMount(){
+
+        // axios.post('http://localhost:8001/addnewnote',{},{
+        //     headers: {
+        //         "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
+        //     }
+        // })
+        // .then()
+        // .catch((err) =>{
+        //     if(err.response.status == 401){
+        //         this.setState({ redirectVar : true })
+        //     }
+
+        // })
+    }
+
     submitNote() {
 
         console.log("ON SUBMIT : ", this.state.notesCollectionObject)
@@ -25,28 +41,27 @@ class AddNoteComponent extends Component {
 
 
     state = {
+        redirectVar : '',
         title: "Hello There",
         isAddInputBoxVisible: false,
         isTooltipVisible: false,
         notesCollectionObject: [
 
         ],
-        newValueToAdd: ''
+        newValueToAdd: '',
+        isAddButtonDisabled : true
     }
 
     // {isChecked : , value : },
 
     textBoxValueChanged(e) {
-        // console.log("Added! e : ", e.target.value)
         if ((e.target.value.length == 0) && (!this.state.isTooltipVisible)) {
-            this.setState({ isTooltipVisible: true })
-            return
+            this.setState({ isTooltipVisible: true,  isAddButtonDisabled : true})
+            // return
         }
         else if (e.target.value.length > 0) {
-
-            this.setState({ newValueToAdd: e.target.value, isTooltipVisible: false })
+            this.setState({ newValueToAdd: e.target.value, isTooltipVisible: false,  isAddButtonDisabled : false })
         }
-
 
     }
 
@@ -70,8 +85,8 @@ class AddNoteComponent extends Component {
                     // console.log("getInputBox -- current Target : ", e.currentTarget.childNodes)
                     // console.log("getInputBox -- target : ", e.target.childNodes)
                 }} >
-                    <Col xs={22} sm={11} md={11} lg={11}><Tooltip visible={this.state.isTooltipVisible} title="Input is required to add to the list" > <Input onChange={this.textBoxValueChanged.bind(this)} /> </Tooltip></Col>
-                    <Col xs={2} sm={1} md={1} lg={1}><Button shape="circle" onClick={this.addNewNoteEntry.bind(this)} ><Icon type="plus" /></Button></Col>
+                    <Col xs={22} sm={11} md={11} lg={11}><Tooltip visible={this.state.isTooltipVisible} title="Please enter something here to add it to the list" > <Input onChange={this.textBoxValueChanged.bind(this)} /> </Tooltip></Col>
+                    <Col xs={2} sm={1} md={1} lg={1}><Button disabled= { this.state.isAddButtonDisabled } shape="circle" onClick={this.addNewNoteEntry.bind(this)} ><Icon type="plus" /></Button></Col>
                 </Row>
             )
 
