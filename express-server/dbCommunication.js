@@ -180,16 +180,6 @@ exports.read = function (notesObjArray) {
 
 }
 
-exports.update = function () {
-    //insert notes or update user profile
-}
-
-//  delete is a keyword
-exports.remove = function () {
-    //delete a note 
-}
-
-
 
 
 // search for the user in the database -> sign in functionality
@@ -211,10 +201,10 @@ exports.newUser = function (userCredObject) {
 }
 
 // insert a new note title entry in the notesCollection
-exports.insertNoteTitle = function (userTableId, notesObj) {
+exports.insertNoteTitle = function (userTableId, noteTitle) {
     // return the promise object containing the 
     // saved object as the returned object...
-    return notesCollection({ uId: userTableId, title: notesObj.title, date: new Date(), isDeleted: false }).save()
+    return notesCollection({ uId: userTableId, title: noteTitle, date: new Date(), isDeleted: false }).save()
 }
 
 
@@ -222,5 +212,13 @@ exports.insertNoteTitle = function (userTableId, notesObj) {
 exports.insertNoteEntry = function (noteTitleId, individualNotesEntry, checkBoxStatus) {
     return contentCollection({ notesID: noteTitleId, content: individualNotesEntry, isChecked: checkBoxStatus }).save()
 
+}
+
+//for notes title for dashboard
+exports.searchNotesTitle = function(userId){
+
+    //returns an array of all note titles created
+    // by a particular user 
+    return notesCollection.find({ uId : userId })
 }
 // ----------------------------------------------------------------------

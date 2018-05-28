@@ -11,11 +11,11 @@ class AddNoteComponent extends Component {
 
     componentWillMount(){
 
-        // axios.post('http://localhost:8001/addnewnote',{},{
-        //     headers: {
-        //         "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
-        //     }
-        // })
+        axios.post('http://localhost:8001/shouldRedirect',{},{
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
+            }
+        })
         // .then()
         // .catch((err) =>{
         //     if(err.response.status == 401){
@@ -25,31 +25,39 @@ class AddNoteComponent extends Component {
         // })
     }
 
-    submitNote() {
-
-        console.log("ON SUBMIT : ", this.state.notesCollectionObject)
-
-        axios.post('http://localhost:8001/addnewnote',
-            this.state.notesCollectionObject,
-            {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
-                }
-            })
-
-    }
-
-
     state = {
         redirectVar : '',
         title: "Hello There",
         isAddInputBoxVisible: false,
         isTooltipVisible: false,
-        notesCollectionObject: [
-
-        ],
+        notesCollectionObject: [],
         newValueToAdd: '',
         isAddButtonDisabled : true
+    }
+
+    submitNote() {
+
+        // { title : this.state.title }
+
+        var objToSubmit = Object.assign({}, { title : this.state.title },{entries : this.state.notesCollectionObject})
+        // objToSubmit['title'] = this.state.title
+
+        console.log(objToSubmit)
+
+        axios.post('http://localhost:8001/addnewnote', objToSubmit,
+            {
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
+                }
+            })
+            .then((response) =>{
+
+            })
+            .catch((err) =>{
+
+            }
+        )
+
     }
 
     // {isChecked : , value : },
@@ -74,7 +82,7 @@ class AddNoteComponent extends Component {
             return
         }
         else
-            this.setState({ notesCollectionObject: [...this.state.notesCollectionObject, { label: this.state.newValueToAdd, isChecked: false }] })
+            this.setState({ notesCollectionObject: [...this.state.notesCollectionObject, { content: this.state.newValueToAdd, isChecked: false }] })
     }
 
 
@@ -135,7 +143,7 @@ class AddNoteComponent extends Component {
                                         // console.log("current Target : ", e.currentTarget)
                                         // console.log("target : ", e.target)
                                     }} >
-                                        <Col xs={22} sm={11} md={11} lg={11}><Checkbox style={{ textAlign: 'left' }} onChange={this.onCBChecked.bind(this, idx)}> {entry.label} </Checkbox> </Col>
+                                        <Col xs={22} sm={11} md={11} lg={11}><Checkbox style={{ textAlign: 'left' }} onChange={this.onCBChecked.bind(this, idx)}> {entry.content} </Checkbox> </Col>
                                         <Col xs={2} sm={1} md={1} lg={1}><Button onClick={this.toDeleteEntry.bind(this, idx)} shape="circle"><Icon type='close' /></Button></Col>
                                     </Row>
                                 )

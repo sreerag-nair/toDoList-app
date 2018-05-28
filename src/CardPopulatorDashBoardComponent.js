@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Col, Layout, Modal, Row } from 'antd';
 import CardComponent from './CardComponent';
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 import NoteEditingModal from './NoteEditingModal';
 const { Content } = Layout;
 
@@ -10,19 +11,27 @@ class CardPopulatorDashBoardComponent extends Component {
     state = {
         notesObjArray: null,
         isModalVisible : false,
-        currentlySelectedCard : ''
+        currentlySelectedCard : '',
+        redirectVar : false
     }
     
     componentWillMount() {
-        axios.post('http://localhost:8001/dashboard',{},
+
+        axios.get('http://localhost:8001/getnotes',
         {
             headers: {
-                "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
+                'Authorization': "Bearer " + localStorage.getItem('JWT_TOKEN')
             }
-        }).
-        then(message => {
-            // console.log("CONSOLE DATA : ", message)
+        })
+        .then(message => {
+            console.log("CONSOLE DATA : ", message.data)
             this.setState({ notesObjArray: message.data })
+        })
+        .catch((err) =>{
+            if(err.response.status == 401){
+                console.log("UNAUTHORIZED IN CARD POPULATOR!! : ")
+                this.setState({ redirectVar : true })
+            }
         })
     }
     
@@ -33,6 +42,14 @@ class CardPopulatorDashBoardComponent extends Component {
         // The outer array will be of length Math.ceil( recvObj.length() / 3 )
         return a.reduce((rows, value, index) =>
         (index % 3 == 0 ? rows.push([value]) : rows[rows.length - 1].push(value)) && rows, [])
+    }
+
+    redirectToHomePage() {
+        if (this.state.redirectVar) {
+            // alert('PRESSED')
+            return <Redirect to='/' />
+        }
+
     }
     
     getClickedCard(cardIndex){
@@ -53,7 +70,7 @@ class CardPopulatorDashBoardComponent extends Component {
             return (
                 <div>
                 
-                
+                {this.redirectToHomePage()}
                 
                 
                 {/* generate cards */}
@@ -64,6 +81,8 @@ class CardPopulatorDashBoardComponent extends Component {
                 maskStyle = {{ width : '100%' }}
                 onOk = { this.modalOnOK }
                 onCancel = { this.modalOnCancel }
+                closable = { false }
+                destroyOnClose = { true }
                 >
                 {/* <CardComponent noteObj = { this.state.notesObjArray[this.state.currentlySelectedCard] } /> */}
                 <NoteEditingModal noteObj = { this.state.notesObjArray[this.state.currentlySelectedCard] } />
@@ -73,7 +92,7 @@ class CardPopulatorDashBoardComponent extends Component {
                     this.toReduce(this.state.notesObjArray).map(
                         (collection_of_three_notes, idx) => {
                             return (
-                                <div key={idx} style={{ background: '#ECECEC', padding: '30px' }}>
+                                <div key={idx} style={{ background: '#0091FA', padding: '30px' }}>
                                 <Row gutter={16}>
                                 {
                                     collection_of_three_notes.map(
@@ -98,7 +117,10 @@ class CardPopulatorDashBoardComponent extends Component {
         }
         else {
             return (
+                <div>
+                {this.redirectToHomePage()}
                 <h1>NOTHING TO SHOW</h1>
+                </div>
             )
         }
     }

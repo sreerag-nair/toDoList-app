@@ -44,21 +44,22 @@ opts.algorithms = 'HS256 ';
 
 // the passport strategy for handling jwt auth requests
 passport.use(new jwtStrategy(opts, function (jwttoken, done) {
-    
-    console.log("TOKEN : ", jwttoken)
-    
+
+    // console.log("TOKEN : ", jwttoken)
+
     //make some db calls
     searchUserCreds(jwttoken.emailId, jwttoken.password)
-    .then(function(doc, err){
-        if(doc){
-            // valid case
-            done(null, doc)
-        }
-        else{
-            done(err)
-        }
-    })
-    
+        .then(function (doc, err) {
+            if (doc) {
+                // valid case
+                done(null, doc)
+            }
+            else {
+                //invalid case
+                done(err)
+            }
+        })
+
 }))
 // --------------PASSPORT CUSTOM JWT STRATEGY---------------//
 
@@ -66,34 +67,34 @@ passport.use(new jwtStrategy(opts, function (jwttoken, done) {
 
 //SIGNIN ROUTE
 app.post('/', function (req, res, next) {
-    
+
     passport.authenticate('jwt', {
-        session : false
-    }, function(err, user, info){
-        
-        
+        session: false
+    }, function (err, user, info) {
+
+
         // console.log("err : ", err);
         // console.log("user : ", user);
         // console.log("info : ", info);
-        
-        if(user){   // it means the pre-existing token is valid
+
+        if (user) {   // it means the pre-existing token is valid
             res.status(200).send();
         }
-        
-        if(info && (Object.keys(req.body) != 0)){    //it means there is no token in the app and something is in the body;
+
+        if (info && (Object.keys(req.body) != 0)) {    //it means there is no token in the app and something is in the body;
             var hashedPassword = crypto.createHash('sha256').update(req.body.passwordSignIn).digest('hex');
             // used promise
             searchUserCreds(req.body.emailSignIn, hashedPassword)
-            .then(function (doc, err) {
-                console.log("doc : ", doc)
-                if (doc) { //got something , so generate token and send it to the user
-                    var token = generateToken(req.body.emailSignIn, hashedPassword)
-                    res.status(200).json({ token: token })
-                }else{
-                    // there is no such user in the db, send error
-                    res.status(404).json({userError : "Invalid email id or password"})
-                }
-            })
+                .then(function (doc, err) {
+                    console.log("doc : ", doc)
+                    if (doc) { //got something , so generate token and send it to the user
+                        var token = generateToken(req.body.emailSignIn, hashedPassword)
+                        res.status(200).json({ token: token })
+                    } else {
+                        // there is no such user in the db, send error
+                        res.status(404).json({ userError: "Invalid email id or password" })
+                    }
+                })
         }
     })(req, res, next);
 });
@@ -101,119 +102,174 @@ app.post('/', function (req, res, next) {
 
 // FOR SIGNING UP  - creating user accounts
 app.post('/signup', function (req, res, next) {
-    
+
     passport.authenticate('jwt', {
-        session : false
-    },  function(err, user, info){
+        session: false
+    }, function (err, user, info) {
         // console.log("err : ", err);
         // console.log("user : ", user);
         // console.log("info : ", info);
-        
-        if(user){    // a jwt token already exists
+
+        if (user) {    // a jwt token already exists
             res.status(200).end();
         }
-        else{
-            
+        else {
+
             // create a user object to push to the db
             var userCredObject = {}
             userCredObject.userName = req.body.userNameSignUp
             userCredObject.emailId = req.body.emailSignUp
-            
+
             searchUserEmail(userCredObject.emailId)
-            .then(function (doc, err) {
-                // it means that there is no user with the matching emailId in the db
-                if (!doc) {
-                    userCredObject.password = crypto.createHash('sha256').update(req.body.passwordSignUp).digest('hex');
-                    newUser(userCredObject).then(function (doc, err) {
-                        if (err) throw err
-                        
-                        console.log('created doc : ', doc)
-                        // :-> redirect the user
-                        var token = generateToken(doc.emailId, doc.password)
-                        res.status(201).json({token : token});
-                        
-                    })
-                }
-                // the emailId exists in the db... throw error or notice
-                else {
-                    
-                    //-----NOTHING TO DO HERE.... THIS PROBLEM HAS BEEN SOLVED ELSEWHERE-----
-                    
-                    //send this error in a fancy way back to the app
-                    // res.status(400).send();
-                }
-            })
-            
-            
+                .then(function (doc, err) {
+                    // it means that there is no user with the matching emailId in the db
+                    if (!doc) {
+                        userCredObject.password = crypto.createHash('sha256').update(req.body.passwordSignUp).digest('hex');
+                        newUser(userCredObject).then(function (doc, err) {
+                            if (err) throw err
+
+                            console.log('created doc : ', doc)
+                            // :-> redirect the user
+                            var token = generateToken(doc.emailId, doc.password)
+                            res.status(201).json({ token: token });
+
+                        })
+                    }
+                    // the emailId exists in the db... throw error or notice
+                    else {
+
+                        //-----NOTHING TO DO HERE.... THIS PROBLEM HAS BEEN SOLVED ELSEWHERE-----
+
+                        //send this error in a fancy way back to the app
+                        // res.status(400).send();
+                    }
+                })
+
+
         }
-        
-        
+
+
     })(req, res, next);
-    
+
 })
 
-app.post('/checkEmailRedundancy', function(req, res){
+app.post('/checkEmailRedundancy', function (req, res) {
     // console.log("hgsfgsnuyfjvguynbgj : ", req.body.emailToCheck)
     searchUserEmail(req.body.emailToCheck)
-    .then( (doc, err) =>{
-        if(doc)
-        res.status(409).send();
-        else
-        res.status(200).send();
-    }
-)
-})  
+        .then((doc, err) => {
+            if (doc)
+                res.status(409).send();
+            else
+                res.status(200).send();
+        }
+        )
+})
 
-app.post('/profileinfo', function(req, res, next){
-    passport.authenticate('jwt',{
-        session : false
-    }, function(err, user, info){
-        
+app.post('/profileinfo', function (req, res, next) {
+    passport.authenticate('jwt', {
+        session: false
+    }, function (err, user, info) {
+
         // console.log("err : ", err);
         console.log("user : ", user);
         // console.log("info : ", info);
-        
-        if(user){
-            res.status(200).send({ userName : user.userName, emailId : user.emailId, password : user.password })
+
+        if (user) {
+            res.status(200).send({ userName: user.userName, emailId: user.emailId, password: user.password })
         }
-        else{
+        else {
             // 401 - unauthorized request
             res.status(401).send();
         }
-        
-    })(req,res,next);
+
+    })(req, res, next);
 })
 
 // adding new note - create operation
-app.post('/addnewnote', function (req, res) {
-    // authenticate the token and decrypt it to get the email id
-    
-    console.log(req.body)
-    
-    // var emailIdfromToken = 'abc@test.com'
-    // var passwordFromToken = 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3'
-    
-    // searchUserCreds(emailIdfromToken, passwordFromToken)
-    //     .then(function (doc, err) {
-    //         if (err) throw err
-    
-    //         insertNoteTitle(doc._id, req.body.title)
-    //             .then(function (doc, err) {   //returns the inserted document
-    
-    //                 //loop over the entries array and insert each one by one
-    //                 req.body.entries.map(
-    //                     (entryObj,idx) => {
-    //                         insertNoteEntry(doc._id, entryObj.content , entryObj.isChecked )
-    //                     }
-    //                 )
-    
-    //             })
-    //     })
+app.post('/addnewnote', function (req, res, next) {
+
+
+    passport.authenticate('jwt',
+        function (err, user, info) {
+
+            // console.log("ADDNEWNOTE : ", req.body.title)
+
+            if (user) {
+
+                searchUserCreds(user.emailId, user.password)
+                    .then(function (doc, err) {
+                        if (err) throw err
+
+                        insertNoteTitle(doc._id, req.body.title)
+                            .then(function (doc, err) {   //returns the inserted document
+
+                                //loop over the entries array and insert each one by one
+                                req.body.entries.map(
+                                    (entryObj, idx) => {
+                                        insertNoteEntry(doc._id, entryObj.content, entryObj.isChecked)
+                                    }
+                                )
+
+                            })
+                    })
+
+            }
+            else {
+                res.status(401).send();
+            }
+
+        })(req, res, next);
+})
+
+// only for authorization when mounting AddNoteComponent 
+app.post('/shouldRedirect', function (req, res, next) {
+    passport.authenticate('jwt', {
+        session: false
+    }, function (err, user, info) {
+
+        if (!user) //UNAUTHORIZED...
+            res.status(401).send()
+    })
 })
 
 
+
 //get all the notes of a specific user - read/retrieve operation
-app.get('', function (req, res) { })
+app.get('/getnotes', function (req, res, next) {
+    passport.authenticate('jwt', {
+        session: false
+    },
+        function (err, user, info) {
+
+            console.log("user : ", user)
+
+            if (user) {
+
+                var objToSend = []
+
+                //make db calls and create an object....
+
+                searchNotesTitle(user.emailId)
+                .then((notesTitleArray, err1) =>{
+                    notesTitleArray.map((noteTitle, titleIndex) => {
+                        //create a new entry with the title and _id
+                        objToSend[titleIndex] = { _id : noteTitle._id , title : noteTitle.title , list : [] }
+                    })
+
+
+                })
+
+                // res.status(200).send(objToSend);
+
+                
+            }
+            else {
+                console.log("Unauthorized user in getnotes...")
+                res.status(401).send();
+            }
+
+        })(req, res, next);
+})
 
 // update an existing card - update operation
 app.put('/update/:id', function (req, res) { })
@@ -232,207 +288,26 @@ app.post('/logout', function (req, res) {
 
 
 
-app.post('/dashboard', function (req, res) {
-    
-    console.log("AUTH BEARER : ", req.headers.authorization)
-    setTimeout(function () {
-        res.send(notesObjArray = [
-            {
-                title: 'Shopping List',
-                list: [
-                    {
-                        content: 'Eggs are required for the body',
-                        isChecked: true
-                    },
-                    {
-                        content: 'Milk is white in color',
-                        isChecked: true
-                    },
-                    {
-                        content: 'Cereals always require milk.',
-                        isChecked: false
-                    },
-                    {
-                        content: 'Bread and butter make a man\'s breakfast',
-                        isChecked: true
-                    },
-                ]
-            },
-            {
-                title: 'Word List',
-                list: [
-                    {
-                        content: 'Cornucopia means too many in number',
-                        isChecked: false
-                    },
-                    {
-                        content: 'Abtruse means to interpret in a specific way',
-                        isChecked: false
-                        
-                    },
-                    {
-                        content: 'Orwellian is a term associated with a dystopian world',
-                        isChecked: true
-                    },
-                    {
-                        content: 'Obtuse means slow to understand',
-                        isChecked: false
-                    },
-                ]
-            },
-            {
-                title: 'Villain List',
-                list: [
-                    {
-                        content: 'Joker',
-                        isChecked: false
-                    },
-                    {
-                        content: 'Copperhead',
-                        isChecked: true
-                    },
-                    {
-                        content: 'Prometheus',
-                        isChecked: false
-                    },
-                    {
-                        content: 'Harley Quinn',
-                        isChecked: true
-                    }
-                ]
-            },
-            {
-                title: 'Shopping List',
-                list: [
-                    {
-                        content: 'Bring eggs',
-                        isChecked: true
-                    },
-                    {
-                        content: 'DONOT FORGET MILK!',
-                        isChecked: true
-                    },
-                    {
-                        content: 'ALWAYS BRING BREAD!!',
-                        isChecked: false
-                    },
-                    {
-                        content: 'NEVER FORGET THE KID!!',
-                        isChecked: true
-                    },
-                ]
-            },
-            {
-                title: 'Word List',
-                list: [
-                    {
-                        content: 'Cornucopia',
-                        isChecked: false
-                    },
-                    {
-                        content: 'Abtruse',
-                        isChecked: false
-                        
-                    },
-                    {
-                        content: 'Orwellian',
-                        isChecked: true
-                    },
-                    {
-                        content: 'Obtruse',
-                        isChecked: false
-                    },
-                ]
-            },
-            {
-                title: 'Villain List',
-                list: [
-                    {
-                        content: 'Joker',
-                        isChecked: false
-                    },
-                    {
-                        content: 'Copperhead',
-                        isChecked: true
-                    },
-                    {
-                        content: 'Prometheus',
-                        isChecked: false
-                    },
-                    {
-                        content: 'Harley Quinn',
-                        isChecked: true
-                    }
-                ]
-            },
-            {
-                title: 'Shopping List',
-                list: [
-                    {
-                        content: 'Eggs',
-                        isChecked: true
-                    },
-                    {
-                        content: 'Milk',
-                        isChecked: true
-                    },
-                    {
-                        content: 'Cereals',
-                        isChecked: false
-                    },
-                    {
-                        content: 'Bread',
-                        isChecked: true
-                    },
-                ]
-            },
-            {
-                title: 'Word List',
-                list: [
-                    {
-                        content: 'Cornucopia',
-                        isChecked: false
-                    },
-                    {
-                        content: 'Abtruse',
-                        isChecked: false
-                        
-                    },
-                    {
-                        content: 'Orwellian',
-                        isChecked: true
-                    },
-                    {
-                        content: 'Obtruse',
-                        isChecked: false
-                    },
-                ]
-            },
-            {
-                title: 'Villain List',
-                list: [
-                    {
-                        content: 'Joker',
-                        isChecked: false
-                    },
-                    {
-                        content: 'Copperhead',
-                        isChecked: true
-                    },
-                    {
-                        content: 'Prometheus',
-                        isChecked: false
-                    },
-                    {
-                        content: 'Harley Quinn',
-                        isChecked: true
-                    }
-                ]
-            }
-        ])
-        res.end();
-    }, 3000)
-})
+// app.get('/dashboard', function (req, res, next) {
+
+//     passport.authenticate('jwt', {
+//         session: false
+//     }, function (err, user, info) {
+
+//         //valid token/user...
+//         if (user) {
+
+//         }
+//         else {
+//             // 401 - unauthorized request
+//             res.status(401).send();
+//         }
+
+//     })(req, res, next)
+
+// })
+
+
 
 app.listen(8001, function () {
     console.log("SERVER RUNNING AT 8001 - expressServerMain.js");
@@ -483,73 +358,6 @@ var userObjArray = [
         name: 'Emperor Palpatine',
         emailId: 'hij@test.com',
         password: 'hij'
-    }
-]
-
-var notesObjArray = [
-    {
-        title: 'Shopping List',
-        list: [
-            {
-                content: 'Eggs',
-                isChecked: true
-            },
-            {
-                content: 'Milk',
-                isChecked: true
-            },
-            {
-                content: 'Cereals',
-                isChecked: false
-            },
-            {
-                content: 'Bread',
-                isChecked: true
-            },
-        ]
-    },
-    {
-        title: 'Word List',
-        list: [
-            {
-                content: 'Cornucopia',
-                isChecked: false
-            },
-            {
-                content: 'Abtruse',
-                isChecked: false
-                
-            },
-            {
-                content: 'Orwellian',
-                isChecked: true
-            },
-            {
-                content: 'Obtruse',
-                isChecked: false
-            },
-        ]
-    },
-    {
-        title: 'Villain List',
-        list: [
-            {
-                content: 'Joker',
-                isChecked: false
-            },
-            {
-                content: 'Copperhead',
-                isChecked: true
-            },
-            {
-                content: 'Prometheus',
-                isChecked: false
-            },
-            {
-                content: 'Harley Quinn',
-                isChecked: true
-            }
-        ]
     }
 ]
 
