@@ -215,10 +215,15 @@ exports.insertNoteEntry = function (noteTitleId, individualNotesEntry, checkBoxS
 }
 
 //for notes title for dashboard
-exports.searchNotesTitle = function(userId){
+exports.getNotesTitle = function(userId){
 
-    //returns an array of all note titles created
+    //returns an array consisting of note titles created
     // by a particular user 
     return notesCollection.find({ uId : userId })
 }
+
+exports.getAllNoteContent = function(notesTitleId){
+    return contentCollection.find({ notesID : notesTitleId })
+}
+
 // ----------------------------------------------------------------------

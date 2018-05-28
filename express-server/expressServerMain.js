@@ -11,7 +11,7 @@ const jwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const cors = require('cors')
 // to import the database functions
-const { create, insertNoteTitle, insertNoteEntry, newUser, read, searchUserCreds, searchUserEmail } = require('./dbCommunication');
+const { create, getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser, read, searchUserCreds, searchUserEmail } = require('./dbCommunication');
 const { generateToken } = require('./tokenGenerator');
 
 
@@ -249,15 +249,28 @@ app.get('/getnotes', function (req, res, next) {
 
                 //make db calls and create an object....
 
-                searchNotesTitle(user.emailId)
+                getNotesTitle(user._id)
                 .then((notesTitleArray, err1) =>{
+                    // console.log("singleNoteEntry : ", notesTitleArray)
                     notesTitleArray.map((noteTitle, titleIndex) => {
                         //create a new entry with the title and _id
                         objToSend[titleIndex] = { _id : noteTitle._id , title : noteTitle.title , list : [] }
+                        getAllNoteContent(noteTitle._id)
+                        .then((completeNoteContent, err) =>{
+                            completeNoteContent.map((singleNoteEntry, noteContentIndex) =>{
+                                objToSend[titleIndex].list.push({ content : singleNoteEntry.content ,isChecked : singleNoteEntry.isChecked })
+                                // console.log("singleNoteEntry : ", singleNoteEntry.content)
+                            })
+                        })
                     })
 
-
                 })
+
+                setTimeout(() =>{
+                    console.log("OBJECT TO SEND : ", objToSend)
+                    // res.status(200).send(objToSend);
+                }, 3000)
+                
 
                 // res.status(200).send(objToSend);
 
@@ -270,6 +283,8 @@ app.get('/getnotes', function (req, res, next) {
 
         })(req, res, next);
 })
+
+
 
 // update an existing card - update operation
 app.put('/update/:id', function (req, res) { })
