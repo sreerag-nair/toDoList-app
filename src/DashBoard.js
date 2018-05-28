@@ -14,6 +14,31 @@ const { Content, Sider, Footer, Header } = Layout
 
 class DashBoard extends React.Component {
 
+    // componentWillMount(){
+
+    //     axios.get('http://localhost:8001/dashboard',{},
+    //     {
+    //         headers: {
+    //             "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
+    //         }
+    //     }
+    // )
+    // .then((response) =>{
+    //     if(response.status = 200){
+
+    //         console.log("response data : ", response.data)
+    //         this.setState({ userInfoFromDb : response.data })
+    //     }
+    // })
+    // .catch((err) =>{
+    //     if(err.response.status == 401){
+    //         console.log("UNAUTHORIZED IN DASHBOARD!!")
+    //         this.setState({ redirectVar : true })
+    //     }
+    // })
+
+    // }
+
     loggingOutFunction() {
         console.log("Logging out function");
         localStorage.removeItem('JWT_TOKEN')
@@ -27,7 +52,7 @@ class DashBoard extends React.Component {
         visible: false,
         showModal: false,
         currentCard: null,
-        redirectVar: false
+        // redirectVar: false
     }
 
     setCurrentCard = (thisValue) => {
@@ -85,15 +110,17 @@ class DashBoard extends React.Component {
                 </Sider>
 
                 {this.redirectToHomePage()}
+
+
                 <Layout style={{ marginLeft: 200 }}>
-                {/* <Header></Header> */}
+                    {/* <Header></Header> */}
                     <Content>
-                    <Switch >
-                        <Route exact path='/dashboard' render={() => <CardPopulatorDashBoardComponent />} />
-                        <Route exact path='/dashboard/addnote' render={() => <AddNoteComponent />} />
-                        <Route exact path='/dashboard/profile' render={() => <ProfileComponent />} />
-                    </Switch>
-                        </Content>
+                        <Switch >
+                            <Route exact path='/dashboard' render={() => <CardPopulatorDashBoardComponent />} />
+                            <Route exact path='/dashboard/addnote' render={() => <AddNoteComponent />} />
+                            <Route exact path='/dashboard/profile' render={() => <ProfileComponent />} />
+                        </Switch>
+                    </Content>
                     <Footer style={{ textAlign: 'center', }}>
                         Ant Design ©2018 Copied by SreeraG
       </Footer>

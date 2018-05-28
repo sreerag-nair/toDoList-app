@@ -9,44 +9,67 @@ const CheckboxGroup = Checkbox.Group;
 class AddNoteComponent extends Component {
 
 
+    componentWillMount(){
+
+        axios.post('http://localhost:8001/shouldRedirect',{},{
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
+            }
+        })
+        // .then()
+        // .catch((err) =>{
+        //     if(err.response.status == 401){
+        //         this.setState({ redirectVar : true })
+        //     }
+
+        // })
+    }
+
+    state = {
+        redirectVar : '',
+        title: "Hello There",
+        isAddInputBoxVisible: false,
+        isTooltipVisible: false,
+        notesCollectionObject: [],
+        newValueToAdd: '',
+        isAddButtonDisabled : true
+    }
+
     submitNote() {
 
-        console.log("ON SUBMIT : ", this.state.notesCollectionObject)
+        // { title : this.state.title }
 
-        axios.post('http://localhost:8001/addnewnote',
-            this.state.notesCollectionObject,
+        var objToSubmit = Object.assign({}, { title : this.state.title },{entries : this.state.notesCollectionObject})
+        // objToSubmit['title'] = this.state.title
+
+        console.log(objToSubmit)
+
+        axios.post('http://localhost:8001/addnewnote', objToSubmit,
             {
                 headers: {
                     "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
                 }
             })
+            .then((response) =>{
 
-    }
+            })
+            .catch((err) =>{
 
+            }
+        )
 
-    state = {
-        title: "Hello There",
-        isAddInputBoxVisible: false,
-        isTooltipVisible: false,
-        notesCollectionObject: [
-
-        ],
-        newValueToAdd: ''
     }
 
     // {isChecked : , value : },
 
     textBoxValueChanged(e) {
-        // console.log("Added! e : ", e.target.value)
         if ((e.target.value.length == 0) && (!this.state.isTooltipVisible)) {
-            this.setState({ isTooltipVisible: true })
-            return
+            this.setState({ isTooltipVisible: true,  isAddButtonDisabled : true})
+            // return
         }
         else if (e.target.value.length > 0) {
-
-            this.setState({ newValueToAdd: e.target.value, isTooltipVisible: false })
+            this.setState({ newValueToAdd: e.target.value, isTooltipVisible: false,  isAddButtonDisabled : false })
         }
-
 
     }
 
@@ -59,7 +82,7 @@ class AddNoteComponent extends Component {
             return
         }
         else
-            this.setState({ notesCollectionObject: [...this.state.notesCollectionObject, { label: this.state.newValueToAdd, isChecked: false }] })
+            this.setState({ notesCollectionObject: [...this.state.notesCollectionObject, { content: this.state.newValueToAdd, isChecked: false }] })
     }
 
 
@@ -70,8 +93,8 @@ class AddNoteComponent extends Component {
                     // console.log("getInputBox -- current Target : ", e.currentTarget.childNodes)
                     // console.log("getInputBox -- target : ", e.target.childNodes)
                 }} >
-                    <Col xs={22} sm={11} md={11} lg={11}><Tooltip visible={this.state.isTooltipVisible} title="Input is required to add to the list" > <Input onChange={this.textBoxValueChanged.bind(this)} /> </Tooltip></Col>
-                    <Col xs={2} sm={1} md={1} lg={1}><Button shape="circle" onClick={this.addNewNoteEntry.bind(this)} ><Icon type="plus" /></Button></Col>
+                    <Col xs={22} sm={11} md={11} lg={11}><Tooltip visible={this.state.isTooltipVisible} title="Please enter something here to add it to the list" > <Input onChange={this.textBoxValueChanged.bind(this)} /> </Tooltip></Col>
+                    <Col xs={2} sm={1} md={1} lg={1}><Button disabled= { this.state.isAddButtonDisabled } shape="circle" onClick={this.addNewNoteEntry.bind(this)} ><Icon type="plus" /></Button></Col>
                 </Row>
             )
 
@@ -120,7 +143,7 @@ class AddNoteComponent extends Component {
                                         // console.log("current Target : ", e.currentTarget)
                                         // console.log("target : ", e.target)
                                     }} >
-                                        <Col xs={22} sm={11} md={11} lg={11}><Checkbox style={{ textAlign: 'left' }} onChange={this.onCBChecked.bind(this, idx)}> {entry.label} </Checkbox> </Col>
+                                        <Col xs={22} sm={11} md={11} lg={11}><Checkbox style={{ textAlign: 'left' }} onChange={this.onCBChecked.bind(this, idx)}> {entry.content} </Checkbox> </Col>
                                         <Col xs={2} sm={1} md={1} lg={1}><Button onClick={this.toDeleteEntry.bind(this, idx)} shape="circle"><Icon type='close' /></Button></Col>
                                     </Row>
                                 )

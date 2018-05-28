@@ -15,6 +15,8 @@ const ButtonGroup = Button.Group;
 // THE LOGIN PAGE
 
 class LoginComponent extends Component {
+
+
   setToken = (message, token) => {
     this.setState({
       JWTtoken: {
