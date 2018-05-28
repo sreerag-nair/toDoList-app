@@ -4,6 +4,7 @@ import CardComponent from './CardComponent';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import NoteEditingModal from './NoteEditingModal';
+import DummyCardComponent from './DummyCardComponent';
 const { Content } = Layout;
 
 class CardPopulatorDashBoardComponent extends Component {
@@ -68,12 +69,12 @@ class CardPopulatorDashBoardComponent extends Component {
     render() {
         if (this.state.notesObjArray) {
             return (
-                <div>
+                <div style = {{ backgroundColor : '#0091FA', height : '90vh', width : '100%' }}>
                 
                 {this.redirectToHomePage()}
                 
                 
-                {/* generate cards */}
+                
                 <Content style={{ /* margin: '24px 16px 0',*/ overflow: 'initial' }}>
 
                 <Modal visible = { this.state.isModalVisible } 
@@ -83,11 +84,17 @@ class CardPopulatorDashBoardComponent extends Component {
                 onCancel = { this.modalOnCancel }
                 closable = { false }
                 destroyOnClose = { true }
+                footer = { null }
                 >
                 {/* <CardComponent noteObj = { this.state.notesObjArray[this.state.currentlySelectedCard] } /> */}
-                <NoteEditingModal noteObj = { this.state.notesObjArray[this.state.currentlySelectedCard] } />
+                <NoteEditingModal noteObj = { this.state.notesObjArray.find( note =>  { return note._id == this.state.currentlySelectedCard } ) } />
                 </Modal>
                 
+
+
+
+                {/* generate cards */}
+
                 {
                     this.toReduce(this.state.notesObjArray).map(
                         (collection_of_three_notes, idx) => {
@@ -99,7 +106,7 @@ class CardPopulatorDashBoardComponent extends Component {
                                         (note, inner_idx) => {
                                             return (
                                                 <Col key={inner_idx} span={8}>
-                                                <CardComponent getClickedCard = { this.getClickedCard.bind(this) } cardIndex={(idx * 3) + inner_idx } noteObj={note} dateVar={new Date().toString()} />
+                                                <DummyCardComponent  getClickedCard = { this.getClickedCard.bind(this) } cardIndex={(idx * 3) + inner_idx } noteObj={note} />
                                                 </Col>
                                             )
                                         }
@@ -111,6 +118,7 @@ class CardPopulatorDashBoardComponent extends Component {
                         }
                     )
                 }
+
                 </Content>
                 </div>
             )

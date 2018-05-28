@@ -121,7 +121,7 @@ class DashBoard extends React.Component {
                             <Route exact path='/dashboard/profile' render={() => <ProfileComponent />} />
                         </Switch>
                     </Content>
-                    <Footer style={{ textAlign: 'center', }}>
+                    <Footer style={{ textAlign: 'center', bottom : '0px' , width : '87%', position : " absolute" }}>
                         Ant Design ©2018 Copied by SreeraG
       </Footer>
                 </Layout>

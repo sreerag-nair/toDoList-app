@@ -6,20 +6,39 @@ import axios from 'axios';
 
 const CheckboxGroup = Checkbox.Group;
 
-class AddNoteComponent extends Component {
+class NoteEditingModal extends Component {
     
-    
-    submitNote() {
+
+    componentDidMount(){
+        // console.log("ON SUBMIT : ", this.props.noteObj._id)
         
-        console.log("ON SUBMIT : ", this.state.notesCollectionObject)
-        
-        axios.post('http://localhost:8001/addnewnote',
-        this.state.notesCollectionObject,
+        axios.get('http://localhost:8001/getcurrentnote/' + this.props.noteObj._id,
+
         {
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
             }
         })
+        .then((response) =>{
+            console.log("resbod : ", response.data)
+            this.setState({notesCollectionObject : response.data, isLoading : false})
+        })
+    }
+    
+
+
+    //editing the existing note
+    submitNote() {
+        // console.log("ON SUBMIT : ", this.state.notesCollectionObject)
+        
+        axios.post('http://localhost:8001/getcurrentnote',
+        this.props.noteObj._id,
+        {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
+            }
+        })
+        
         
     }
     
@@ -28,10 +47,11 @@ class AddNoteComponent extends Component {
         title: this.props.noteObj.title || "Click here to add title",
         isAddInputBoxVisible: false,
         isTooltipVisible: false,
-        notesCollectionObject: this.props.noteObj.list || [
-            
-        ],
-        newValueToAdd: ''
+        notesCollectionObject: [],
+        newValueToAdd: '',
+        isLoading : true,
+        showDivider : false
+
     }
     
     // {isChecked : , value : },
@@ -115,7 +135,7 @@ class AddNoteComponent extends Component {
             // <Col xs> 
 
             
-            <Card hoverable title={<div onClick={this.changeTitle.bind(this)}> {this.state.title} </div>} style={{ textAlign: 'left', background: 'white',/* marginTop: '150px'*/ }}>
+            <Card loading = { this.state.isLoading }  hoverable title={<div onClick={this.changeTitle.bind(this)}> {this.state.title} </div>} style={{ textAlign: 'left', background: 'white',/* marginTop: '150px'*/ }}>
             
             {
                 
@@ -149,4 +169,4 @@ class AddNoteComponent extends Component {
     }
 }
 
-export default AddNoteComponent;
+export default NoteEditingModal;

@@ -44,22 +44,22 @@ opts.algorithms = 'HS256 ';
 
 // the passport strategy for handling jwt auth requests
 passport.use(new jwtStrategy(opts, function (jwttoken, done) {
-
+    
     // console.log("TOKEN : ", jwttoken)
-
+    
     //make some db calls
     searchUserCreds(jwttoken.emailId, jwttoken.password)
-        .then(function (doc, err) {
-            if (doc) {
-                // valid case
-                done(null, doc)
-            }
-            else {
-                //invalid case
-                done(err)
-            }
-        })
-
+    .then(function (doc, err) {
+        if (doc) {
+            // valid case
+            done(null, doc)
+        }
+        else {
+            //invalid case
+            done(err)
+        }
+    })
+    
 }))
 // --------------PASSPORT CUSTOM JWT STRATEGY---------------//
 
@@ -67,34 +67,34 @@ passport.use(new jwtStrategy(opts, function (jwttoken, done) {
 
 //SIGNIN ROUTE
 app.post('/', function (req, res, next) {
-
+    
     passport.authenticate('jwt', {
         session: false
     }, function (err, user, info) {
-
-
+        
+        
         // console.log("err : ", err);
         // console.log("user : ", user);
         // console.log("info : ", info);
-
+        
         if (user) {   // it means the pre-existing token is valid
             res.status(200).send();
         }
-
+        
         if (info && (Object.keys(req.body) != 0)) {    //it means there is no token in the app and something is in the body;
             var hashedPassword = crypto.createHash('sha256').update(req.body.passwordSignIn).digest('hex');
             // used promise
             searchUserCreds(req.body.emailSignIn, hashedPassword)
-                .then(function (doc, err) {
-                    console.log("doc : ", doc)
-                    if (doc) { //got something , so generate token and send it to the user
-                        var token = generateToken(req.body.emailSignIn, hashedPassword)
-                        res.status(200).json({ token: token })
-                    } else {
-                        // there is no such user in the db, send error
-                        res.status(404).json({ userError: "Invalid email id or password" })
-                    }
-                })
+            .then(function (doc, err) {
+                console.log("doc : ", doc)
+                if (doc) { //got something , so generate token and send it to the user
+                    var token = generateToken(req.body.emailSignIn, hashedPassword)
+                    res.status(200).json({ token: token })
+                } else {
+                    // there is no such user in the db, send error
+                    res.status(404).json({ userError: "Invalid email id or password" })
+                }
+            })
         }
     })(req, res, next);
 });
@@ -102,78 +102,78 @@ app.post('/', function (req, res, next) {
 
 // FOR SIGNING UP  - creating user accounts
 app.post('/signup', function (req, res, next) {
-
+    
     passport.authenticate('jwt', {
         session: false
     }, function (err, user, info) {
         // console.log("err : ", err);
         // console.log("user : ", user);
         // console.log("info : ", info);
-
+        
         if (user) {    // a jwt token already exists
             res.status(200).end();
         }
         else {
-
+            
             // create a user object to push to the db
             var userCredObject = {}
             userCredObject.userName = req.body.userNameSignUp
             userCredObject.emailId = req.body.emailSignUp
-
+            
             searchUserEmail(userCredObject.emailId)
-                .then(function (doc, err) {
-                    // it means that there is no user with the matching emailId in the db
-                    if (!doc) {
-                        userCredObject.password = crypto.createHash('sha256').update(req.body.passwordSignUp).digest('hex');
-                        newUser(userCredObject).then(function (doc, err) {
-                            if (err) throw err
-
-                            console.log('created doc : ', doc)
-                            // :-> redirect the user
-                            var token = generateToken(doc.emailId, doc.password)
-                            res.status(201).json({ token: token });
-
-                        })
-                    }
-                    // the emailId exists in the db... throw error or notice
-                    else {
-
-                        //-----NOTHING TO DO HERE.... THIS PROBLEM HAS BEEN SOLVED ELSEWHERE-----
-
-                        //send this error in a fancy way back to the app
-                        // res.status(400).send();
-                    }
-                })
-
-
+            .then(function (doc, err) {
+                // it means that there is no user with the matching emailId in the db
+                if (!doc) {
+                    userCredObject.password = crypto.createHash('sha256').update(req.body.passwordSignUp).digest('hex');
+                    newUser(userCredObject).then(function (doc, err) {
+                        if (err) throw err
+                        
+                        console.log('created doc : ', doc)
+                        // :-> redirect the user
+                        var token = generateToken(doc.emailId, doc.password)
+                        res.status(201).json({ token: token });
+                        
+                    })
+                }
+                // the emailId exists in the db... throw error or notice
+                else {
+                    
+                    //-----NOTHING TO DO HERE.... THIS PROBLEM HAS BEEN SOLVED ELSEWHERE-----
+                    
+                    //send this error in a fancy way back to the app
+                    // res.status(400).send();
+                }
+            })
+            
+            
         }
-
-
+        
+        
     })(req, res, next);
-
+    
 })
 
 app.post('/checkEmailRedundancy', function (req, res) {
     // console.log("hgsfgsnuyfjvguynbgj : ", req.body.emailToCheck)
     searchUserEmail(req.body.emailToCheck)
-        .then((doc, err) => {
-            if (doc)
-                res.status(409).send();
-            else
-                res.status(200).send();
-        }
-        )
+    .then((doc, err) => {
+        if (doc)
+        res.status(409).send();
+        else
+        res.status(200).send();
+    }
+)
 })
 
 app.post('/profileinfo', function (req, res, next) {
     passport.authenticate('jwt', {
         session: false
     }, function (err, user, info) {
-
+        
         // console.log("err : ", err);
         console.log("user : ", user);
         // console.log("info : ", info);
-
+        
         if (user) {
             res.status(200).send({ userName: user.userName, emailId: user.emailId, password: user.password })
         }
@@ -181,44 +181,44 @@ app.post('/profileinfo', function (req, res, next) {
             // 401 - unauthorized request
             res.status(401).send();
         }
-
+        
     })(req, res, next);
 })
 
 // adding new note - create operation
 app.post('/addnewnote', function (req, res, next) {
-
-
+    
+    
     passport.authenticate('jwt',
-        function (err, user, info) {
-
-            // console.log("ADDNEWNOTE : ", req.body.title)
-
-            if (user) {
-
-                searchUserCreds(user.emailId, user.password)
-                    .then(function (doc, err) {
-                        if (err) throw err
-
-                        insertNoteTitle(doc._id, req.body.title)
-                            .then(function (doc, err) {   //returns the inserted document
-
-                                //loop over the entries array and insert each one by one
-                                req.body.entries.map(
-                                    (entryObj, idx) => {
-                                        insertNoteEntry(doc._id, entryObj.content, entryObj.isChecked)
-                                    }
-                                )
-
-                            })
-                    })
-
-            }
-            else {
-                res.status(401).send();
-            }
-
-        })(req, res, next);
+    function (err, user, info) {
+        
+        console.log("ADDNEWNOTE : ", req.body.title)
+        
+        if (user) {
+            
+            searchUserCreds(user.emailId, user.password)
+            .then(function (doc, err) {
+                if (err) throw err
+                
+                insertNoteTitle(doc._id, req.body.title)
+                .then(function (doc, err) {   //returns the inserted document
+                    
+                    //loop over the entries array and insert each one by one
+                    req.body.entries.map(
+                        (entryObj, idx) => {
+                            insertNoteEntry(doc._id, entryObj.content, entryObj.isChecked)
+                        }
+                    )
+                    
+                })
+            })
+            
+        }
+        else {
+            res.status(401).send();
+        }
+        
+    })(req, res, next);
 })
 
 // only for authorization when mounting AddNoteComponent 
@@ -226,9 +226,9 @@ app.post('/shouldRedirect', function (req, res, next) {
     passport.authenticate('jwt', {
         session: false
     }, function (err, user, info) {
-
+        
         if (!user) //UNAUTHORIZED...
-            res.status(401).send()
+        res.status(401).send()
     })
 })
 
@@ -239,54 +239,96 @@ app.get('/getnotes', function (req, res, next) {
     passport.authenticate('jwt', {
         session: false
     },
-        function (err, user, info) {
-
-            console.log("user : ", user)
-
-            if (user) {
-
-                var objToSend = []
-
-                //make db calls and create an object....
-
-                getNotesTitle(user._id)
-                    .then((notesTitleArray, err1) => {
-                        // console.log("singleNoteEntry : ", notesTitleArray)
-                        notesTitleArray.map((noteTitle, titleIndex) => {
-                            //create a new entry with the title and _id
-                            objToSend[titleIndex] = { _id: noteTitle._id, title: noteTitle.title, list: [] }
-                            getAllNoteContent(noteTitle._id)
-                                .then((completeNoteContent, err) => {
-                                    completeNoteContent.map((singleNoteEntry, noteContentIndex) => {
-                                        objToSend[titleIndex].list.push({ content: singleNoteEntry.content, isChecked: singleNoteEntry.isChecked })
-                                        // console.log("singleNoteEntry : ", singleNoteEntry.content)
-                                    })
-                                    
-                                })
-                        })
-
-                        console.log("AFTER : ", objToSend)
-                    })
-
-                setTimeout(() => {
-                    // console.log("OBJECT TO SEND : ", objToSend)
-                    // res.status(200).send(objToSend);
-                }, 3000)
-
-
-                // res.status(200).send(objToSend);
-
-
-            }
-            else {
-                console.log("Unauthorized user in getnotes...")
-                res.status(401).send();
-            }
-
-        })(req, res, next);
+    function (err, user, info) {
+        
+        // console.log("user : ", user)
+        
+        if (user) {
+            var objToSend = []
+            
+            //make db calls and create an object....
+            
+            getNotesTitle(user._id)
+            .then((notesTitleArray, err1) => {
+                // console.log("singleNoteEntry : ", notesTitleArray)
+                notesTitleArray.map((noteTitle, titleIndex) => {
+                    //create a new entry with the title and _id
+                    
+                    objToSend.push({ _id: noteTitle._id, title: noteTitle.title, date : noteTitle.date })
+                    
+                })
+                
+                // console.log("AFTER : ", objToSend)
+                
+                
+            })
+            
+            
+            
+            
+            
+            
+            
+            // getNotesTitle(user._id)
+            //     .then((notesTitleArray, err1) => {
+            //         // console.log("singleNoteEntry : ", notesTitleArray)
+            //         notesTitleArray.map((noteTitle, titleIndex) => {
+            //             //create a new entry with the title and _id
+            //             objToSend[titleIndex] = { _id: noteTitle._id, title: noteTitle.title, list: [] }
+            //             getAllNoteContent(noteTitle._id)
+            //                 .then((completeNoteContent, err) => {
+            //                     completeNoteContent.map((singleNoteEntry, noteContentIndex) => {
+            //                         objToSend[titleIndex].list.push({ content: singleNoteEntry.content, isChecked: singleNoteEntry.isChecked })
+            //                         // console.log("singleNoteEntry : ", singleNoteEntry.content)
+            //                     })
+            
+            //                 })
+            //         })
+            
+            //         console.log("AFTER : ", objToSend)
+            //     })
+            
+            setTimeout(() => {
+                // console.log("OBJECT TO SEND : ", objToSend)
+                res.status(200).send(objToSend);
+            }, 2000)
+            
+            
+            // res.status(200).send(objToSend);
+            
+            
+        }
+        else {
+            console.log("Unauthorized user in getnotes...")
+            res.status(401).send();
+        }
+        
+    })(req, res, next);
 })
 
+app.get('/getcurrentnote/:noteID', function(req,res,next){
+    // console.log("req body : ", req.params.noteID)
 
+    //TRY ASYNC-AWAIT HERE
+
+    var valueToSend = []
+    console.log
+
+    getAllNoteContent(req.params.noteID)
+    .then((noteEntryArray) =>{
+        noteEntryArray.map((eachEntry) =>{
+            valueToSend.push({ content : eachEntry.content, _id : eachEntry._id, isChecked : eachEntry.isChecked })
+        })
+    })
+
+    setTimeout(() =>{
+
+        res.status(200).send(valueToSend)
+    }
+    ,2000)
+
+
+})
 
 // update an existing card - update operation
 app.put('/update/:id', function (req, res) { })
