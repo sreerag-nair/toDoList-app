@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Card, Checkbox, Icon, Layout, Modal } from 'antd';
+import { Button, Card, Checkbox, Icon, Input, Layout, Modal, Popover } from 'antd';
 
 import { Col, Row } from 'react-flexbox-grid'
 
@@ -50,10 +50,10 @@ class CardEditingModalComponent extends Component {
 
     }
 
-    editNoteEntry(index,e){
+    editNoteEntry(index, e) {
         console.log("INDEX  : ", index)
-        
-    }   
+
+    }
 
     componentDidMount() {
 
@@ -90,7 +90,11 @@ class CardEditingModalComponent extends Component {
                                         {entry.content}
                                     </span>
                                 </Checkbox> </Col>
-                                <Col xs={2} sm={1} md={1} lg={1}><Button shape="circle" onClick={this.editNoteEntry.bind(this, idx)} ><Icon type="edit" /></Button></Col>
+                                <Col xs={2} sm={1} md={1} lg={1}>
+                                <Popover trigger = "click" content = { <span><Input value = {} onChange = {} /><Button shape = "circle"><Icon type = "check" /></Button><Button shape = "circle"><Icon type = "close" /></Button></span> }>
+                                <Button shape="circle" onClick={this.editNoteEntry.bind(this, idx)} ><Icon type="edit" /></Button>
+                                </Popover>
+                                </Col>
                                 <Col xs={2} sm={1} md={1} lg={1}><Button shape="circle"><Icon type='close' /></Button></Col>
                             </Row>
                         )
