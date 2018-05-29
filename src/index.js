@@ -17,9 +17,9 @@ import CardEditingModalComponent from './CardEditingModalComponent';
 ReactDOM.render(
     
         <Router>
-            {/* <AppComponent /> */}
+            <AppComponent />
             {/* <AddNoteComponent /> */}
-            <CardEditingModalComponent />
+            {/* <CardEditingModalComponent /> */}
         </Router>
     
     , document.getElementById('root'));

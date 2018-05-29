@@ -229,6 +229,8 @@ app.post('/shouldRedirect', function (req, res, next) {
         session: false
     }, function (err, user, info) {
         
+        console.log("IN HEREE - /shouldRedirect")
+
         if (!user) //UNAUTHORIZED...
         res.status(401).send()
     })
@@ -262,14 +264,11 @@ app.get('/getnotes', function (req, res, next) {
                 
                 // console.log("AFTER : ", objToSend)
                 
+                res.status(200).send(objToSend);
                 
             })
             
-            
-            setTimeout(() => {
-                // console.log("OBJECT TO SEND : ", objToSend)
-                res.status(200).send(objToSend);
-            }, 500)
+        
             
             
             // res.status(200).send(objToSend);
