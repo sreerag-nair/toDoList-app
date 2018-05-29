@@ -192,7 +192,7 @@ app.post('/addnewnote', function (req, res, next) {
     passport.authenticate('jwt',
     function (err, user, info) {
         
-        console.log("ADDNEWNOTE : ", req.body.title)
+        // console.log("ADDNEWNOTE : ", req.body.title)
         
         if (user) {
             
@@ -207,9 +207,12 @@ app.post('/addnewnote', function (req, res, next) {
                     req.body.entries.map(
                         (entryObj, idx) => {
                             insertNoteEntry(doc._id, entryObj.content, entryObj.isChecked)
+                            console.log("RUNNING MAN")
                         }
                     )
-                    
+                    setTimeout(() =>{
+                        res.status(200).send()
+                    },2000)
                 })
             })
             
@@ -220,7 +223,6 @@ app.post('/addnewnote', function (req, res, next) {
         
     })(req, res, next);
 })
-
 // only for authorization when mounting AddNoteComponent 
 app.post('/shouldRedirect', function (req, res, next) {
     passport.authenticate('jwt', {
@@ -264,34 +266,10 @@ app.get('/getnotes', function (req, res, next) {
             })
             
             
-            
-            
-            
-            
-            
-            // getNotesTitle(user._id)
-            //     .then((notesTitleArray, err1) => {
-            //         // console.log("singleNoteEntry : ", notesTitleArray)
-            //         notesTitleArray.map((noteTitle, titleIndex) => {
-            //             //create a new entry with the title and _id
-            //             objToSend[titleIndex] = { _id: noteTitle._id, title: noteTitle.title, list: [] }
-            //             getAllNoteContent(noteTitle._id)
-            //                 .then((completeNoteContent, err) => {
-            //                     completeNoteContent.map((singleNoteEntry, noteContentIndex) => {
-            //                         objToSend[titleIndex].list.push({ content: singleNoteEntry.content, isChecked: singleNoteEntry.isChecked })
-            //                         // console.log("singleNoteEntry : ", singleNoteEntry.content)
-            //                     })
-            
-            //                 })
-            //         })
-            
-            //         console.log("AFTER : ", objToSend)
-            //     })
-            
             setTimeout(() => {
                 // console.log("OBJECT TO SEND : ", objToSend)
                 res.status(200).send(objToSend);
-            }, 2000)
+            }, 500)
             
             
             // res.status(200).send(objToSend);

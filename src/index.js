@@ -12,12 +12,14 @@ import { BrowserRouter as Router , Switch, Link, Route} from 'react-router-dom';
 // APP ENTRY POINT
 import { Button } from 'antd';
 import AddNoteComponent from './AddNoteComponent';
+import CardEditingModalComponent from './CardEditingModalComponent';
 
 ReactDOM.render(
     
         <Router>
-            <AppComponent />
+            {/* <AppComponent /> */}
             {/* <AddNoteComponent /> */}
+            <CardEditingModalComponent />
         </Router>
     
     , document.getElementById('root'));
