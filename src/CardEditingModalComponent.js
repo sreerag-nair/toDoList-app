@@ -7,7 +7,7 @@ import { Col, Row } from 'react-flexbox-grid'
 class CardEditingModalComponent extends Component {
 
     state = {
-        noteContent: {
+        notesCollectionObject: {
             title: 'Villain List',
             list: [
                 {
@@ -55,30 +55,32 @@ class CardEditingModalComponent extends Component {
 
     }
 
-    componentDidMount() {
-
-    }
-
     onCBChecked(clicked_checkbox_index, event) {
 
         console.log("TRIGGERED.....")
-
-        var temp = this.state.noteContent;//.slice();
-
-        temp.list[clicked_checkbox_index].isChecked = !this.state.noteContent.list[clicked_checkbox_index].isChecked
-
+        var temp = this.state.notesCollectionObject;//.slice();
+        temp.list[clicked_checkbox_index].isChecked = !this.state.notesCollectionObject.list[clicked_checkbox_index].isChecked
         this.setState({ noteContent: temp })
-
         // this.setState( { notesCollectionObject[clicked_checkbox_index].isChecked : !this.state.notesCollectionObject[clicked_checkbox_index].isChecked } );
 
     }
+
+    ipTest(clicked_checkbox_index, e){
+        // console.log("e : ", e.target)
+        // console.log("index : ", index)
+        var temp = this.state.notesCollectionObject//.list.slice();
+        temp.list[clicked_checkbox_index].content = e.target.value //!this.state.notesCollectionObject[clicked_checkbox_index].isChecked
+        this.setState({ notesCollectionObject: temp })
+
+    }
+
 
     render() {
         return (
 
             <Card title="HELLO THERE" >
                 {
-                    this.state.noteContent.list.map((entry, idx) => {
+                    this.state.notesCollectionObject.list.map((entry, idx) => {
                         return (
                             <Row key={idx} style={{ marginBottom: '20px', }} onClick={(e) => {
                                 // console.log("current Target : ", e.currentTarget)
@@ -91,7 +93,7 @@ class CardEditingModalComponent extends Component {
                                     </span>
                                 </Checkbox> </Col>
                                 <Col xs={2} sm={1} md={1} lg={1}>
-                                <Popover trigger = "click" content = { <span><Input value = {} onChange = {} /><Button shape = "circle"><Icon type = "check" /></Button><Button shape = "circle"><Icon type = "close" /></Button></span> }>
+                                <Popover trigger = "click" content = { <span><Input value = { entry.content } onChange = { this.ipTest.bind(this,idx) } /><Button shape = "circle"><Icon type = "check" /></Button><Button shape = "circle"><Icon type = "close" /></Button></span> }>
                                 <Button shape="circle" onClick={this.editNoteEntry.bind(this, idx)} ><Icon type="edit" /></Button>
                                 </Popover>
                                 </Col>
