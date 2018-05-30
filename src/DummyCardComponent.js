@@ -10,22 +10,22 @@ class DummyCardComponent extends Component{
 
     render(){
         return(
-            <Card onClick = { () => this.props.getClickedCard(this.props.noteObj._id) } bordered  title={this.props.noteObj.title} bordered={false} extra={<Tooltip title={this.props.noteObj.date}><Icon type="calendar" /></Tooltip>}
+            <Card /*onClick = { () => this.props.getClickedCard(this.props.noteObj._id) }*/ bordered  title={this.props.noteObj.title} bordered={false} extra={<Tooltip title={this.props.noteObj.date}><Icon type="calendar" /></Tooltip>}
                 hoverable='true' style={{ textAlign : 'center' }}
-                actions={[<Tooltip title="Add note">
-                    <Icon type="plus" onClick={ () => {
+                actions={[<Tooltip title="Edit note">
+                    <Icon type="edit" onClick={ () => {
                         // console.log('Add Clicked! : ', this.props.cardIndex)}
-                        console.log("this : " ,this)
                         this.props.getClickedCard(this.props.noteObj._id)
                     }}
                         
                         />
-                </Tooltip>, <Tooltip title="Delete note"><Icon onClick = {
-                    () =>{
-                        this.props.deleteNoteTriggered(this.props.noteObj._id)
+                </Tooltip>, <Tooltip title="Delete note">
+                <Icon onClick = { () =>{
+                        // console.log("this : " ,this)
+                        this.props.getCardToDelete(this.props.noteObj._id)
                     }
                 } type="delete" /></Tooltip>]}>
-                <div>
+                <div id = "HELLOTHERE">
                     {/* {console.log("noteObj : ", this.props.noteObj)} */}
                     {/* THE FIRST CHECKBOX ELEMENT REQUIRES A MARGINLEFT TO 8px STYLE TO ALIGN PROPERTY */}
                     <br />

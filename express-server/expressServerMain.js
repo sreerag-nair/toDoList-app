@@ -311,8 +311,10 @@ app.get('/getcurrentnote/:noteID', function(req,res,next){
 app.put('/update/:id', function (req, res) { })
 
 //for deletion operation
-app.post('/deletenote/:id', function (req, res) {
-    res.write("GOT THE HANDLE!");
+app.delete('/deletenote/:id', function (req, res) {
+    console.log("id to delete : ", req.params.id)
+    console.log("delete body : ", req.body)
+    res.write("GOT THE DELETE HANDLE!");
     res.end();
 })
 
@@ -355,46 +357,3 @@ app.listen(8001, function () {
 
 // https://www.callicoder.com/node-js-express-mongodb-restful-crud-api-tutorial/
 
-/*
-
-var users = {
-    name: 'Sreerag',
-    password: 'qwerty'
-}
-
-var userObjArray = [
-    {
-        userName: 'anakin',
-        name: 'Anakin Skywalker',
-        emailId: 'abc@test.com',
-        password: 'abc'
-    },
-    {
-        
-        userName: 'leia',
-        name: 'Leia Organa',
-        emailId: 'jkl@test.com',
-        password: 'edf'
-    },
-    {
-        userName: 'mace',
-        name: 'Mace Windu',
-        emailId: 'ghi@test.com',
-        password: 'ghi'
-    },
-    {
-        userName: 'yoda',
-        name: 'Master Yoda',
-        emailId: 'jkl@test.com',
-        password: 'jkl'
-    },
-    {
-        
-        userName: 'palpatine',
-        name: 'Emperor Palpatine',
-        emailId: 'hij@test.com',
-        password: 'hij'
-    }
-]
-
-*/

@@ -35,7 +35,7 @@ class NoteEditingModal extends Component {
             })
     }
 
-    ipTest(clicked_checkbox_index, e){
+    updateEntryValue(clicked_checkbox_index, e){
         // console.log("e : ", e.target)
         // console.log("index : ", index)
         var temp = this.state.notesCollectionObject.slice();
@@ -110,8 +110,6 @@ class NoteEditingModal extends Component {
         var temp = this.state.notesCollectionObject.slice();
         temp[clicked_checkbox_index].isChecked = !this.state.notesCollectionObject[clicked_checkbox_index].isChecked
         this.setState({ noteContent: temp })
-        // this.setState( { notesCollectionObject[clicked_checkbox_index].isChecked : !this.state.notesCollectionObject[clicked_checkbox_index].isChecked } );
-
     }
 
     editNoteEntry(index, e) {
@@ -128,9 +126,9 @@ class NoteEditingModal extends Component {
         })
     }
 
-    changeTitle() {
-        var x = prompt('Enter new title name')
-        this.setState({ title: x })
+
+    changeTitle(e){
+        this.setState({ title : e.target.value })
     }
 
     render() {
@@ -142,16 +140,16 @@ class NoteEditingModal extends Component {
             // <Col xs> 
 
 
-            <Card loading={this.state.isLoading} hoverable title={<div onClick={this.changeTitle.bind(this)}> {this.state.title} </div>} style={{ textAlign: 'left', background: 'white',/* marginTop: '150px'*/ }}>
+            // <span id = "IDOFDIV" onClick={ this.displayPopoverToChangeTitle.bind(this) }> {this.state.title} </span>
+
+            <Card loading={this.state.isLoading} hoverable title={ <Popover trigger = "click" content = { <Input onChange = { this.changeTitle.bind(this) } value = { this.state.title } placeholder = "Title input..."/> } >
+             <div> {this.state.title} </div> </Popover> } style={{ textAlign: 'left', background: 'white',/* marginTop: '150px'*/ }}>
 
                 {
 
                     this.state.notesCollectionObject.map((entry, idx) => {
                         return (
-                            <Row key={idx} style={{ marginBottom: '20px', }} onClick={(e) => {
-                                // console.log("current Target : ", e.currentTarget)
-                                // console.log("target : ", e.target)
-                            }} >
+                            <Row key={idx} style={{ marginBottom: '20px', }}>
                                 {/* style = {{ textDecorationLine: 'line-through' }} */}
                                 <Col xs={20} sm={10} md={10} lg={10}><Checkbox style={{ textAlign: 'left' }} checked={entry.isChecked} onChange={this.onCBChecked.bind(this, idx)} >
                                     <span style={{ textDecorationLine: entry.isChecked ? 'line-through' : 'none' }} >
@@ -159,7 +157,7 @@ class NoteEditingModal extends Component {
                                     </span>
                                 </Checkbox> </Col>
                                 <Col xs={2} sm={1} md={1} lg={1}>
-                                <Popover trigger = "click" content = { <span><Input value = { entry.content } onChange = { this.ipTest.bind(this,idx) } /><Button shape = "circle"><Icon type = "check" /></Button><Button shape = "circle"><Icon type = "close" /></Button></span> }>
+                                <Popover trigger = "click" content = { <span><Input value = { entry.content } onChange = { this.updateEntryValue.bind(this,idx) } /></span> }>
                                 <Button shape="circle" onClick={this.editNoteEntry.bind(this, idx)} ><Icon type="edit" /></Button>
                                 </Popover>
                                 </Col><Col xs={2} sm={1} md={1} lg={1}><Button onClick={this.toDeleteEntry.bind(this, idx)} shape="circle"><Icon type='close' /></Button></Col>
