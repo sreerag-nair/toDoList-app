@@ -11,7 +11,7 @@ const jwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const cors = require('cors')
 // to import the database functions
-const { create, getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser, read, searchUserCreds, searchUserEmail } = require('./dbCommunication');
+const { create, getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser, read, removeNotesTitle, searchUserCreds, searchUserEmail } = require('./dbCommunication');
 const { generateToken } = require('./tokenGenerator');
 
 
@@ -315,24 +315,27 @@ app.put('/update/:id', function (req, res) { })
 //for deletion operation
 app.delete('/deletenote/:id', function (req, res, next) {
     
-    console.log("id to delete : ", req.headers.authorization)
+    // console.log("id to delete : ", req.headers.authorization)
 
-    // passport.authenticate('jwt',{
-    //     session : false
-    // }, function(err, user, info){
-    //     // console.log("user : ", user)
-    //     // console.log("err : ", err)
-    //     // console.log("info : ", info)
+    passport.authenticate('jwt',{
+        session : false
+    }, function(err, user, info){
+        // console.log("user : ", user)
+        // console.log("err : ", err)
+        // console.log("info : ", info)
 
-    //     if(user){
-    //         console.log("dszxfgdfhnb")
-    //     }
-    //     else{
-    //         res.status(401).send()
-    //     }
+        if(user){
+            
+            removeNotesTitle
+
+        }
+        else{
+            //unauthorized user
+            res.status(401).send()
+        }
 
         
-    // })(req,res,next);
+    })(req,res,next);
 
 
 })

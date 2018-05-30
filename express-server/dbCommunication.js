@@ -226,4 +226,8 @@ exports.getAllNoteContent = function(notesTitleId){
     return contentCollection.find({ notesID : notesTitleId })
 }
 
+exports.removeNotesTitle = function(noteTitleId){
+    return notesCollection.findById({ notesID : notesTitleId })
+}
+
 // ----------------------------------------------------------------------
