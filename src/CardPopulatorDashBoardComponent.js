@@ -76,18 +76,45 @@ class CardPopulatorDashBoardComponent extends Component {
 
     //delete the note
     deleteYes() {
-        axios.delete('http://localhost:8001/', {
-            data: {
-                _id: this.state._idOfNote
-            }
-        }
-        )
-            .then((response) => {
-                console.log(response.body)
-            })
-            .catch((err) => {
+        
 
-            })
+        // axios.delete('http://localhost:8001/deletenote/' + this.state.noteToDeleteID
+        //     , {
+                
+        //     },// + this.state.noteToDeleteID   
+        //     {
+        //         headers: {
+        //             'Authorization': "Bearer " + localStorage.getItem('JWT_TOKEN')
+        //         }
+        //     }
+        // )
+        // var x = {
+        //      x : 123
+        // }
+        // axios.delete('http://localhost:8001/deletenote/12345', JSON.stringify(x)   /*, { headers: {Authorization: "Bearer " + localStorage.getItem('JWT_TOKEN')}} */)
+        //     .then((response) => {
+        //         console.log(response.body)
+        //     })
+        //     .catch((err) => {
+        //         console.log("err : ", err)
+        //     })
+
+        axios({
+            method : 'DELETE',
+            url : 'http://localhost:8001/deletenote/12345678',
+            data : {
+                x : "123"
+            },
+            headers :{
+                Authorization : "Bearer " + localStorage.getItem('JWT_TOKEN')
+            }
+        })
+        .then(response =>{
+            console.log("deleteYes : ", response)
+        })
+        .catch(err =>{
+            console.log("err : ", err)
+        })
     }
 
     // close the modal

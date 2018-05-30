@@ -296,13 +296,15 @@ app.get('/getcurrentnote/:noteID', function(req,res,next){
         noteEntryArray.map((eachEntry) =>{
             valueToSend.push({ content : eachEntry.content, _id : eachEntry._id, isChecked : eachEntry.isChecked })
         })
+    
+        res.status(200).send(valueToSend)
     })
 
-    setTimeout(() =>{
+    // setTimeout(() =>{
 
-        res.status(200).send(valueToSend)
-    }
-    ,2000)
+        
+    // }
+    // ,2000)
 
 
 })
@@ -311,11 +313,28 @@ app.get('/getcurrentnote/:noteID', function(req,res,next){
 app.put('/update/:id', function (req, res) { })
 
 //for deletion operation
-app.delete('/deletenote/:id', function (req, res) {
-    console.log("id to delete : ", req.params.id)
-    console.log("delete body : ", req.body)
-    res.write("GOT THE DELETE HANDLE!");
-    res.end();
+app.delete('/deletenote/:id', function (req, res, next) {
+    
+    console.log("id to delete : ", req.headers.authorization)
+
+    // passport.authenticate('jwt',{
+    //     session : false
+    // }, function(err, user, info){
+    //     // console.log("user : ", user)
+    //     // console.log("err : ", err)
+    //     // console.log("info : ", info)
+
+    //     if(user){
+    //         console.log("dszxfgdfhnb")
+    //     }
+    //     else{
+    //         res.status(401).send()
+    //     }
+
+        
+    // })(req,res,next);
+
+
 })
 
 
