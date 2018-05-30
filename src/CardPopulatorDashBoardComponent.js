@@ -14,9 +14,9 @@ class CardPopulatorDashBoardComponent extends Component {
         notesObjArray: null,
         isNoteEditingModalVisible: false,
         currentlySelectedCard: '',
-        redirectVar: false, 
-        noteToDeleteID : '',
-        showDeleteDialogBox : false
+        redirectVar: false,
+        noteToDeleteID: '',
+        isDeleteConfirmationModalVisible: false
     }
 
     componentWillMount() {
@@ -69,13 +69,30 @@ class CardPopulatorDashBoardComponent extends Component {
         this.setState({ isNoteEditingModalVisible: false })
     }
 
-    getCardToDelete = (cardID) =>{
-        this.setState({ showDeleteDialogBox : true, noteToDeleteID : cardID })
+    getCardToDelete = (cardID) => {
+        this.setState({ isDeleteConfirmationModalVisible: true, noteToDeleteID: cardID })
         // console.log("state: ", this.state);
     }
 
-    destroyDeletionModal = () =>{
-        this.setState({ showDeleteDialogBox : false })
+    //delete the note
+    deleteYes() {
+        axios.delete('http://localhost:8001/', {
+            data: {
+                _id: this.state._idOfNote
+            }
+        }
+        )
+            .then((response) => {
+                console.log(response.body)
+            })
+            .catch((err) => {
+
+            })
+    }
+
+    // close the modal
+    deleteNo() {
+        this.setState({ isDeleteConfirmationModalVisible: false })
     }
 
     render() {
@@ -103,13 +120,20 @@ class CardPopulatorDashBoardComponent extends Component {
                         </Modal>
                         {/* -------------------------MODAL FOR EDITING NOTES ENDS---------------------------- */}
 
-                        
-                        {
-                            this.state.showDeleteDialogBox 
-                            ? (<DeleteNoteModalComponent destroyDeletionModal = { this.destroyDeletionModal }  _noteID = { this.state.noteToDeleteID } />) 
-                            : null
-                        }
 
+                        {/* -------------------------DELETE NOTE MODAL--------------------------------------- */}
+                        <Modal
+                            visible={this.state.isDeleteConfirmationModalVisible}
+                            maskClosable={false}
+                            onCancel={this.deleteNo.bind(this)}
+                            onOk={this.deleteYes.bind(this)}
+                            closable={true}
+                            // getContainer = { (e) => console.log("dsfvsdg : ", this.getContainer) }
+                            destroyOnClose={true}
+                        >
+                            Delete Note??
+                        </Modal>
+                        {/* -------------------------DELETE NOTE MODAL ENDS----------------------------------- */}
 
                         {/* generate cards */}
 
@@ -124,7 +148,7 @@ class CardPopulatorDashBoardComponent extends Component {
                                                         (note, inner_idx) => {
                                                             return (
                                                                 <Col key={inner_idx} span={8}>
-                                                                    <DummyCardComponent getCardToDelete = { this.getCardToDelete.bind(this) } getClickedCard={this.getClickedCard.bind(this)} cardIndex={(idx * 3) + inner_idx} noteObj={note} />
+                                                                    <DummyCardComponent getCardToDelete={this.getCardToDelete.bind(this)} getClickedCard={this.getClickedCard.bind(this)} cardIndex={(idx * 3) + inner_idx} noteObj={note} />
                                                                 </Col>
                                                             )
                                                         }
