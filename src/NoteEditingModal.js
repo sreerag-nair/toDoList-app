@@ -46,16 +46,24 @@ class NoteEditingModal extends Component {
 
     //editing the existing note
     submitNote() {
-        // console.log("ON SUBMIT : ", this.state.notesCollectionObject)
+        console.log("ON SUBMIT : ", this.state.notesCollectionObject)
 
-        axios.post('http://localhost:8001/getcurrentnote',
-            this.props.noteObj._id,
-            {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
-                }
-            })
+        // axios.post('http://localhost:8001/update/ + 'this.statethis.props.noteObj._id',
+        //     this.props.noteObj._id,
+        //     {
+        //         headers: {
+        //             "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
+        //         }
+        //     })
 
+        axios({
+            method : 'PUT',
+            url : 'http://localhost:8001/update/'+ this.props.noteObj._id,
+            data : this.state.notesCollectionObject ,
+            headers :{
+                Authorization : "Bearer " + localStorage.getItem('JWT_TOKEN')
+            }
+        })
 
     }
 

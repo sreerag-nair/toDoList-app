@@ -41,8 +41,8 @@ var userTableSchemaHandle = (function () {
             userName: String,
             name: String,
             emailId: {
-                type: String
-                // unique : true     
+                type: String,
+                unique : true     
             },
             // 'password' will be hashed 
             password: String,
@@ -73,8 +73,12 @@ var notesTableSchemaHandle = (function () {
             // id of the owner
             uId: String,
             title: String,
-            date: Date,
-            isDeleted: Boolean,
+            createdAt: {
+                default : Date.now(),
+                type : Date
+            },
+            updatedAt : Date,
+            deletedAt : Date,
             //collaborators of the note
             sharedWith: Array
 
@@ -102,7 +106,10 @@ var contentTableSchemaHandle = (function () {
             // the id of the note it is present in
             notesID: String,
             content: String,
-            isChecked: Boolean
+            isChecked: {
+                type : Boolean,
+                default : false
+            }
 
         })
         return contentTableSchemaHandle;
@@ -135,10 +142,6 @@ function getHandles() {
 
 var { userCollection, notesCollection, contentCollection } = getHandles()
 
-exports.create = function (userCredentialsJSONObject) {
-
-
-}
 
 
 exports.read = function (notesObjArray) {
@@ -204,7 +207,7 @@ exports.newUser = function (userCredObject) {
 exports.insertNoteTitle = function (userTableId, noteTitle) {
     // return the promise object containing the 
     // saved object as the returned object...
-    return notesCollection({ uId: userTableId, title: noteTitle, date: new Date(), isDeleted: false }).save()
+    return notesCollection({ uId: userTableId, title: noteTitle, createdAt: new Date(), isDeleted: false }).save()
 }
 
 
@@ -219,7 +222,7 @@ exports.getNotesTitle = function(userId){
 
     //returns an array consisting of note titles created
     // by a particular user 
-    return notesCollection.find({ uId : userId })
+    return notesCollection.find({ uId : userId , deletedAt : { $eq : null } })
 }
 
 exports.getAllNoteContent = function(notesTitleId){
@@ -228,11 +231,16 @@ exports.getAllNoteContent = function(notesTitleId){
 
 exports. removeNotesTitle = function(notesTitleId){
     return notesCollection.findOneAndUpdate({ _id : notesTitleId },
-        { $set : {isDeleted : true} }, {new : true} )
+        { $set : {deletedAt : Date.now()} }, {new : true} )
 }
 
-exports.removeNoteContentInBulk = function(noteId){
-    return contentCollection.deleteMany({ notesID : noteId })
+
+exports.updateEntry = function(entryId,content, isChecked){
+    return contentCollection.findOneAndUpdate({ _id : entryId, content : content, isChecked : isChecked  })
+}
+
+exports.updateTitle = function(noteId, title){
+    return notesCollection.findOneAndUpdate({ _id : noteId, title : title })
 }
 
 // ----------------------------------------------------------------------

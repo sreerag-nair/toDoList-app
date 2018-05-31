@@ -55,7 +55,7 @@ class AddNoteComponent extends Component {
                 }
             })
             .then((response) => {
-                this.setState(this.state);
+                // this.setState(this.state);
                 message.success('Note added to database successfully.')
                 this.setState({ isAddInputBoxVisible: true, disableAddButton: false, isSubmitButtonDisabled: false, displaySubmitButtonLoading: false })
             })

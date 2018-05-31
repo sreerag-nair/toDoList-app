@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Layout, Modal, Row } from 'antd';
+import { Col, Layout, message, Modal, Row } from 'antd';
 import CardComponent from './CardComponent';
 import axios from 'axios';
 import DeleteNoteModalComponent from './DeleteNoteModal';
@@ -103,23 +103,34 @@ class CardPopulatorDashBoardComponent extends Component {
             method : 'DELETE',
             url : 'http://localhost:8001/deletenote/' + this.state.noteToDeleteID,
             data : {
-                x : "123"
+                // x : "123"
             },
             headers :{
                 Authorization : "Bearer " + localStorage.getItem('JWT_TOKEN')
             }
         })
         .then(response =>{
-            console.log("deleteYes : ", response)
+
+            this.setState({ isDeleteConfirmationModalVisible : false })
+            message.success("Delete successful....")
+            var updatednotesObjArray = this.state.notesObjArray.slice()
+            
+            updatednotesObjArray.splice(updatednotesObjArray.findIndex((x) => {
+                //get the index of the card removed
+                return x._id == this.state.noteToDeleteID 
+                }),1)
+
+            this.setState({ notesObjArray : updatednotesObjArray })
         })
         .catch(err =>{
+            message.error("There was some problem... try again later")
             console.log("err : ", err)
         })
     }
 
     // close the modal
     deleteNo() {
-        this.setState({ isDeleteConfirmationModalVisible: false })
+        this.setState({ isDeleteConfirmationModalVisible: false, noteToDeleteID : '' })
     }
 
     render() {
@@ -158,7 +169,7 @@ class CardPopulatorDashBoardComponent extends Component {
                             // getContainer = { (e) => console.log("dsfvsdg : ", this.getContainer) }
                             destroyOnClose={true}
                         >
-                            Delete Note??
+                            Delete Note?
                         </Modal>
                         {/* -------------------------DELETE NOTE MODAL ENDS----------------------------------- */}
 

@@ -11,7 +11,7 @@ const jwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const cors = require('cors')
 // to import the database functions
-const { create, getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser, read, removeNotesTitle, removeNoteContentInBulk, searchUserCreds, searchUserEmail } = require('./dbCommunication');
+const {  getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser /*, read*/ , removeNotesTitle, searchUserCreds, searchUserEmail, updateTitle } = require('./dbCommunication');
 const { generateToken } = require('./tokenGenerator');
 
 
@@ -207,12 +207,12 @@ app.post('/addnewnote', function (req, res, next) {
                     req.body.entries.map(
                         (entryObj, idx) => {
                             insertNoteEntry(doc._id, entryObj.content, entryObj.isChecked)
-                            console.log("RUNNING MAN")
+                            // console.log("expressServer - ln 210")
                         }
                     )
+                    res.status(200).send()
                     setTimeout(() =>{
-                        res.status(200).send()
-                    },2000)
+                    },1000)
                 })
             })
             
@@ -269,8 +269,6 @@ app.get('/getnotes', function (req, res, next) {
             })
             
         
-            
-            
             // res.status(200).send(objToSend);
             
             
@@ -310,12 +308,49 @@ app.get('/getcurrentnote/:noteID', function(req,res,next){
 })
 
 // update an existing card - update operation
-app.put('/update/:id', function (req, res) { })
+app.put('/update/:id', function (req, res, next) {
+
+    // console.log("ID : ", req.params.id)
+    // console.log("Code : ", req.body)
+ 
+    req.body.map(x =>{
+        x._id == true ? console.log("It is true : ", x._id) : console.log("It is false", x._id)
+        // console.log("x : ", x.isChecked)
+    })
+
+    // updateTitle(req.params.id)
+    // .then((doc, err) =>{
+    //     if(doc){
+
+    //         req.body.map(_content =>{
+    //             if(_content.isChecked){
+    //                 //just update the entry
+
+    //             }
+    //             else{
+    //                 //insert a new entry into the table
+    //             }
+    //         })
+
+    //     }
+    //     else{
+    //         res.status(401).send()
+    //     }
+    // })
+
+    res.end();
+
+
+})
+
+
+
+
+
+
 
 //for deletion operation
 app.delete('/deletenote/:id', function (req, res, next) {
-    
-    console.log("id to delete : ", req.params)
 
     passport.authenticate('jwt',{
         session : false
@@ -326,31 +361,18 @@ app.delete('/deletenote/:id', function (req, res, next) {
 
         if(user){
             
-            // this function does the job of soft delete
-            // ie. just setting the isDeleted field of the passed note id
-            //to true...
-            // removeNotesTitle(req.params.id)
-            // .then((doc, err) =>{
-            //     if(err){
-            //         res.status().send();
-            //         throw err
-            //     }
+            // soft delete
+            removeNotesTitle(req.params.id)
+            .then((doc, err) =>{
+                if(err){
+                    res.status(400).send();
+                    throw err
+                }
 
-                // console.log("OUTSIDE.... : ", doc)
-
-                removeNoteContentInBulk(req.params.id)
-                .then((contentCollection, err) =>{
-                    // contentCollection.map((c, idx) =>{
-                    
-                        // console.log("contentCollection : ", contentCollection)
-                        
-                        
-                    
-                    // })
-                })
-
-
-            // })
+                if(doc) 
+                res.status(200).send();
+            
+            })
 
         }
         else{
