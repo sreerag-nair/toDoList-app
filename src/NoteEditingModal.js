@@ -132,6 +132,7 @@ class NoteEditingModal extends Component {
                 return idx != index
             })
         })
+
     }
 
 
