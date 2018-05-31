@@ -226,8 +226,13 @@ exports.getAllNoteContent = function(notesTitleId){
     return contentCollection.find({ notesID : notesTitleId })
 }
 
-exports.removeNotesTitle = function(noteTitleId){
-    return notesCollection.findById({ notesID : notesTitleId })
+exports. removeNotesTitle = function(notesTitleId){
+    return notesCollection.findOneAndUpdate({ _id : notesTitleId },
+        { $set : {isDeleted : true} }, {new : true} )
+}
+
+exports.removeNoteContentInBulk = function(noteId){
+    return contentCollection.deleteMany({ notesID : noteId })
 }
 
 // ----------------------------------------------------------------------

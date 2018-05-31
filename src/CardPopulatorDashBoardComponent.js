@@ -101,7 +101,7 @@ class CardPopulatorDashBoardComponent extends Component {
 
         axios({
             method : 'DELETE',
-            url : 'http://localhost:8001/deletenote/12345678',
+            url : 'http://localhost:8001/deletenote/' + this.state.noteToDeleteID,
             data : {
                 x : "123"
             },

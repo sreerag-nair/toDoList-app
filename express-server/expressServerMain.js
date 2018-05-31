@@ -11,7 +11,7 @@ const jwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const cors = require('cors')
 // to import the database functions
-const { create, getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser, read, removeNotesTitle, searchUserCreds, searchUserEmail } = require('./dbCommunication');
+const { create, getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser, read, removeNotesTitle, removeNoteContentInBulk, searchUserCreds, searchUserEmail } = require('./dbCommunication');
 const { generateToken } = require('./tokenGenerator');
 
 
@@ -315,7 +315,7 @@ app.put('/update/:id', function (req, res) { })
 //for deletion operation
 app.delete('/deletenote/:id', function (req, res, next) {
     
-    // console.log("id to delete : ", req.headers.authorization)
+    console.log("id to delete : ", req.params)
 
     passport.authenticate('jwt',{
         session : false
@@ -326,7 +326,31 @@ app.delete('/deletenote/:id', function (req, res, next) {
 
         if(user){
             
-            removeNotesTitle
+            // this function does the job of soft delete
+            // ie. just setting the isDeleted field of the passed note id
+            //to true...
+            // removeNotesTitle(req.params.id)
+            // .then((doc, err) =>{
+            //     if(err){
+            //         res.status().send();
+            //         throw err
+            //     }
+
+                // console.log("OUTSIDE.... : ", doc)
+
+                removeNoteContentInBulk(req.params.id)
+                .then((contentCollection, err) =>{
+                    // contentCollection.map((c, idx) =>{
+                    
+                        // console.log("contentCollection : ", contentCollection)
+                        
+                        
+                    
+                    // })
+                })
+
+
+            // })
 
         }
         else{
