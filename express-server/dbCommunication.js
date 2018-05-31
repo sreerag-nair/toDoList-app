@@ -229,18 +229,23 @@ exports.getAllNoteContent = function(notesTitleId){
     return contentCollection.find({ notesID : notesTitleId })
 }
 
-exports. removeNotesTitle = function(notesTitleId){
+//technically deleting a note
+exports.removeNotesTitle = function(notesTitleId){
     return notesCollection.findOneAndUpdate({ _id : notesTitleId },
         { $set : {deletedAt : Date.now()} }, {new : true} )
 }
 
 
-exports.updateEntry = function(entryId,content, isChecked){
-    return contentCollection.findOneAndUpdate({ _id : entryId, content : content, isChecked : isChecked  })
+exports.updateEntry = function(entryId, content, isChecked){
+    return contentCollection.findOneAndUpdate({ _id : entryId } , { $set : { content : content, isChecked : isChecked } })
 }
 
 exports.updateTitle = function(noteId, title){
-    return notesCollection.findOneAndUpdate({ _id : noteId, title : title })
+    return notesCollection.findOneAndUpdate({ _id : noteId},{ $set : { title : title } })
 }
 
+
+exports.removeSingleEntry = function(entryId){
+    return contentCollection.findOneAndRemove({ _id : entryId })
+}
 // ----------------------------------------------------------------------

@@ -11,7 +11,8 @@ const jwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const cors = require('cors')
 // to import the database functions
-const {  getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser /*, read*/ , removeNotesTitle, searchUserCreds, searchUserEmail, updateTitle } = require('./dbCommunication');
+const {  getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser /*, read*/ ,
+     removeNotesTitle, removeSingleEntry, searchUserCreds, searchUserEmail, updateEntry, updateTitle } = require('./dbCommunication');
 const { generateToken } = require('./tokenGenerator');
 
 
@@ -230,7 +231,7 @@ app.post('/shouldRedirect', function (req, res, next) {
     }, function (err, user, info) {
         
         console.log("IN HEREE - /shouldRedirect")
-
+        
         if (!user) //UNAUTHORIZED...
         res.status(401).send()
     })
@@ -258,7 +259,7 @@ app.get('/getnotes', function (req, res, next) {
                 notesTitleArray.map((noteTitle, titleIndex) => {
                     //create a new entry with the title and _id
                     
-                    objToSend.push({ _id: noteTitle._id, title: noteTitle.title, date : noteTitle.date })
+                    objToSend.push({ _id: noteTitle._id, title: noteTitle.title, date : new Date(noteTitle.createdAt).toLocaleString("en-US") })
                     
                 })
                 
@@ -268,7 +269,7 @@ app.get('/getnotes', function (req, res, next) {
                 
             })
             
-        
+            
             // res.status(200).send(objToSend);
             
             
@@ -283,64 +284,82 @@ app.get('/getnotes', function (req, res, next) {
 
 app.get('/getcurrentnote/:noteID', function(req,res,next){
     // console.log("req body : ", req.params.noteID)
-
+    
     //TRY ASYNC-AWAIT HERE
-
+    
     var valueToSend = []
     console.log
-
+    
     getAllNoteContent(req.params.noteID)
     .then((noteEntryArray) =>{
         noteEntryArray.map((eachEntry) =>{
             valueToSend.push({ content : eachEntry.content, _id : eachEntry._id, isChecked : eachEntry.isChecked })
         })
-    
+        
         res.status(200).send(valueToSend)
     })
-
+    
     // setTimeout(() =>{
-
-        
+    
+    
     // }
     // ,2000)
-
-
+    
+    
 })
 
 // update an existing card - update operation
 app.put('/update/:id', function (req, res, next) {
+    
+    console.log("ID : ", req.params.id)
+    console.log("Code : ", req.body)
+    
+    
+    
+    updateTitle(req.params.id)
+    .then((doc, err) =>{
+        if(doc){
+            
+            req.body.toUpdateOrEnter.map(obj =>{
+                
+                //update
+                if(obj._id != null){    
+                    updateEntry(obj._id, obj.content, obj.isChecked)
+                    .then((doc, err) =>{
+                        console.log("Updated")
+                    })  
+                    
+                }else{
+                    //insert
+                    insertNoteEntry(req.params.id,obj.content,obj.isChecked)
+                    .then((doc, entry) => {
+                        console.log("New Entry")
+                    })
+                }
+            })
 
-    // console.log("ID : ", req.params.id)
-    // console.log("Code : ", req.body)
- 
-    req.body.map(x =>{
-        x._id == true ? console.log("It is true : ", x._id) : console.log("It is false", x._id)
-        // console.log("x : ", x.isChecked)
+
+
+            //delete entries... 
+            //try async/await for multiple promises
+            req.body.toDelete.map(obj =>{
+                removeSingleEntry(obj._id)
+                .then((doc, err) =>{
+                    console.log("Deleted....")
+                })
+            })
+
+
+
+            res.status(200).send();
+        }
+        else{
+            res.status(401).send()
+        }
     })
-
-    // updateTitle(req.params.id)
-    // .then((doc, err) =>{
-    //     if(doc){
-
-    //         req.body.map(_content =>{
-    //             if(_content.isChecked){
-    //                 //just update the entry
-
-    //             }
-    //             else{
-    //                 //insert a new entry into the table
-    //             }
-    //         })
-
-    //     }
-    //     else{
-    //         res.status(401).send()
-    //     }
-    // })
-
-    res.end();
-
-
+    
+    
+    
 })
 
 
@@ -351,14 +370,14 @@ app.put('/update/:id', function (req, res, next) {
 
 //for deletion operation
 app.delete('/deletenote/:id', function (req, res, next) {
-
+    
     passport.authenticate('jwt',{
         session : false
     }, function(err, user, info){
         // console.log("user : ", user)
         // console.log("err : ", err)
         // console.log("info : ", info)
-
+        
         if(user){
             
             // soft delete
@@ -368,22 +387,22 @@ app.delete('/deletenote/:id', function (req, res, next) {
                     res.status(400).send();
                     throw err
                 }
-
+                
                 if(doc) 
                 res.status(200).send();
-            
+                
             })
-
+            
         }
         else{
             //unauthorized user
             res.status(401).send()
         }
-
+        
         
     })(req,res,next);
-
-
+    
+    
 })
 
 
