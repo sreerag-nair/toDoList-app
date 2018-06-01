@@ -54,6 +54,7 @@ componentDidMount(){
     displayRedirect(){
         if(this.state.redirectVar){
           return <Redirect to = '/' />
+        // this.props.history.push('/')
         }
       }
 
@@ -87,7 +88,7 @@ componentDidMount(){
                                 : <Button type = "primary" visible = "false" onClick = { () => this.setState({ showPasswordChangeBoxes : true }) } style = {{ background : 'black', marginTop : '10px', width : "100%" }}>Change Password</Button>  }
                             
                             <Button type = "primary" style = {{ background : 'green', marginTop : '10px', width : "50%" }}>Update</Button>
-                            <Button style = {{ width : "50%", marginTop : '10px' }}>Cancel</Button>  
+                            <Button type = "danger" style = {{ width : "50%", marginTop : '10px' }}>Cancel</Button>  
                         </div>
                         { this.displayRedirect() }
                         </Col>

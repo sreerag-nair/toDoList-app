@@ -49,7 +49,7 @@ class NoteEditingModal extends Component {
     //editing the existing note
     submitNote() {
         var objToSend = {}
-        objToSend["notetitle"] = this.state.title
+        objToSend["noteTitle"] = this.state.title
         objToSend["toUpdateOrEnter"] = this.state.notesCollectionObject
         objToSend["toDelete"] = this.state.entriesToDelete
         // objToSend["noteId"] = this.props.noteObj._id
@@ -198,7 +198,7 @@ render() {
         
         {/* <Button onClick={() => this.setState({ isAddInputBoxVisible: !this.state.isAddInputBoxVisible })} style={{ width: '100%' }} type="primary">ADD</Button> */}
         <Button loading = { this.state.updateInProgress } onClick={this.submitNote.bind(this)} style={{ width: '50%', marginTop: '20px' }} type="primary dashed">Update</Button>
-        <Button style={{ width: '50%', marginTop: '20px' }} type="danger">Cancel</Button>
+        <Button style={{ width: '50%', marginTop: '20px' }} type="danger" onClick = { this.props.editingModalOnCancel } >Cancel</Button>
         </Card>
         
         // </Col>

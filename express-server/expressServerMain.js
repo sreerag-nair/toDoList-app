@@ -171,9 +171,11 @@ app.post('/profileinfo', function (req, res, next) {
         session: false
     }, function (err, user, info) {
         
+        console.log("incoming req : ", req.body)
         // console.log("err : ", err);
         console.log("user : ", user);
         // console.log("info : ", info);
+        
         
         if (user) {
             res.status(200).send({ userName: user.userName, emailId: user.emailId, password: user.password })
@@ -299,13 +301,6 @@ app.get('/getcurrentnote/:noteID', function(req,res,next){
         res.status(200).send(valueToSend)
     })
     
-    // setTimeout(() =>{
-    
-    
-    // }
-    // ,2000)
-    
-    
 })
 
 // update an existing card - update operation
@@ -316,10 +311,10 @@ app.put('/update/:id', function (req, res, next) {
     
     
     
-    updateTitle(req.params.id)
+    updateTitle(req.params.id, req.body.noteTitle)
     .then((doc, err) =>{
         if(doc){
-            
+            // console.log("NOTE TITLE UPDATED : ", doc)
             req.body.toUpdateOrEnter.map(obj =>{
                 
                 //update

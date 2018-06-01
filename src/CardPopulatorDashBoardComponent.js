@@ -65,7 +65,7 @@ class CardPopulatorDashBoardComponent extends Component {
         this.setState({ isNoteEditingModalVisible: false })
     }
 
-    modalOnCancel = (e) => {
+    editingModalOnCancel = (e) => {
         this.setState({ isNoteEditingModalVisible: false })
     }
 
@@ -76,28 +76,6 @@ class CardPopulatorDashBoardComponent extends Component {
 
     //delete the note
     deleteYes() {
-        
-
-        // axios.delete('http://localhost:8001/deletenote/' + this.state.noteToDeleteID
-        //     , {
-                
-        //     },// + this.state.noteToDeleteID   
-        //     {
-        //         headers: {
-        //             'Authorization': "Bearer " + localStorage.getItem('JWT_TOKEN')
-        //         }
-        //     }
-        // )
-        // var x = {
-        //      x : 123
-        // }
-        // axios.delete('http://localhost:8001/deletenote/12345', JSON.stringify(x)   /*, { headers: {Authorization: "Bearer " + localStorage.getItem('JWT_TOKEN')}} */)
-        //     .then((response) => {
-        //         console.log(response.body)
-        //     })
-        //     .catch((err) => {
-        //         console.log("err : ", err)
-        //     })
 
         axios({
             method : 'DELETE',
@@ -142,21 +120,25 @@ class CardPopulatorDashBoardComponent extends Component {
 
                     <Content style={{ /* margin: '24px 16px 0',*/ overflow: 'initial' }}>
 
+
+
+
                         {/* -------------------------MODAL FOR EDITING NOTES---------------------------- */}
                         <Modal visible={this.state.isNoteEditingModalVisible}
                             maskClosable={true}
                             maskStyle={{ width: '100%' }}
-                            onOk={this.modalOnOK}
-                            onCancel={this.modalOnCancel}
+                            // onCancel={this.editingModalOnCancel}
                             closable={false}
                             destroyOnClose={true}
                             footer={null}
                             style={{ heignt: '10vh' }}
                         >
-                            {/* <CardComponent noteObj = { this.state.notesObjArray[this.state.currentlySelectedCard] } /> */}
-                            <NoteEditingModal noteObj={this.state.notesObjArray.find(note => { return note._id == this.state.currentlySelectedCard })} />
+                            <NoteEditingModal editingModalOnCancel = { this.editingModalOnCancel }  noteObj={this.state.notesObjArray.find(note => { return note._id == this.state.currentlySelectedCard })} />
                         </Modal>
                         {/* -------------------------MODAL FOR EDITING NOTES ENDS---------------------------- */}
+
+
+
 
 
                         {/* -------------------------DELETE NOTE MODAL--------------------------------------- */}
