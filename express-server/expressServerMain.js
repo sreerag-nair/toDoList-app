@@ -289,7 +289,8 @@ app.get('/getnotes', function (req, res, next) {
                         notesTitleArray.map((noteTitle, titleIndex) => {
                             //create a new entry with the title and _id
 
-                            objToSend.push({ _id: noteTitle._id, title: noteTitle.title, date: new Date(noteTitle.createdAt).toLocaleString("en-US") })
+                            objToSend.push({ _id: noteTitle._id, title: noteTitle.title,
+                         createdDate: new Date(noteTitle.createdAt).toLocaleString("en-US"), updatedDate : new Date(noteTitle.updatedAt).toLocaleString("en-US") })
 
                         })
 

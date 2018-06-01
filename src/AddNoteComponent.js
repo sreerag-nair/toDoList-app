@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { message, Button, Card, Checkbox, Divider, Icon, Input, Tooltip } from 'antd';
+import { message, Button, Card, Checkbox, Divider, Icon, Input, Popover, Tooltip } from 'antd';
 // import { Col, Row } from 'antd';
 import { Col, Row } from 'react-flexbox-grid'
 import axios from 'axios';
@@ -16,13 +16,6 @@ class AddNoteComponent extends Component {
                 "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
             }
         })
-        // .then()
-        // .catch((err) =>{
-        //     if(err.response.status == 401){
-        //         this.setState({ redirectVar : true })
-        //     }
-
-        // })
     }
 
     state = {
@@ -33,7 +26,7 @@ class AddNoteComponent extends Component {
         notesCollectionObject: [],
         newValueToAdd: '',
         isAddButtonDisabled: true,
-        isSubmitButtonDisabled: false,
+        isSubmitButtonDisabled: true,
         displaySubmitButtonLoading: false,
         disableAddButton: false
 
@@ -84,13 +77,15 @@ class AddNoteComponent extends Component {
     addNewNoteEntry(e) {
 
         //when the button is clicked with an empty text box
+
         if (this.state.isTooltipVisible)
             return
         else if (!this.state.isTooltipVisible && !this.state.newValueToAdd) {
             return
         }
         else
-            this.setState({ notesCollectionObject: [...this.state.notesCollectionObject, { content: this.state.newValueToAdd, isChecked: false }], newValueToAdd: '' })
+            this.setState({ notesCollectionObject: [...this.state.notesCollectionObject, { content: this.state.newValueToAdd, isChecked: false }],
+                 newValueToAdd: '', isSubmitButtonDisabled : false })
     }
 
 
@@ -123,18 +118,21 @@ class AddNoteComponent extends Component {
 
     toDeleteEntry(index, event) {
         // console.log("i : ", index)
+
         this.setState({
             notesCollectionObject: this.state.notesCollectionObject.filter((element, idx) => {
                 return idx != index
             })
+        }, () =>{
+            if(!this.state.notesCollectionObject.length)
+            this.setState({ isSubmitButtonDisabled : true })
         })
 
 
     }
 
-    changeTitle() {
-        var x = prompt('Enter new title name')
-        this.setState({ title: x })
+    changeTitle(e) {
+        this.setState({ title: e.target.value })
     }
 
     render() {
@@ -142,7 +140,10 @@ class AddNoteComponent extends Component {
             <div style={{ height: '90vh' }}>
                 <Row>
                     <Col xs></Col>
-                    <Col xs> <Card hoverable title={<div onClick={this.changeTitle.bind(this)}>{this.state.title}</div>} style={{ textAlign: 'left', background: 'white', marginTop: '150px' }}>
+                    <Col xs> <Card hoverable 
+                    title={ <Popover trigger = "click" content = { <Input onChange = { this.changeTitle.bind(this) } value = { this.state.title } placeholder = "Title input..."/> } >
+                    <div> {this.state.title} </div> </Popover> }
+                     style={{ textAlign: 'left', background: 'white', marginTop: '150px' }}>
 
                         {
                             this.state.notesCollectionObject.map((entry, idx) => {
@@ -163,7 +164,7 @@ class AddNoteComponent extends Component {
 
                         {/* <Button onClick={() => this.setState({ isAddInputBoxVisible: !this.state.isAddInputBoxVisible })} disabled={this.state.disableAddButton} style={{ width: '100%' }} type="primary">ADD</Button> */}
                         <Button onClick={this.submitNote.bind(this)} style={{ width: '50%', marginTop: '20px' }} disabled={this.state.isSubmitButtonDisabled} loading={this.state.displaySubmitButtonLoading} type="primary">Add note</Button>
-                        <Button style={{ width: '50%', marginTop: '20px' }} disabled={this.state.isSubmitButtonDisabled} type="danger">Cancel</Button>
+                        <Button style={{ width: '50%', marginTop: '20px' }}  type="danger">Cancel</Button>
                     </Card> </Col>
                     <Col xs></Col>
                 </Row>

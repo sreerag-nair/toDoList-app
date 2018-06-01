@@ -241,7 +241,7 @@ exports.updateEntry = function(entryId, content, isChecked){
 }
 
 exports.updateTitle = function(noteId, title){
-    return notesCollection.findOneAndUpdate({ _id : noteId},{ $set : { title : title } })
+    return notesCollection.findOneAndUpdate({ _id : noteId},{ $set : { title : title , updatedAt : new Date(Date.now()).toLocaleString("en-US") } })
 }
 
 

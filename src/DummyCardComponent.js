@@ -10,8 +10,11 @@ class DummyCardComponent extends Component{
 
     render(){
         return(
-            <Card /*onClick = { () => this.props.getClickedCard(this.props.noteObj._id) }*/ bordered  title={this.props.noteObj.title} bordered={true} extra={<Tooltip title={<span>Created at  {this.props.noteObj.date}<br />Updated at  {this.props.noteObj.date}</span>}><Icon type="calendar" /></Tooltip>}
-                hoverable='true' style={{ textAlign : 'center' }}
+            <Card /*onClick = { () => this.props.getClickedCard(this.props.noteObj._id) }*/ bordered  title={this.props.noteObj.title} bordered={true}
+             extra={<Tooltip title={<span>Created at  {this.props.noteObj.createdDate} 
+             {(this.props.noteObj.updatedDate == 'Invalid Date') ? null :  (<span><br />Updated at {this.props.noteObj.updatedDate}</span>)  } </span>}>
+
+             <Icon type="calendar" /></Tooltip>} hoverable='true' style={{ textAlign : 'center' }}
                 actions={[<Tooltip title="Edit note">
                     <Icon type="edit" onClick={ () => {
                         // console.log('Add Clicked! : ', this.props.cardIndex)}
