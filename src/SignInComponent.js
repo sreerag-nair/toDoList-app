@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Col, Form, Icon, Input, Row } from 'antd';
+import { Button, Col, Form, Icon, Input, message, Row } from 'antd';
 import { Link } from 'react-router-dom';
 import SpinnerClass from './SpinnerClass';
 import axios from 'axios';
@@ -48,8 +48,15 @@ handleSubmit = (e) => {
         localStorage.setItem('JWT_TOKEN', (result.data.token));
         console.log("Saved in localStorage ");
         this.setState({ spinnerVar: false, redirectVar : true });
+        message.success("Welcome back...!!")
         }
         
+      })
+      .catch((err) =>{
+        if(err.response.status == 404){
+          this.setState({ spinnerVar: false });
+          message.error("Email id or password error..... try again")
+        }
       })
     }
   });
@@ -79,7 +86,7 @@ render() {
     {/* USERNAME INPUT FIELD */}
     <FormItem>
     {getFieldDecorator('emailSignIn', {
-      rules: [{ required: true, message: 'Required!' }],
+      rules: [{ type : 'email', required: true, message: 'Invalid email-id format!' }],
     })(
       <Input placeholder="Email id" />
     )}
