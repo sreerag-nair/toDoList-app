@@ -51,7 +51,8 @@ class CardPopulatorDashBoardComponent extends Component {
     redirectToHomePage() {
         if (this.state.redirectVar) {
             // alert('PRESSED')
-            return <Redirect to='/' />
+            // return <Redirect to='/' />
+            this.props.history.push('/')
         }
 
     }

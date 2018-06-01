@@ -66,7 +66,8 @@ class DashBoard extends React.Component {
     redirectToHomePage() {
         if (this.state.redirectVar) {
             // alert('PRESSED')
-            return <Redirect to='/' />
+            // return <Redirect to='/' />
+            this.props.history.push('/')
         }
 
     }
@@ -116,9 +117,9 @@ class DashBoard extends React.Component {
                     {/* <Header></Header> */}
                     <Content>
                         <Switch >
-                            <Route exact path='/dashboard' render={() => <CardPopulatorDashBoardComponent />} />
-                            <Route exact path='/dashboard/addnote' render={() => <AddNoteComponent />} />
-                            <Route exact path='/dashboard/profile' render={() => <ProfileComponent />} />
+                            <Route exact path='/dashboard' render={(props) => <CardPopulatorDashBoardComponent {...props}/>} />
+                            <Route exact path='/dashboard/addnote' render={(props) => <AddNoteComponent {...props}/>} />
+                            <Route exact path='/dashboard/profile' render={(props) => <ProfileComponent {...props}/>} />
                         </Switch>
                     </Content>
                     <Footer style={{ textAlign: 'center', bottom : '0px' , width : '87%', position : " absolute" }}>

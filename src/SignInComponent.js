@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Col, Form, Icon, Input, Row } from 'antd';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SpinnerClass from './SpinnerClass';
 import axios from 'axios';
 const FormItem = Form.Item;
@@ -57,7 +57,8 @@ handleSubmit = (e) => {
 
 displayRedirect(){
   if(this.state.redirectVar){
-    return <Redirect to = '/dashboard' />
+    // return <Redirect to = '/dashboard' />
+    this.props.history.push('/dashboard')
   }
 }
 

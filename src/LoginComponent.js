@@ -62,11 +62,11 @@ class LoginComponent extends Component {
 
           <Switch>
             {/* THE SIGN IN ROUTE */}
-            <Route exact path='/' render={() => <SignInComponent size={this.state.size} form={this.props.form}
+            <Route exact path='/' render={(props) => <SignInComponent {...props} size={this.state.size} form={this.props.form}
               getFieldDecorator={getFieldDecorator} setToken={this.setToken} />} />
 
             {/* THE SIGN UP ROUTE */}
-            <Route exact path='/new-user' render={() => <SignUpComponent form={this.props.form} size={this.state.size}
+            <Route exact path='/new-user' render={(props) => <SignUpComponent {...props} form={this.props.form} size={this.state.size}
               getFieldDecorator={getFieldDecorator} />} />
 
 

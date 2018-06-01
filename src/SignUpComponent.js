@@ -107,7 +107,8 @@ checkEmailAvailability(e) {
 
 displayRedirect(){
   if(this.state.redirectVar){
-    return <Redirect to = '/dashboard' />
+    // return <Redirect to = '/dashboard' />
+    this.props.history.push('/dashboards')
   }
 }
 

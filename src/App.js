@@ -24,8 +24,8 @@ class App extends Component {
 
       <div>
         <Switch>
-          <Route path="/dashboard" component={DashBoard} />
-          <Route path="/" component={LoginComponent} />
+          <Route path="/dashboard" render = {(props) => <DashBoard {...props} />} />
+          <Route path="/" render = {(props) => <LoginComponent {...props} />} />
         </Switch>
       </div>
     );

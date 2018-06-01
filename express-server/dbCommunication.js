@@ -248,4 +248,8 @@ exports.updateTitle = function(noteId, title){
 exports.removeSingleEntry = function(entryId){
     return contentCollection.findOneAndRemove({ _id : entryId })
 }
+
+exports.updateUserInfo = function(userObj){
+    return userCollection.findOneAndUpdate({ emailId : userObj.emailId },{ $set : {  userName : userObj.userName, name : userObj.fullName, password : userObj.password } })
+}
 // ----------------------------------------------------------------------
