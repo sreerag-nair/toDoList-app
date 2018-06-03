@@ -50,8 +50,7 @@ class DashBoard extends React.Component {
         loading: false,
         visible: false,
         showModal: false,
-        currentCard: null,
-        // redirectVar: false
+        currentCard: null
     }
 
     setCurrentCard = (thisValue) => {

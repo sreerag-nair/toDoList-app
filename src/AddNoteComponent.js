@@ -19,7 +19,6 @@ class AddNoteComponent extends Component {
     }
 
     state = {
-        redirectVar: '',
         title: "Click here to enter title",
         isAddInputBoxVisible: false,
         isTooltipVisible: false,
