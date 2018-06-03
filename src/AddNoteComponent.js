@@ -135,6 +135,15 @@ class AddNoteComponent extends Component {
         this.setState({ title: e.target.value })
     }
 
+    onCancel(){
+        if(this.state.notesCollectionObject.length == 0 ){
+            this.props.history.push('/dashboard') 
+        }
+        else{
+            this.setState({ notesCollectionObject : [] , newValueToAdd : '' , isSubmitButtonDisabled : true })
+        }
+    }
+
     render() {
         return (
             <div style={{ height: '90vh' }}>
@@ -164,7 +173,7 @@ class AddNoteComponent extends Component {
 
                         {/* <Button onClick={() => this.setState({ isAddInputBoxVisible: !this.state.isAddInputBoxVisible })} disabled={this.state.disableAddButton} style={{ width: '100%' }} type="primary">ADD</Button> */}
                         <Button onClick={this.submitNote.bind(this)} style={{ width: '50%', marginTop: '20px' }} disabled={this.state.isSubmitButtonDisabled} loading={this.state.displaySubmitButtonLoading} type="primary">Add note</Button>
-                        <Button style={{ width: '50%', marginTop: '20px' }}  type="danger">Cancel</Button>
+                        <Button style={{ width: '50%', marginTop: '20px' }} onClick = { this.onCancel.bind(this) } type="danger">Cancel</Button>
                     </Card> </Col>
                     <Col xs></Col>
                 </Row>

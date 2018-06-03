@@ -63,7 +63,7 @@ class ProfileComponent extends Component {
     displayRedirect() {
         if (this.state.redirectVar) {
             //   return <Redirect to = '/' />
-            this.props.history.push('/')
+            this.props.history.push('/login')
         }
     }
 

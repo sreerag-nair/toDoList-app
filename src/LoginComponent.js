@@ -51,7 +51,7 @@ class LoginComponent extends Component {
 
           <Divider>
             <ButtonGroup>
-              <Link to={'/'}><Button type="primary">
+              <Link to={'/login'}><Button type="primary">
                 Log in
               </Button></Link>
               <Link to={'/new-user'}><Button type="primary">
@@ -62,7 +62,7 @@ class LoginComponent extends Component {
 
           <Switch>
             {/* THE SIGN IN ROUTE */}
-            <Route exact path='/' render={(props) => <SignInComponent {...props} size={this.state.size} form={this.props.form}
+            <Route exact path='/login' render={(props) => <SignInComponent {...props} size={this.state.size} form={this.props.form}
               getFieldDecorator={getFieldDecorator} setToken={this.setToken} />} />
 
             {/* THE SIGN UP ROUTE */}

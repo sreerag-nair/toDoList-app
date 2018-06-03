@@ -14,7 +14,6 @@ class CardPopulatorDashBoardComponent extends Component {
         notesObjArray: null,
         isNoteEditingModalVisible: false,
         currentlySelectedCard: '',
-        redirectVar: false,
         noteToDeleteID: '',
         isDeleteConfirmationModalVisible: false
     }
@@ -34,7 +33,7 @@ class CardPopulatorDashBoardComponent extends Component {
             .catch((err) => {
                 if (err.response.status == 401) {
                     console.log("UNAUTHORIZED IN CARD POPULATOR!! : ")
-                    this.setState({ redirectVar: true })
+                    this.props.history.push('/login')
                 }
             })
     }
@@ -48,14 +47,6 @@ class CardPopulatorDashBoardComponent extends Component {
             (index % 3 == 0 ? rows.push([value]) : rows[rows.length - 1].push(value)) && rows, [])
     }
 
-    redirectToHomePage() {
-        if (this.state.redirectVar) {
-            // alert('PRESSED')
-            // return <Redirect to='/' />
-            this.props.history.push('/')
-        }
-
-    }
 
     getClickedCard(cardIndex) {
         this.setState({ currentlySelectedCard: cardIndex, isNoteEditingModalVisible: true })
@@ -116,8 +107,6 @@ class CardPopulatorDashBoardComponent extends Component {
         if (this.state.notesObjArray) {
             return (
                 <div style={{ backgroundColor: '#0091FA', height: '90vh', width: '100%' }}>
-
-                    {this.redirectToHomePage()}
 
                     <Content style={{ /* margin: '24px 16px 0',*/ overflow: 'initial' }}>
 
@@ -189,7 +178,6 @@ class CardPopulatorDashBoardComponent extends Component {
         else {
             return (
                 <div>
-                    {this.redirectToHomePage()}
                     <h1>NOTHING TO SHOW</h1>
                 </div>
             )

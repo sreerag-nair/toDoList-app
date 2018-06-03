@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './DashBoard.css';
-import { Button, Col, Icon, Layout, Menu, Modal, Row } from 'antd';
+import { Button, Col, Icon, Layout, Menu, message, Modal, Row } from 'antd';
 import { Link, Switch, Route, Redirect } from 'react-router-dom';
 import './DashBoard.css'
 import axios from 'axios';
@@ -40,10 +40,9 @@ class DashBoard extends React.Component {
     // }
 
     loggingOutFunction() {
-        console.log("Logging out function");
+        message.success("Goodbye.... see you soon  :D")
         localStorage.removeItem('JWT_TOKEN')
-        this.setState({ redirectVar: true })
-        console.log("this.state : ", this.state)
+        this.props.history.push('/login')
     }
 
 
@@ -60,15 +59,6 @@ class DashBoard extends React.Component {
         this.setState({ currentCard: thisValue })
         this.setState({ showModal: true });
         console.log('thisVal : ', this.state);
-
-    }
-
-    redirectToHomePage() {
-        if (this.state.redirectVar) {
-            // alert('PRESSED')
-            // return <Redirect to='/' />
-            this.props.history.push('/')
-        }
 
     }
 
@@ -110,9 +100,6 @@ class DashBoard extends React.Component {
                     </Menu>
                 </Sider>
 
-                {this.redirectToHomePage()}
-
-
                 <Layout style={{ marginLeft: 200 }}>
                     {/* <Header></Header> */}
                     <Content>
@@ -123,7 +110,7 @@ class DashBoard extends React.Component {
                         </Switch>
                     </Content>
                     <Footer style={{ textAlign: 'center', bottom : '0px' , width : '87%', position : " absolute" }}>
-                        Ant Design ©2018 Copied by SreeraG
+                        ---=== Created by SreeraG ===---
       </Footer>
                 </Layout>
 
