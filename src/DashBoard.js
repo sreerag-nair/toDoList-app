@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './DashBoard.css';
-import { Button, Col, Icon, Layout, Menu, message, Modal, Row } from 'antd';
-import { Link, Switch, Route, Redirect } from 'react-router-dom';
+import { Icon, Layout, Menu, message } from 'antd';
+import { Link, Switch, Route } from 'react-router-dom';
 import './DashBoard.css'
-import axios from 'axios';
-import CardEditingModalComponent from './CardEditingModalComponent';
 import ProfileComponent from './ProfileComponent';
 import CardPopulatorDashBoardComponent from './CardPopulatorDashBoardComponent';
 import AddNoteComponent from './AddNoteComponent';
-const { Content, Sider, Footer, Header } = Layout
+const { Content, Sider, Footer } = Layout
 
 
 
@@ -63,8 +61,6 @@ class DashBoard extends React.Component {
 
     render() {
 
-        const { loading, visible } = this.state
-
         return (
 
             <Layout>
@@ -100,7 +96,6 @@ class DashBoard extends React.Component {
                 </Sider>
 
                 <Layout style={{ marginLeft: 200 }}>
-                    {/* <Header></Header> */}
                     <Content>
                         <Switch >
                             <Route exact path='/dashboard' render={(props) => <CardPopulatorDashBoardComponent {...props}/>} />

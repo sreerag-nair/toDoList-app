@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Card, Checkbox, Icon, Tooltip } from 'antd';
+import React from 'react';
+import { Card, Icon, Tooltip } from 'antd';
 import './CardComponent.css'
 
 

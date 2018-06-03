@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Avatar, Input, Button, message, Tooltip } from 'antd';
-import { Grid, Row, Col } from 'react-flexbox-grid';
+import { Row, Col } from 'react-flexbox-grid';
 import axios from 'axios';
 
 class ProfileComponent extends Component {
@@ -14,7 +14,7 @@ class ProfileComponent extends Component {
             }
         )
             .then((response) => {
-                if (response.status = 200) {
+                if (response.status === 200) {
 
                     console.log("response data : ", response.data)
                     this.setState({
@@ -36,7 +36,7 @@ class ProfileComponent extends Component {
     componentDidMount() {
         document.addEventListener("keydown", (e) => {
 
-            if (e.key == "Escape") {
+            if (e.key === "Escape") {
                 this.setState({ showPasswordChangeBoxes: false })
             }
         })
@@ -112,7 +112,7 @@ class ProfileComponent extends Component {
             }
         )
             .then((response) => {
-                if (response.status = 200) {
+                if (response.status === 200) {
 
                     console.log("response data : ", response.data)
                     // this.setState({
@@ -140,7 +140,7 @@ class ProfileComponent extends Component {
     }
 
     matchPassword() {
-        if (this.state.newPassword == this.state.newPasswordConfirm) {
+        if (this.state.newPassword === this.state.newPasswordConfirm) {
             this.setState({ sendData: true , isConfirmPasswordTooltipVisible : false })
         }
         else
@@ -168,7 +168,11 @@ class ProfileComponent extends Component {
                     <Row center="xs" style={{ background: '#818d96' }}>
                         <Col xl={6} style={{ height: '90vh' }}>
                             <div style={{ paddingTop: '100px', }} >
+
+
                                 <Avatar src={this.imgSrc.src} size="large" shape="circle" style={{ height: '200px', width: '200px' }} />
+
+
                                 <Input readOnly style={{ textAlign: "center", marginTop: '10px', }} placeholder="EmailId" value={this.state.userInfoFromDb.emailId || ''} />
                                 <Input style={{ textAlign: "center", marginTop: '10px', }} onChange={this.userNameChanged.bind(this)} placeholder="User-name" value={this.state.userNameChanged} />
                                 <Input style={{ textAlign: "center", marginTop: '10px', }} onChange={this.nameChanged.bind(this)} placeholder="Please enter your name..." value={this.state.nameChanged} />

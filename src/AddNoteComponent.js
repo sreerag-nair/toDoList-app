@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { message, Button, Card, Checkbox, Divider, Icon, Input, Popover, Tooltip } from 'antd';
+import { message, Button, Card, Checkbox, Icon, Input, Popover, Tooltip } from 'antd';
 // import { Col, Row } from 'antd';
 import { Col, Row } from 'react-flexbox-grid'
 import axios from 'axios';
 
-const CheckboxGroup = Checkbox.Group;
+// const CheckboxGroup = Checkbox.Group;
 
 class AddNoteComponent extends Component {
 
@@ -61,7 +61,7 @@ class AddNoteComponent extends Component {
     // {isChecked : , value : },
 
     textBoxValueChanged(e) {
-        if ((e.target.value.length == 0) && (!this.state.isTooltipVisible)) {
+        if ((e.target.value.length === 0) && (!this.state.isTooltipVisible)) {
             this.setState({ isTooltipVisible: true, isAddButtonDisabled: true })
             return
         }
@@ -120,7 +120,7 @@ class AddNoteComponent extends Component {
 
         this.setState({
             notesCollectionObject: this.state.notesCollectionObject.filter((element, idx) => {
-                return idx != index
+                return idx !== index
             })
         }, () =>{
             if(!this.state.notesCollectionObject.length)
@@ -135,7 +135,7 @@ class AddNoteComponent extends Component {
     }
 
     onCancel(){
-        if(this.state.notesCollectionObject.length == 0 ){
+        if(this.state.notesCollectionObject.length === 0 ){
             this.props.history.push('/dashboard') 
         }
         else{

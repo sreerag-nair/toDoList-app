@@ -12,7 +12,7 @@ class DummyCardComponent extends Component{
         return(
             <Card /*onClick = { () => this.props.getClickedCard(this.props.noteObj._id) }*/ bordered  title={this.props.noteObj.title} bordered={true}
              extra={<Tooltip title={<span>Created at  {this.props.noteObj.createdDate} 
-             {(this.props.noteObj.updatedDate == 'Invalid Date') ? null :  (<span><br />Updated at {this.props.noteObj.updatedDate}</span>)  } </span>}>
+             {(this.props.noteObj.updatedDate === 'Invalid Date') ? null :  (<span><br />Updated at {this.props.noteObj.updatedDate}</span>)  } </span>}>
 
              <Icon type="calendar" /></Tooltip>} hoverable='true' style={{ textAlign : 'center' }}
                 actions={[<Tooltip title="Edit note">

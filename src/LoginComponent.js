@@ -1,9 +1,7 @@
-
-
 import React, { Component } from 'react';
-import { Button, Card, Divider, Form, Tabs } from 'antd';
+import { Button, Card, Divider, Form } from 'antd';
 // import GitHubComponent from './GitHubComponent';
-import { Switch, Route, Link, BrowserRouter as Router } from 'react-router-dom';
+import { Switch, Route, Link } from 'react-router-dom';
 import SignInComponent from './SignInComponent';
 import SignUpComponent from './SignUpComponent';
 
@@ -38,7 +36,7 @@ class LoginComponent extends Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const size = this.state.size;
+    // const size = this.state.size;
     return (
 
       <div>

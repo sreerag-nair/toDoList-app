@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Card, Checkbox, Divider, Icon, Input, message, Popover, Tooltip } from 'antd';
+import { Button, Card, Checkbox, Icon, Input, message, Popover, Tooltip } from 'antd';
 // import { Col, Row } from 'antd';
 import { Col, Row } from 'react-flexbox-grid'
 import axios from 'axios';
-
-const CheckboxGroup = Checkbox.Group;
 
 class NoteEditingModal extends Component {
     
@@ -78,7 +76,7 @@ class NoteEditingModal extends Component {
     
     textBoxValueChanged(e) {
         // console.log("Added! e : ", e.target.value)
-        if ((e.target.value.length == 0) && (!this.state.isTooltipVisible)) {
+        if ((e.target.value.length === 0) && (!this.state.isTooltipVisible)) {
             this.setState({ isTooltipVisible: true })
             return
         }
@@ -142,11 +140,11 @@ class NoteEditingModal extends Component {
         // console.log("deleted array : ", this.state.entriesToDelete)
 
         this.setState({ entriesToDelete : [...this.state.entriesToDelete, tempArray.find(function(x,idx){
-            if((idx == index) && (x._id != null))
+            if((idx === index) && (x._id != null))
             return x
         })] , 
         notesCollectionObject:  tempArray.filter((element, idx) => {
-            return idx != index
+            return idx !== index
         })
     })
     

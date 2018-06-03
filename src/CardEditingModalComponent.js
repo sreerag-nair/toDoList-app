@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Card, Checkbox, Icon, Input, Layout, Modal, Popover } from 'antd';
+import { Button, Card, Checkbox, Icon, Input, Popover } from 'antd';
 
 import { Col, Row } from 'react-flexbox-grid'
 

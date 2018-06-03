@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import { Col, Layout, message, Modal, Row } from 'antd';
-import CardComponent from './CardComponent';
 import axios from 'axios';
-import DeleteNoteModalComponent from './DeleteNoteModal';
-import { Redirect } from 'react-router-dom';
 import NoteEditingModal from './NoteEditingModal';
 import DummyCardComponent from './DummyCardComponent';
 const { Content } = Layout;
@@ -31,7 +28,7 @@ class CardPopulatorDashBoardComponent extends Component {
                 this.setState({ notesObjArray: message.data })
             })
             .catch((err) => {
-                if (err.response.status == 401) {
+                if (err.response.status === 401) {
                     console.log("UNAUTHORIZED IN CARD POPULATOR!! : ")
                     this.props.history.push('/login')
                 }
@@ -44,7 +41,7 @@ class CardPopulatorDashBoardComponent extends Component {
         // an array of arrays each containing 3 elements
         // The outer array will be of length Math.ceil( recvObj.length() / 3 )
         return a.reduce((rows, value, index) =>
-            (index % 3 == 0 ? rows.push([value]) : rows[rows.length - 1].push(value)) && rows, [])
+            (index % 3 === 0 ? rows.push([value]) : rows[rows.length - 1].push(value)) && rows, [])
     }
 
 
@@ -87,7 +84,7 @@ class CardPopulatorDashBoardComponent extends Component {
             
             updatednotesObjArray.splice(updatednotesObjArray.findIndex((x) => {
                 //get the index of the card removed
-                return x._id == this.state.noteToDeleteID 
+                return x._id === this.state.noteToDeleteID 
                 }),1)
 
             this.setState({ notesObjArray : updatednotesObjArray })
@@ -123,7 +120,7 @@ class CardPopulatorDashBoardComponent extends Component {
                             footer={null}
                             style={{ heignt: '10vh' }}
                         >
-                            <NoteEditingModal editingModalOnCancel = { this.editingModalOnCancel }  noteObj={this.state.notesObjArray.find(note => { return note._id == this.state.currentlySelectedCard })} />
+                            <NoteEditingModal editingModalOnCancel = { this.editingModalOnCancel }  noteObj={this.state.notesObjArray.find(note => { return note._id === this.state.currentlySelectedCard })} />
                         </Modal>
                         {/* -------------------------MODAL FOR EDITING NOTES ENDS---------------------------- */}
 

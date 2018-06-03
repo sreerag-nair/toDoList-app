@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Button, Col, Form, Icon, Input, Row } from 'antd';
-import { Redirect } from 'react-router-dom';
-import SpinnerClass from './SpinnerClass';
 import axios from 'axios';
 const FormItem = Form.Item;
 
@@ -16,7 +14,7 @@ class SignUpComponent extends React.Component {        //WORKING
       }
     }
     ).then((response) => {
-      if (response.status == 200) {
+      if (response.status === 200) {
         console.log("in here")
         this.setState({ redirectVar: true });
       }
@@ -45,13 +43,13 @@ class SignUpComponent extends React.Component {        //WORKING
           values
         )
           .then((response, err) => {
-            if (response.status == 201) { //redirect
+            if (response.status === 201) { //redirect
               localStorage.setItem('JWT_TOKEN', (response.data.token));
               console.log("Saved in localStorage ");
               this.setState({ redirectVar: true })
             }
 
-            if (response.status == 200) {
+            if (response.status === 200) {
               this.setState({ redirectVar: true })
             }
 
@@ -77,7 +75,7 @@ class SignUpComponent extends React.Component {        //WORKING
 
   //check if the email exists in the db
   checkEmailAvailability(e) {
-    if (e.target.value.length == 0) {
+    if (e.target.value.length === 0) {
       this.setState({ emailValidateStatus: '' })
       return
     }
@@ -85,12 +83,12 @@ class SignUpComponent extends React.Component {        //WORKING
     axios.post('http://localhost:8001/checkEmailRedundancy', { emailToCheck: e.target.value })
       .then((response) => {
         // console.log("Response data : " , response)
-        if (response.status == 200)
+        if (response.status === 200)
           this.setState({ emailValidateStatus: "success" })
       })
       .catch((error) => {
         // console.log("ERROR Body : ", error.response)
-        if (error.response.status == 409)
+        if (error.response.status === 409)
           this.setState({ emailValidateStatus: "error" })
       })
 

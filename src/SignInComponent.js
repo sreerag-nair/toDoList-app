@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Button, Col, Form, Icon, Input, message, Row } from 'antd';
 import { Link } from 'react-router-dom';
 import SpinnerClass from './SpinnerClass';
@@ -16,7 +16,7 @@ class SignInComponent extends React.Component {        //WORKING
     }
   }
 ).then((response) =>{
-  if(response.status == 200 ){
+  if(response.status === 200 ){
   this.setState({ redirectVar : true })
   }
 })
@@ -43,7 +43,7 @@ handleSubmit = (e) => {
         
         // if (!localStorage.JWT_TOKEN) {
 
-        if(result.status == 200){
+        if(result.status === 200){
         //save it in localStorage
         localStorage.setItem('JWT_TOKEN', (result.data.token));
         console.log("Saved in localStorage ");
@@ -53,7 +53,7 @@ handleSubmit = (e) => {
         
       })
       .catch((err) =>{
-        if(err.response.status == 404){
+        if(err.response.status === 404){
           this.setState({ spinnerVar: false });
           message.error("Email id or password error..... try again")
         }

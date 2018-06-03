@@ -1,0 +1,483 @@
+@mixin keyframe ($animation_name) {
+	@-webkit-keyframes #{$animation-name} {
+		@content;
+	}
+	@-moz-keyframes #{$animation-name} {
+		@content;
+	}
+	@-o-keyframes #{$animation-name} {
+		@content;
+	}
+	@-ms-keyframes #{$animation-name} {
+		@content;
+	}
+	@keyframes #{$animation-name} {
+		@content;
+	}
+}
+/* Example usage:@include animation(10s, 5s, changecolour) */
+@mixin animation ($delay, $duration, $animation, $fillMode, $function, $count) {
+	-webkit-animation-delay: $delay;
+	-webkit-animation-duration: $duration;
+	-webkit-animation-name: $animation;
+	-webkit-animation-fill-mode: $fillMode; /* this prevents the animation from restarting! */
+	-webkit-animation-timing-function: $function;
+	-webkit-animation-iteration-count: $count;
+	
+	-moz-animation-delay: $delay;
+	-moz-animation-duration: $duration;
+	-moz-animation-name: $animation;
+	-moz-animation-fill-mode: $fillMode; /* this prevents the animation from restarting! */
+	-moz-animation-timing-function: $function;
+	-moz-animation-iteration-count: $count;
+	
+	-o-animation-delay: $delay;
+	-o-animation-duration: $duration;
+	-o-animation-name: $animation;
+	-o-animation-fill-mode: $fillMode; /* this prevents the animation from restarting! */
+	-o-animation-timing-function: $function;
+	-o-animation-iteration-count: $count;
+	
+	animation-delay: $delay;
+	animation-duration: $duration;
+	animation-name: $animation;
+	animation-fill-mode: $fillMode; /* this prevents the animation from restarting! */
+	animation-timing-function: $function;
+	animation-iteration-count: $count;
+	
+}
+
+@mixin transform ($transform-name) {
+	-webkit-transform: #{$transform-name};  
+	-moz-transform: #{$transform-name};  
+	-ms-transform: #{$transform-name};  
+	-o-transform: #{$transform-name};  
+	transform: #{$transform-name};  
+}
+
+.opacity-1 {
+	opacity: 0.1;
+}
+.opacity-2 {
+	opacity: 0.2;
+}
+.opacity-3 {
+	opacity: 0.3;
+}
+.opacity-4 {
+	opacity: 0.4;
+}
+.opacity-6 {
+	opacity: 0.6;
+}
+.opacity-7 {
+	opacity: 0.7;
+}
+.opacity-8 {
+	opacity: 0.8;
+}
+
+.red {
+	fill: #EC1C24;
+}
+.white {
+	fill: #FFFFFF;
+}
+.gray {
+	fill: #404041;
+}
+
+
+body {
+	background: #000;
+	padding-top: 100px;
+}
+svg {
+	height: 90%;
+	width: 90%;
+	position: absolute;
+	
+}
+
+
+.container {
+	background: #111;
+	position: relative;
+	padding: 20px 20px 0px 20px;
+	height: 350px;
+	width: 350px;
+	position: relative;
+	margin: 0 auto;
+	border-radius: 10px;
+	box-shadow: 0px 0px 2px #444 inset;
+	// @include animation (0, 2s, rotating, initial, ease-in-out, infinite)
+}
+
+#light {
+	opacity: 0;
+	@include animation (0, 6s, light, initial, ease, infinite)
+}
+@include keyframe(light) {
+	0% {
+		opacity: 0;
+		
+	}
+	
+	70% {
+		opacity: 0;
+		
+	}
+	
+	80% {
+		opacity: 0.3;
+	}
+	
+	90% {
+		opacity: 0;
+		
+	}
+	
+	100% {
+		opacity: 0;
+		
+	}
+}
+
+
+
+* {
+	transition: all .7s ease;
+}
+
+
+
+#ds-logo {
+	@include transform (rotateX(-90deg));
+	opacity: 0.5;
+}
+
+// @include keyframe(rotating) {
+	// 	from {
+		// 		@include transform (rotateX(0))
+		// 	}
+		// 	to {
+			// 		@include transform (rotateX(-360deg))
+			// 	}
+			// }
+			
+			// $circles: 90;
+			// $smallCircles: 16;
+			
+			.container:hover {
+				cursor: pointer;
+				overflow: hidden;
+				
+				#ds-logo {
+					@include transform (rotateX(0deg));
+					opacity: 0.9;
+				}
+				
+				#heart {
+					@include transform (rotateX(90deg));
+					opacity: 0;
+				}
+				
+				// 	@for $i from 1 through $circles {
+					// 		@if $i%2 == 0 {
+						// 			#circle#{$i} {
+							// 				@include transform (translate3d( - random(300) + px, random(300) + px, 0));
+							// 			}
+							// 		} @else {
+								// 			#circle#{$i} {
+									// 				@include transform (translate3d( random(300) + px, - random(300) + px, 0));
+									// 			}
+									// 		}
+									// 	}
+									
+									// 	@for $i from 1 through $smallCircles {
+										// 		@if $i%2 == 0 {
+											// 			#small#{$i} {
+												// 				@include transform (translate3d( - random(300) + px, random(300) + px, 0));
+												// 			}
+												// 		} @else {
+													// 			#small#{$i} {
+														// 				@include transform (translate3d( random(300) + px, - random(300) + px, 0));
+														// 			}
+														// 		}
+														// 	}
+													}
+													
+													
+													#circle66,
+													#circle65,
+													#circle55,
+													#circle54 {
+														@include animation (0, 2s, beat01, initial, ease-in-out, infinite)
+													}
+													
+													#circle41,
+													#circle42,
+													#circle43,
+													#circle44,
+													#circle56,
+													#circle67,
+													#circle76,
+													#circle75,
+													#circle74,
+													#circle73,
+													#circle64,
+													#circle53 {
+														@include animation (0, 2s, beat02, initial, ease-in-out, infinite)
+													}
+													
+													#circle28,
+													#circle29,
+													#circle30,
+													#circle31,
+													#circle32,
+													#circle33,
+													#circle45,
+													#circle57,
+													#circle68,
+													#circle77,
+													#circle84,
+													#circle83,
+													#circle82,
+													#circle81,
+													#circle80,
+													#circle79,
+													#circle72,
+													#circle63,
+													#circle81,
+													#circle52,
+													#circle40 {
+														@include animation (0, 2s, beat03, initial, ease-in-out, infinite)
+													}
+													
+													#circle15,
+													#circle16,
+													#circle17,
+													#circle18,
+													#circle19,
+													#circle20,
+													#circle21,
+													#circle22,
+													#circle34,
+													#circle46,
+													#circle58,
+													#circle69,
+													#circle88,
+													#circle87,
+													#circle86,
+													#circle85,
+													#circle71,
+													#circle78,
+													#circle62,
+													#circle51,
+													#circle39,
+													#circle27 {
+														@include animation (0, 2s, beat04, initial, ease-in-out, infinite)
+													}
+													
+													#circle5,
+													#circle6,
+													#circle7,
+													#circle8,
+													#circle23,
+													#circle35,
+													#circle47,
+													#circle59,
+													#circle70,
+													#circle14,
+													#circle26,
+													#circle38,
+													#circle50,
+													#circle61,
+													#circle9,
+													#circle10,
+													#circle11,
+													#circle12 {
+														@include animation (0, 2s, beat05, initial, ease-in-out, infinite)
+													}
+													
+													#circle13,
+													#circle48,
+													#circle24,
+													#circle25,
+													#circle36,
+													#circle37,
+													#circle60,
+													#circle49,
+													#circle1,
+													#circle2,
+													#circle3,
+													#circle4,
+													#circle90,
+													#circle89 {
+														@include animation (0, 2s, beat06, initial, ease-in-out, infinite)
+													}
+													
+													@include keyframe(beat01) {
+														0% {
+															@include transform (scale(1,1));
+														}
+														
+														30%{
+															@include transform (scale(1.06,1.06));
+														}
+														
+														40% {
+															@include transform (scale(1,1));
+														}
+														
+														70% {
+															@include transform (scale(1.04,1.04));
+														}
+														
+														100% {
+															@include transform (scale(1,1));
+														}
+													}
+													@include keyframe(beat02) {
+														0% {
+															@include transform (scale(1,1));
+														}
+														
+														30%{
+															@include transform (scale(1.05,1.05));
+														}
+														
+														40% {
+															@include transform (scale(1,1));
+														}
+														
+														70% {
+															@include transform (scale(1.03,1.03));
+														}
+														
+														100% {
+															@include transform (scale(1,1));
+														}
+													}
+													@include keyframe(beat03) {
+														0% {
+															@include transform (scale(1,1));
+														}
+														
+														30%{
+															@include transform (scale(1.04,1.04));
+														}
+														
+														40% {
+															@include transform (scale(1,1));
+														}
+														
+														70% {
+															@include transform (scale(1.03,1.03));
+														}
+														
+														100% {
+															@include transform (scale(1,1));
+														}
+													}
+													@include keyframe(beat04) {
+														0% {
+															@include transform (scale(1,1));
+														}
+														
+														30%{
+															@include transform (scale(1.03,1.03));
+														}
+														
+														40% {
+															@include transform (scale(1,1));
+														}
+														
+														70% {
+															@include transform (scale(1.02,1.02));
+														}
+														
+														100% {
+															@include transform (scale(1,1));
+														}
+													}
+													@include keyframe(beat05) {
+														0% {
+															@include transform (scale(1,1));
+														}
+														
+														30%{
+															@include transform (scale(1.02,1.02));
+														}
+														
+														40% {
+															@include transform (scale(1,1));
+														}
+														
+														70% {
+															@include transform (scale(1.01,1.01));
+														}
+														
+														100% {
+															@include transform (scale(1,1));
+														}
+													}
+													@include keyframe(beat06) {
+														0% {
+															@include transform (scale(1,1));
+														}
+														
+														30%{
+															@include transform (scale(1.01,1.01));
+														}
+														
+														40% {
+															@include transform (scale(1,1));
+														}
+														
+														70% {
+															@include transform (scale(1.0,1.0));
+														}
+														
+														100% {
+															@include transform (scale(1,1));
+														}
+													}
+													
+													#small7,
+													#small1 {
+														@include animation (0, 2s, beat01, initial, ease-in-out, infinite)
+													}
+													
+													#small15,
+													#small9,
+													#small2 {
+														@include animation (0, 2s, beat02, initial, ease-in-out, infinite)
+													}
+													
+													#small13,
+													#small7,
+													#small2 {
+														@include animation (0, 2s, beat03, initial, ease-in-out, infinite)
+													}
+													
+													#small12,
+													#small3,
+													#small6 {
+														@include animation (0, 2s, beat04, initial, ease-in-out, infinite)
+													}
+													
+													#small11,
+													#small8,
+													#small5 {
+														@include animation (0, 2s, beat05, initial, ease-in-out, infinite)
+													}
+													
+													#small16,
+													#small14,
+													#small10,
+													#small4 {
+														@include animation (0, 2s, beat06, initial, ease-in-out, infinite)
+													}
+													
+													
