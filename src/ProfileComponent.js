@@ -102,7 +102,7 @@ class ProfileComponent extends Component {
         objToSend["fullName"] = this.state.nameChanged
         objToSend["password"] = this.state.newPassword
 
-        console.log(objToSend)
+        
         axios.post('http://localhost:8001/profileinfo', objToSend,
             {
                 headers: {
@@ -113,13 +113,13 @@ class ProfileComponent extends Component {
             .then((response) => {
                 if (response.status === 200) {
 
-                    console.log("response data : ", response.data)
+                    // console.log("response data : ", response.data)
                     // this.setState({
                     //     userInfoFromDb: response.data,
                     //     userNameChanged: response.data.userName,
                     //     nameChanged: response.data.name
                     // })
-                    message.success("data updated successfully.... redirecting")
+                    message.success("Data updated successfully :).... redirecting")
                     setTimeout(() => {
                         this.setState({ redirectVar: true })
                     }, 1000)
@@ -127,15 +127,15 @@ class ProfileComponent extends Component {
                     localStorage.removeItem('JWT_TOKEN')
                 }
             })
-            // .catch((err) => {
-            //     if (err.response.status == 401) {
-            //         console.log("UNAUTHORIZED!!", err)
-            //         this.setState({ redirectVar: true })
-            //     }
-            //     else if (err.response.status == 400) {
-            //         message.error("Some error occured.... please try again later :(")
-            //     }
-            // })
+            .catch((err) => {
+                if (err.response.status == 401) {
+                    message.error("Unauthorized user.... please log in :(")
+                    this.setState({ redirectVar: true })
+                }
+                else if (err.response.status == 400) {
+                    message.error("Some error occured.... please try again later :(")
+                }
+            })
     }
 
     matchPassword() {
