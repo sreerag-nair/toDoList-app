@@ -3,8 +3,6 @@ import './App.css';
 import LoginComponent from './LoginComponent';
 import { Route, Switch } from 'react-router-dom';
 import DashBoard from './DashBoard';
-import ProfileComponent from './ProfileComponent';
-import AddNoteComponent from './AddNoteComponent';
 
 
 
@@ -24,8 +22,8 @@ class App extends Component {
 
       <div>
         <Switch>
-          <Route path="/dashboard" component={DashBoard} />
-          <Route path="/" component={LoginComponent} />
+          <Route path="/dashboard" render = {(props) => <DashBoard {...props} />} />
+          <Route path="/" render = {(props) => <LoginComponent {...props} />} />
         </Switch>
       </div>
     );

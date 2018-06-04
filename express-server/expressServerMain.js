@@ -11,7 +11,8 @@ const jwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const cors = require('cors')
 // to import the database functions
-const { create, getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser, read, searchUserCreds, searchUserEmail } = require('./dbCommunication');
+const { getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser /*, read*/,
+    removeNotesTitle, removeSingleEntry, searchUserCreds, searchUserEmail, updateEntry, updateTitle, updateUserInfo } = require('./dbCommunication');
 const { generateToken } = require('./tokenGenerator');
 
 
@@ -83,6 +84,7 @@ app.post('/', function (req, res, next) {
 
         if (info && (Object.keys(req.body) != 0)) {    //it means there is no token in the app and something is in the body;
             var hashedPassword = crypto.createHash('sha256').update(req.body.passwordSignIn).digest('hex');
+            console.log("HASHEDPASSWORD : ", hashedPassword)
             // used promise
             searchUserCreds(req.body.emailSignIn, hashedPassword)
                 .then(function (doc, err) {
@@ -169,13 +171,42 @@ app.post('/profileinfo', function (req, res, next) {
     passport.authenticate('jwt', {
         session: false
     }, function (err, user, info) {
-
         // console.log("err : ", err);
         console.log("user : ", user);
         // console.log("info : ", info);
-
+        console.log("incoming reqzzz : ", req.body["password"])
+        // this.user = user
+        
+        
         if (user) {
-            res.status(200).send({ userName: user.userName, emailId: user.emailId, password: user.password })
+            
+            if (Object.keys(req.body) != 0) {
+                
+                req.body["password"] = (req.body["password"] == '') ? user.password :
+                crypto.createHash('sha256').update(req.body.password).digest('hex')
+
+                console.log("incoming req : ", req.body)
+
+                updateUserInfo(req.body)
+                    .then((doc, err) => {
+
+                        //updation successful...
+                        if (doc) {
+                            console.log("DOOOC : ", doc)
+                            res.status(200).send()
+                        }
+                    })
+                    .catch((err) => {
+                        res.status(400).send()
+                    })
+
+            }
+            else {
+                console.log("IN ELSE...........")
+                res.status(200).send({ userName: user.userName, emailId: user.emailId, password: user.password , name : user.name })
+            }
+
+
         }
         else {
             // 401 - unauthorized request
@@ -207,9 +238,12 @@ app.post('/addnewnote', function (req, res, next) {
                                 req.body.entries.map(
                                     (entryObj, idx) => {
                                         insertNoteEntry(doc._id, entryObj.content, entryObj.isChecked)
+                                        // console.log("expressServer - ln 210")
                                     }
                                 )
-
+                                res.status(200).send()
+                                setTimeout(() => {
+                                }, 1000)
                             })
                     })
 
@@ -220,12 +254,13 @@ app.post('/addnewnote', function (req, res, next) {
 
         })(req, res, next);
 })
-
 // only for authorization when mounting AddNoteComponent 
 app.post('/shouldRedirect', function (req, res, next) {
     passport.authenticate('jwt', {
         session: false
     }, function (err, user, info) {
+
+        console.log("IN HEREE - /shouldRedirect")
 
         if (!user) //UNAUTHORIZED...
             res.status(401).send()
@@ -241,10 +276,9 @@ app.get('/getnotes', function (req, res, next) {
     },
         function (err, user, info) {
 
-            console.log("user : ", user)
+            // console.log("user : ", user)
 
             if (user) {
-
                 var objToSend = []
 
                 //make db calls and create an object....
@@ -254,24 +288,17 @@ app.get('/getnotes', function (req, res, next) {
                         // console.log("singleNoteEntry : ", notesTitleArray)
                         notesTitleArray.map((noteTitle, titleIndex) => {
                             //create a new entry with the title and _id
-                            objToSend[titleIndex] = { _id: noteTitle._id, title: noteTitle.title, list: [] }
-                            getAllNoteContent(noteTitle._id)
-                                .then((completeNoteContent, err) => {
-                                    completeNoteContent.map((singleNoteEntry, noteContentIndex) => {
-                                        objToSend[titleIndex].list.push({ content: singleNoteEntry.content, isChecked: singleNoteEntry.isChecked })
-                                        // console.log("singleNoteEntry : ", singleNoteEntry.content)
-                                    })
-                                    
-                                })
+
+                            objToSend.push({ _id: noteTitle._id, title: noteTitle.title,
+                         createdDate: new Date(noteTitle.createdAt).toLocaleString("en-US"), updatedDate : new Date(noteTitle.updatedAt).toLocaleString("en-US") })
+
                         })
 
-                        console.log("AFTER : ", objToSend)
-                    })
+                        // console.log("AFTER : ", objToSend)
 
-                setTimeout(() => {
-                    // console.log("OBJECT TO SEND : ", objToSend)
-                    // res.status(200).send(objToSend);
-                }, 3000)
+                        res.status(200).send(objToSend);
+
+                    })
 
 
                 // res.status(200).send(objToSend);
@@ -286,15 +313,119 @@ app.get('/getnotes', function (req, res, next) {
         })(req, res, next);
 })
 
+app.get('/getcurrentnote/:noteID', function (req, res, next) {
+    // console.log("req body : ", req.params.noteID)
 
+    //TRY ASYNC-AWAIT HERE
+
+    var valueToSend = []
+
+    getAllNoteContent(req.params.noteID)
+        .then((noteEntryArray) => {
+            noteEntryArray.map((eachEntry) => {
+                valueToSend.push({ content: eachEntry.content, _id: eachEntry._id, isChecked: eachEntry.isChecked })
+            })
+
+            res.status(200).send(valueToSend)
+        })
+
+})
 
 // update an existing card - update operation
-app.put('/update/:id', function (req, res) { })
+app.put('/update/:id', function (req, res, next) {
+
+    // console.log("ID : ", req.params.id)
+    // console.log("Code : ", req.body)
+
+
+
+    updateTitle(req.params.id, req.body.noteTitle)
+        .then((doc, err) => {
+            if (doc) {
+                // console.log("NOTE TITLE UPDATED : ", doc)
+                req.body.toUpdateOrEnter.map(obj => {
+
+                    //update
+                    if (obj._id != null) {
+                        updateEntry(obj._id, obj.content, obj.isChecked)
+                            .then((doc, err) => {
+                                // console.log("Updated")
+                            })
+
+                    } else {
+                        //insert
+                        insertNoteEntry(req.params.id, obj.content, obj.isChecked)
+                            .then((doc, entry) => {
+                                // console.log("New Entry")
+                            })
+                    }
+                })
+
+
+
+                //delete entries... 
+                //try async/await for multiple promises
+                req.body.toDelete.map(obj => {
+                    removeSingleEntry(obj._id)
+                        .then((doc, err) => {
+                            console.log("Deleted....")
+                        })
+                })
+
+
+
+                res.status(200).send();
+            }
+            else {
+                res.status(401).send()
+            }
+        })
+
+
+
+})
+
+
+
+
+
+
 
 //for deletion operation
-app.post('/deletenote/:id', function (req, res) {
-    res.write("GOT THE HANDLE!");
-    res.end();
+app.delete('/deletenote/:id', function (req, res, next) {
+
+    passport.authenticate('jwt', {
+        session: false
+    }, function (err, user, info) {
+        // console.log("user : ", user)
+        // console.log("err : ", err)
+        // console.log("info : ", info)
+
+        if (user) {
+
+            // soft delete
+            removeNotesTitle(req.params.id)
+                .then((doc, err) => {
+                    if (err) {
+                        res.status(400).send();
+                        throw err
+                    }
+
+                    if (doc)
+                        res.status(200).send();
+
+                })
+
+        }
+        else {
+            //unauthorized user
+            res.status(401).send()
+        }
+
+
+    })(req, res, next);
+
+
 })
 
 
@@ -336,46 +467,3 @@ app.listen(8001, function () {
 
 // https://www.callicoder.com/node-js-express-mongodb-restful-crud-api-tutorial/
 
-/*
-
-var users = {
-    name: 'Sreerag',
-    password: 'qwerty'
-}
-
-var userObjArray = [
-    {
-        userName: 'anakin',
-        name: 'Anakin Skywalker',
-        emailId: 'abc@test.com',
-        password: 'abc'
-    },
-    {
-        
-        userName: 'leia',
-        name: 'Leia Organa',
-        emailId: 'jkl@test.com',
-        password: 'edf'
-    },
-    {
-        userName: 'mace',
-        name: 'Mace Windu',
-        emailId: 'ghi@test.com',
-        password: 'ghi'
-    },
-    {
-        userName: 'yoda',
-        name: 'Master Yoda',
-        emailId: 'jkl@test.com',
-        password: 'jkl'
-    },
-    {
-        
-        userName: 'palpatine',
-        name: 'Emperor Palpatine',
-        emailId: 'hij@test.com',
-        password: 'hij'
-    }
-]
-
-*/

@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './DashBoard.css';
-import { Button, Col, Icon, Layout, Menu, Modal, Row } from 'antd';
-import { Link, Switch, Route, Redirect } from 'react-router-dom';
+import { Icon, Layout, Menu, message } from 'antd';
+import { Link, Switch, Route } from 'react-router-dom';
 import './DashBoard.css'
-import axios from 'axios';
-import CardEditingModalComponent from './CardEditingModalComponent';
 import ProfileComponent from './ProfileComponent';
 import CardPopulatorDashBoardComponent from './CardPopulatorDashBoardComponent';
 import AddNoteComponent from './AddNoteComponent';
-const { Content, Sider, Footer, Header } = Layout
+const { Content, Sider, Footer } = Layout
 
 
 
@@ -40,10 +38,9 @@ class DashBoard extends React.Component {
     // }
 
     loggingOutFunction() {
-        console.log("Logging out function");
+        message.success("Goodbye.... see you soon  :D")
         localStorage.removeItem('JWT_TOKEN')
-        this.setState({ redirectVar: true })
-        console.log("this.state : ", this.state)
+        this.props.history.push('/login')
     }
 
 
@@ -51,9 +48,9 @@ class DashBoard extends React.Component {
         loading: false,
         visible: false,
         showModal: false,
-        currentCard: null,
-        // redirectVar: false
+        currentCard: null
     }
+
 
     setCurrentCard = (thisValue) => {
 
@@ -63,17 +60,7 @@ class DashBoard extends React.Component {
 
     }
 
-    redirectToHomePage() {
-        if (this.state.redirectVar) {
-            // alert('PRESSED')
-            return <Redirect to='/' />
-        }
-
-    }
-
     render() {
-
-        const { loading, visible } = this.state
 
         return (
 
@@ -109,20 +96,16 @@ class DashBoard extends React.Component {
                     </Menu>
                 </Sider>
 
-                {this.redirectToHomePage()}
-
-
                 <Layout style={{ marginLeft: 200 }}>
-                    {/* <Header></Header> */}
                     <Content>
                         <Switch >
-                            <Route exact path='/dashboard' render={() => <CardPopulatorDashBoardComponent />} />
-                            <Route exact path='/dashboard/addnote' render={() => <AddNoteComponent />} />
-                            <Route exact path='/dashboard/profile' render={() => <ProfileComponent />} />
+                            <Route exact path='/dashboard' render={(props) => <CardPopulatorDashBoardComponent {...props}/>} />
+                            <Route exact path='/dashboard/addnote' render={(props) => <AddNoteComponent {...props}/>} />
+                            <Route exact path='/dashboard/profile' render={(props) => <ProfileComponent {...props}/>} />
                         </Switch>
                     </Content>
-                    <Footer style={{ textAlign: 'center', }}>
-                        Ant Design ©2018 Copied by SreeraG
+                    <Footer style={{ textAlign: 'center', bottom : '0px' , width : '87%', position : " absolute" }}>
+                        ---=== Created by SreeraG with { <img src = {require('./img-src/heart-img.svg')} style = {{ height : '15px', width : '15px' }} /> } ===---
       </Footer>
                 </Layout>
 

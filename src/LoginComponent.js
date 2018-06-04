@@ -1,9 +1,7 @@
-
-
 import React, { Component } from 'react';
-import { Button, Card, Divider, Form, Tabs } from 'antd';
+import { Button, Card, Divider, Form } from 'antd';
 // import GitHubComponent from './GitHubComponent';
-import { Switch, Route, Link, BrowserRouter as Router } from 'react-router-dom';
+import { Switch, Route, Link } from 'react-router-dom';
 import SignInComponent from './SignInComponent';
 import SignUpComponent from './SignUpComponent';
 
@@ -32,13 +30,13 @@ class LoginComponent extends Component {
 
   state = {
     size: 'default',
-    img: require('./logo.svg')
+    img: require('./img-src/logo.svg')
   }
 
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const size = this.state.size;
+    // const size = this.state.size;
     return (
 
       <div>
@@ -51,7 +49,7 @@ class LoginComponent extends Component {
 
           <Divider>
             <ButtonGroup>
-              <Link to={'/'}><Button type="primary">
+              <Link to={'/login'}><Button type="primary">
                 Log in
               </Button></Link>
               <Link to={'/new-user'}><Button type="primary">
@@ -62,11 +60,11 @@ class LoginComponent extends Component {
 
           <Switch>
             {/* THE SIGN IN ROUTE */}
-            <Route exact path='/' render={() => <SignInComponent size={this.state.size} form={this.props.form}
+            <Route exact path='/login' render={(props) => <SignInComponent {...props} size={this.state.size} form={this.props.form}
               getFieldDecorator={getFieldDecorator} setToken={this.setToken} />} />
 
             {/* THE SIGN UP ROUTE */}
-            <Route exact path='/new-user' render={() => <SignUpComponent form={this.props.form} size={this.state.size}
+            <Route exact path='/new-user' render={(props) => <SignUpComponent {...props} form={this.props.form} size={this.state.size}
               getFieldDecorator={getFieldDecorator} />} />
 
 

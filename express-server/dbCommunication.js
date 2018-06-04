@@ -41,8 +41,8 @@ var userTableSchemaHandle = (function () {
             userName: String,
             name: String,
             emailId: {
-                type: String
-                // unique : true     
+                type: String,
+                unique : true     
             },
             // 'password' will be hashed 
             password: String,
@@ -73,8 +73,12 @@ var notesTableSchemaHandle = (function () {
             // id of the owner
             uId: String,
             title: String,
-            date: Date,
-            isDeleted: Boolean,
+            createdAt: {
+                default : Date.now(),
+                type : Date
+            },
+            updatedAt : Date,
+            deletedAt : Date,
             //collaborators of the note
             sharedWith: Array
 
@@ -102,7 +106,10 @@ var contentTableSchemaHandle = (function () {
             // the id of the note it is present in
             notesID: String,
             content: String,
-            isChecked: Boolean
+            isChecked: {
+                type : Boolean,
+                default : false
+            }
 
         })
         return contentTableSchemaHandle;
@@ -118,6 +125,34 @@ var contentTableSchemaHandle = (function () {
     }
 })();
 
+//used to return a handle of a singleton 'noteAttachmentsSchema' collection
+var noteAttachmentSchemaHandle = (function(){
+        var noteAttachmentSchemaHandle;
+
+        function mountNoteAttachmentsSchemaHandle(db){
+            noteAttachmentSchemaHandle = new mongoose.Schema({
+                uId : String,
+                notesID : String,
+                attachmentName : String,
+                size : String,
+                mimeType : String
+
+            })
+
+            return noteAttachmentSchemaHandle;
+        }
+
+        return{
+            getInstance : function(db){
+                if(!noteAttachmentSchemaHandle)
+                    noteAttachmentSchemaHandle = mountNoteAttachmentsSchemaHandle(db)
+
+                return noteAttachmentSchemaHandle;
+            }
+        }
+})();
+
+
 
 // call and destructure to get all ready-to-use handles....
 function getHandles() {
@@ -128,17 +163,14 @@ function getHandles() {
     var userCollection = dbHandle.model('userTableCollection', userTableSchemaHandle.getInstance());
     var notesCollection = dbHandle.model('notesTableCollection', notesTableSchemaHandle.getInstance());
     var contentCollection = dbHandle.model('contentTableCollection', contentTableSchemaHandle.getInstance());
-    return { userCollection, notesCollection, contentCollection }
+    var noteAttachmentCollection = dbHandle.model('noteAttachmentCollection', noteAttachmentSchemaHandle.getInstance());
+    return { userCollection, notesCollection, contentCollection , noteAttachmentCollection }
 }
 // ---------------------------------SINGLETON OBJECTS-----------------------
 
 
-var { userCollection, notesCollection, contentCollection } = getHandles()
+var { userCollection, notesCollection, contentCollection, noteAttachmentCollection } = getHandles()
 
-exports.create = function (userCredentialsJSONObject) {
-
-
-}
 
 
 exports.read = function (notesObjArray) {
@@ -204,7 +236,7 @@ exports.newUser = function (userCredObject) {
 exports.insertNoteTitle = function (userTableId, noteTitle) {
     // return the promise object containing the 
     // saved object as the returned object...
-    return notesCollection({ uId: userTableId, title: noteTitle, date: new Date(), isDeleted: false }).save()
+    return notesCollection({ uId: userTableId, title: noteTitle, createdAt: new Date(), isDeleted: false }).save()
 }
 
 
@@ -219,11 +251,34 @@ exports.getNotesTitle = function(userId){
 
     //returns an array consisting of note titles created
     // by a particular user 
-    return notesCollection.find({ uId : userId })
+    return notesCollection.find({ uId : userId , deletedAt : { $eq : null } })
 }
 
 exports.getAllNoteContent = function(notesTitleId){
     return contentCollection.find({ notesID : notesTitleId })
 }
 
+//technically deleting a note
+exports.removeNotesTitle = function(notesTitleId){
+    return notesCollection.findOneAndUpdate({ _id : notesTitleId },
+        { $set : {deletedAt : Date.now()} }, {new : true} )
+}
+
+
+exports.updateEntry = function(entryId, content, isChecked){
+    return contentCollection.findOneAndUpdate({ _id : entryId } , { $set : { content : content, isChecked : isChecked } })
+}
+
+exports.updateTitle = function(noteId, title){
+    return notesCollection.findOneAndUpdate({ _id : noteId },{ $set : { title : title , updatedAt : new Date(Date.now()).toLocaleString("en-US") } })
+}
+
+
+exports.removeSingleEntry = function(entryId){
+    return contentCollection.findOneAndRemove({ _id : entryId })
+}
+
+exports.updateUserInfo = function(userObj){
+    return userCollection.findOneAndUpdate({ emailId : userObj.emailId },{ $set : {  userName : userObj.userName, name : userObj.fullName, password : userObj.password } })
+}
 // ----------------------------------------------------------------------
