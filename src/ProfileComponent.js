@@ -60,11 +60,6 @@ class ProfileComponent extends Component {
         sendData: false
     }
 
-    displayRedirect() {
-        if (this.state.redirectVar) {
-            this.props.history.push('/login')
-        }
-    }
 
     resetPage() {
         console.log("reset the page")
@@ -121,18 +116,18 @@ class ProfileComponent extends Component {
                     // })
                     message.success("Data updated successfully :).... redirecting")
                     setTimeout(() => {
-                        this.setState({ redirectVar: true })
+                        this.props.history.push('/login')
                     }, 1000)
 
                     localStorage.removeItem('JWT_TOKEN')
                 }
             })
             .catch((err) => {
-                if (err.response.status == 401) {
-                    message.error("Unauthorized user.... please log in :(")
-                    this.setState({ redirectVar: true })
+                if (err.response.status === 401) {
+                    message.error("You haven't logged in, have you ? .... please log in :(")
+                    this.props.history.push('/login')
                 }
-                else if (err.response.status == 400) {
+                else if (err.response.status === 400) {
                     message.error("Some error occured.... please try again later :(")
                 }
             })
@@ -184,7 +179,6 @@ class ProfileComponent extends Component {
                                 <Button loading={this.state.isUpdatingInProgress} onClick={this.updateData.bind(this)} type="primary" style={{ background: 'green', marginTop: '10px', width: "50%" }}>Update</Button>
                                 <Button type="danger" style={{ width: "50%", marginTop: '10px' }} onClick={this.resetPage} >Cancel</Button>
                             </div>
-                            {this.displayRedirect()}
                         </Col>
                     </Row>
 

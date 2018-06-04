@@ -29,7 +29,8 @@ class CardPopulatorDashBoardComponent extends Component {
             })
             .catch((err) => {
                 if (err.response.status === 401) {
-                    console.log("UNAUTHORIZED IN CARD POPULATOR!! : ")
+                    console.log("UNAUTHORIZED USER IN CARD POPULATOR!! : ")
+                    message.error("You haven't logged in, have you ? .... please log in :(")
                     this.props.history.push('/login')
                 }
             })

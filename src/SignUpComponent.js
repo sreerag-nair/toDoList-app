@@ -99,7 +99,7 @@ class SignUpComponent extends React.Component {        //WORKING
   displayRedirect() {
     if (this.state.redirectVar) {
       // return <Redirect to = '/dashboard' />
-      this.props.history.push('/dashboards')
+      this.props.history.push('/dashboard')
     }
   }
 
