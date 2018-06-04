@@ -63,6 +63,7 @@ class NoteEditingModal extends Component {
             }
         })
         .then((response) =>{
+            this.props.updateTitleInDashBoard(this.props.noteObj._id, this.state.title)
             this.setState({ updateInProgress : false })
             message.success("Update successful.... :-)")
         })
@@ -98,7 +99,8 @@ class NoteEditingModal extends Component {
         }
         else{
             // console.log("HERE HERE : ", this.state.newValueToAdd);
-            this.setState({ notesCollectionObject: [...this.state.notesCollectionObject, { content: this.state.newValueToAdd, isChecked: false }] })
+            this.setState({ notesCollectionObject: [...this.state.notesCollectionObject, { content: this.state.newValueToAdd, isChecked: false }],
+                            newValueToAdd : '' })
             
         }
     }
@@ -111,7 +113,7 @@ class NoteEditingModal extends Component {
                 // console.log("getInputBox -- current Target : ", e.currentTarget.childNodes)
                 // console.log("getInputBox -- target : ", e.target.childNodes)
             }} >
-            <Col xs={22} sm={11} md={11} lg={11}><Tooltip visible={this.state.isTooltipVisible} title="Input is required to add to the list" > <Input onChange={this.textBoxValueChanged.bind(this)} /> </Tooltip></Col>
+            <Col xs={22} sm={11} md={11} lg={11}><Tooltip visible={this.state.isTooltipVisible} title="Input is required to add to the list" > <Input value = { this.state.newValueToAdd } onChange={this.textBoxValueChanged.bind(this)} /> </Tooltip></Col>
             <Col xs={2} sm={1} md={1} lg={1}><Button shape="circle" onClick={this.addNewNoteEntry.bind(this)} ><Icon type="plus" /></Button></Col>
             </Row>
         )
@@ -136,8 +138,6 @@ class NoteEditingModal extends Component {
         //     return idx != index
         // })
         var tempArray = this.state.notesCollectionObject.slice()
-        
-        // console.log("deleted array : ", this.state.entriesToDelete)
 
         this.setState({ entriesToDelete : [...this.state.entriesToDelete, tempArray.find(function(x,idx){
             if((idx === index) && (x._id != null))
@@ -196,7 +196,7 @@ render() {
         
         {/* <Button onClick={() => this.setState({ isAddInputBoxVisible: !this.state.isAddInputBoxVisible })} style={{ width: '100%' }} type="primary">ADD</Button> */}
         <Button loading = { this.state.updateInProgress } onClick={this.submitNote.bind(this)} style={{ width: '50%', marginTop: '20px' }} type="primary dashed">Update</Button>
-        <Button style={{ width: '50%', marginTop: '20px' }} type="danger" onClick = { this.props.editingModalOnCancel } >Cancel</Button>
+        <Button style={{ width: '50%', marginTop: '20px' }} type="danger" onClick = { this.props.editingModalOnCancel } >Close</Button>
         </Card>
         
         // </Col>

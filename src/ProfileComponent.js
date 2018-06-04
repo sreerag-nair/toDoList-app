@@ -44,7 +44,7 @@ class ProfileComponent extends Component {
 
 
     imgSrc = {
-        src: require('./logo-github.svg.png')
+        src: require('./img-src/logo-github.svg.png')
     }
 
     state = {
@@ -62,7 +62,6 @@ class ProfileComponent extends Component {
 
     displayRedirect() {
         if (this.state.redirectVar) {
-            //   return <Redirect to = '/' />
             this.props.history.push('/login')
         }
     }

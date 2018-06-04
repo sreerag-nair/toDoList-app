@@ -51,6 +51,7 @@ class DashBoard extends React.Component {
         currentCard: null
     }
 
+
     setCurrentCard = (thisValue) => {
 
         this.setState({ currentCard: thisValue })
@@ -104,7 +105,7 @@ class DashBoard extends React.Component {
                         </Switch>
                     </Content>
                     <Footer style={{ textAlign: 'center', bottom : '0px' , width : '87%', position : " absolute" }}>
-                        ---=== Created by SreeraG ===---
+                        ---=== Created by SreeraG with { <img src = {require('./img-src/heart-img.svg')} style = {{ height : '15px', width : '15px' }} /> } ===---
       </Footer>
                 </Layout>
 

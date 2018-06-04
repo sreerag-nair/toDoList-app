@@ -100,6 +100,25 @@ class CardPopulatorDashBoardComponent extends Component {
         this.setState({ isDeleteConfirmationModalVisible: false, noteToDeleteID : '' })
     }
 
+    updateTitleInDashBoard(idToUpdate,updateTitleTo){
+        var tempNoteArray = this.state.notesObjArray.slice()
+
+        tempNoteArray[tempNoteArray.findIndex(function(note){
+            return idToUpdate === note._id
+        })].title = updateTitleTo;
+
+        tempNoteArray[tempNoteArray.findIndex(function(note){
+            return idToUpdate === note._id
+        })].updatedDate = new Date().toLocaleString("en-US")
+
+        // console.log("updateTitleInDashBoard : ", tempNoteArray[tempNoteArray.findIndex(function(note){
+        //     return idToUpdate === note._id
+        // })])
+        
+        this.setState({ notesObjArray : tempNoteArray })
+        
+    }
+
     render() {
         if (this.state.notesObjArray) {
             return (
@@ -120,7 +139,7 @@ class CardPopulatorDashBoardComponent extends Component {
                             footer={null}
                             style={{ heignt: '10vh' }}
                         >
-                            <NoteEditingModal editingModalOnCancel = { this.editingModalOnCancel }  noteObj={this.state.notesObjArray.find(note => { return note._id === this.state.currentlySelectedCard })} />
+                            <NoteEditingModal updateTitleInDashBoard = { this.updateTitleInDashBoard.bind(this) } editingModalOnCancel = { this.editingModalOnCancel }  noteObj={this.state.notesObjArray.find(note => { return note._id === this.state.currentlySelectedCard })} />
                         </Modal>
                         {/* -------------------------MODAL FOR EDITING NOTES ENDS---------------------------- */}
 
@@ -135,7 +154,6 @@ class CardPopulatorDashBoardComponent extends Component {
                             onCancel={this.deleteNo.bind(this)}
                             onOk={this.deleteYes.bind(this)}
                             closable={true}
-                            // getContainer = { (e) => console.log("dsfvsdg : ", this.getContainer) }
                             destroyOnClose={true}
                         >
                             Delete Note?

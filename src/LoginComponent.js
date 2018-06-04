@@ -30,7 +30,7 @@ class LoginComponent extends Component {
 
   state = {
     size: 'default',
-    img: require('./logo.svg')
+    img: require('./img-src/logo.svg')
   }
 
 

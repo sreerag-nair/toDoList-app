@@ -319,7 +319,6 @@ app.get('/getcurrentnote/:noteID', function (req, res, next) {
     //TRY ASYNC-AWAIT HERE
 
     var valueToSend = []
-    console.log
 
     getAllNoteContent(req.params.noteID)
         .then((noteEntryArray) => {
@@ -335,8 +334,8 @@ app.get('/getcurrentnote/:noteID', function (req, res, next) {
 // update an existing card - update operation
 app.put('/update/:id', function (req, res, next) {
 
-    console.log("ID : ", req.params.id)
-    console.log("Code : ", req.body)
+    // console.log("ID : ", req.params.id)
+    // console.log("Code : ", req.body)
 
 
 
@@ -350,14 +349,14 @@ app.put('/update/:id', function (req, res, next) {
                     if (obj._id != null) {
                         updateEntry(obj._id, obj.content, obj.isChecked)
                             .then((doc, err) => {
-                                console.log("Updated")
+                                // console.log("Updated")
                             })
 
                     } else {
                         //insert
                         insertNoteEntry(req.params.id, obj.content, obj.isChecked)
                             .then((doc, entry) => {
-                                console.log("New Entry")
+                                // console.log("New Entry")
                             })
                     }
                 })
