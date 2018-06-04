@@ -12,7 +12,7 @@ class DummyCardComponent extends Component{
     render(){
         return(
             <Card /*onClick = { () => this.props.getClickedCard(this.props.noteObj._id) }*/ bordered 
-            hoverable style={{ textAlign : 'center' }}
+            hoverable style={{ width : 400, textAlign : 'center' }}
             
             cover={<img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />}
             
