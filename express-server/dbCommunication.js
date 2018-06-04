@@ -125,6 +125,34 @@ var contentTableSchemaHandle = (function () {
     }
 })();
 
+//used to return a handle of a singleton 'noteAttachmentsSchema' collection
+var noteAttachmentSchemaHandle = (function(){
+        var noteAttachmentSchemaHandle;
+
+        function mountNoteAttachmentsSchemaHandle(db){
+            noteAttachmentSchemaHandle = new mongoose.Schema({
+                uId : String,
+                notesID : String,
+                attachmentName : String,
+                size : String,
+                mimeType : String
+
+            })
+
+            return noteAttachmentSchemaHandle;
+        }
+
+        return{
+            getInstance : function(db){
+                if(!noteAttachmentSchemaHandle)
+                    noteAttachmentSchemaHandle = mountNoteAttachmentsSchemaHandle(db)
+
+                return noteAttachmentSchemaHandle;
+            }
+        }
+})();
+
+
 
 // call and destructure to get all ready-to-use handles....
 function getHandles() {
@@ -135,12 +163,13 @@ function getHandles() {
     var userCollection = dbHandle.model('userTableCollection', userTableSchemaHandle.getInstance());
     var notesCollection = dbHandle.model('notesTableCollection', notesTableSchemaHandle.getInstance());
     var contentCollection = dbHandle.model('contentTableCollection', contentTableSchemaHandle.getInstance());
-    return { userCollection, notesCollection, contentCollection }
+    var noteAttachmentCollection = dbHandle.model('noteAttachmentCollection', noteAttachmentSchemaHandle.getInstance());
+    return { userCollection, notesCollection, contentCollection , noteAttachmentCollection }
 }
 // ---------------------------------SINGLETON OBJECTS-----------------------
 
 
-var { userCollection, notesCollection, contentCollection } = getHandles()
+var { userCollection, notesCollection, contentCollection, noteAttachmentCollection } = getHandles()
 
 
 
@@ -241,7 +270,7 @@ exports.updateEntry = function(entryId, content, isChecked){
 }
 
 exports.updateTitle = function(noteId, title){
-    return notesCollection.findOneAndUpdate({ _id : noteId},{ $set : { title : title , updatedAt : new Date(Date.now()).toLocaleString("en-US") } })
+    return notesCollection.findOneAndUpdate({ _id : noteId },{ $set : { title : title , updatedAt : new Date(Date.now()).toLocaleString("en-US") } })
 }
 
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Col, Layout, message, Modal, Row } from 'antd';
+import { Button, Col, Layout, message, Modal, Row,  } from 'antd';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import NoteEditingModal from './NoteEditingModal';
 import DummyCardComponent from './DummyCardComponent';
 const { Content } = Layout;
@@ -8,7 +9,7 @@ const { Content } = Layout;
 class CardPopulatorDashBoardComponent extends Component {
 
     state = {
-        notesObjArray: null,
+        notesObjArray: [],
         isNoteEditingModalVisible: false,
         currentlySelectedCard: '',
         noteToDeleteID: '',
@@ -68,60 +69,60 @@ class CardPopulatorDashBoardComponent extends Component {
     deleteYes() {
 
         axios({
-            method : 'DELETE',
-            url : 'http://localhost:8001/deletenote/' + this.state.noteToDeleteID,
-            data : {
+            method: 'DELETE',
+            url: 'http://localhost:8001/deletenote/' + this.state.noteToDeleteID,
+            data: {
                 // x : "123"
             },
-            headers :{
-                Authorization : "Bearer " + localStorage.getItem('JWT_TOKEN')
+            headers: {
+                Authorization: "Bearer " + localStorage.getItem('JWT_TOKEN')
             }
         })
-        .then(response =>{
+            .then(response => {
 
-            this.setState({ isDeleteConfirmationModalVisible : false })
-            message.success("Delete successful....")
-            var updatednotesObjArray = this.state.notesObjArray.slice()
-            
-            updatednotesObjArray.splice(updatednotesObjArray.findIndex((x) => {
-                //get the index of the card removed
-                return x._id === this.state.noteToDeleteID 
-                }),1)
+                this.setState({ isDeleteConfirmationModalVisible: false })
+                message.success("Delete successful....")
+                var updatednotesObjArray = this.state.notesObjArray.slice()
 
-            this.setState({ notesObjArray : updatednotesObjArray })
-        })
-        .catch(err =>{
-            message.error("There was some problem... try again later")
-            console.log("err : ", err)
-        })
+                updatednotesObjArray.splice(updatednotesObjArray.findIndex((x) => {
+                    //get the index of the card removed
+                    return x._id === this.state.noteToDeleteID
+                }), 1)
+
+                this.setState({ notesObjArray: updatednotesObjArray })
+            })
+            .catch(err => {
+                message.error("There was some problem... try again later")
+                console.log("err : ", err)
+            })
     }
 
     // close the modal
     deleteNo() {
-        this.setState({ isDeleteConfirmationModalVisible: false, noteToDeleteID : '' })
+        this.setState({ isDeleteConfirmationModalVisible: false, noteToDeleteID: '' })
     }
 
-    updateTitleInDashBoard(idToUpdate,updateTitleTo){
+    updateTitleInDashBoard(idToUpdate, updateTitleTo) {
         var tempNoteArray = this.state.notesObjArray.slice()
 
-        tempNoteArray[tempNoteArray.findIndex(function(note){
+        tempNoteArray[tempNoteArray.findIndex(function (note) {
             return idToUpdate === note._id
         })].title = updateTitleTo;
 
-        tempNoteArray[tempNoteArray.findIndex(function(note){
+        tempNoteArray[tempNoteArray.findIndex(function (note) {
             return idToUpdate === note._id
         })].updatedDate = new Date().toLocaleString("en-US")
 
         // console.log("updateTitleInDashBoard : ", tempNoteArray[tempNoteArray.findIndex(function(note){
         //     return idToUpdate === note._id
         // })])
-        
-        this.setState({ notesObjArray : tempNoteArray })
-        
+
+        this.setState({ notesObjArray: tempNoteArray })
+
     }
 
     render() {
-        if (this.state.notesObjArray) {
+        if (this.state.notesObjArray.length) {
             return (
                 <div style={{ backgroundColor: '#0091FA', height: '90vh', width: '100%' }}>
 
@@ -140,7 +141,7 @@ class CardPopulatorDashBoardComponent extends Component {
                             footer={null}
                             style={{ heignt: '10vh' }}
                         >
-                            <NoteEditingModal updateTitleInDashBoard = { this.updateTitleInDashBoard.bind(this) } editingModalOnCancel = { this.editingModalOnCancel }  noteObj={this.state.notesObjArray.find(note => { return note._id === this.state.currentlySelectedCard })} />
+                            <NoteEditingModal updateTitleInDashBoard={this.updateTitleInDashBoard.bind(this)} editingModalOnCancel={this.editingModalOnCancel} noteObj={this.state.notesObjArray.find(note => { return note._id === this.state.currentlySelectedCard })} />
                         </Modal>
                         {/* -------------------------MODAL FOR EDITING NOTES ENDS---------------------------- */}
 
@@ -192,9 +193,18 @@ class CardPopulatorDashBoardComponent extends Component {
             )
         }
         else {
+            // message.info("You seem to have no note made....")
+            // message.info("Create a new node by clicking on the '+'",5)
             return (
-                <div>
-                    <h1>NOTHING TO SHOW</h1>
+                <div style={{ backgroundColor: '#0091FA', height: '90vh', width: '100%' }}>
+                    {/* <h1>YOU HAVE NO NOTES CREATED IN YOUR ACCOUNT....
+                         CLICK ON THE ADD BUTTON ON THE LEFT SIDE TO ADD A NEW NOTE...
+                    </h1> */}
+                    <Link to = '/dashboard/addnote'>
+                    <Button type = "primary" style = {{ textAlign : 'center', fontSize : '125px' , height : '90vh', width : '100%' }}>
+                    ADD NOTE +
+                    </Button>                        
+                    </Link>
                 </div>
             )
         }

@@ -49,7 +49,10 @@ class AddNoteComponent extends Component {
             .then((response) => {
                 // this.setState(this.state);
                 message.success('Note added to database successfully.')
-                this.setState({ isAddInputBoxVisible: true, disableAddButton: false, isSubmitButtonDisabled: false, displaySubmitButtonLoading: false })
+                this.setState({
+                    isAddInputBoxVisible: true, disableAddButton: false, isSubmitButtonDisabled: false, displaySubmitButtonLoading: false,
+                    notesCollectionObject: [], title: "Click here to enter title"
+                })
             })
             .catch((err) => {
                 message.error('There was an error')
@@ -83,22 +86,24 @@ class AddNoteComponent extends Component {
             return
         }
         else
-            this.setState({ notesCollectionObject: [...this.state.notesCollectionObject, { content: this.state.newValueToAdd, isChecked: false }],
-                 newValueToAdd: '', isSubmitButtonDisabled : false })
+            this.setState({
+                notesCollectionObject: [...this.state.notesCollectionObject, { content: this.state.newValueToAdd, isChecked: false }],
+                newValueToAdd: '', isSubmitButtonDisabled: false
+            })
     }
 
 
     generateInputBox() {
         // if (this.state.isAddInputBoxVisible)
-            return (
-                <Row style={{ marginBottom: '20px' }} onClick={(e) => {
-                    // console.log("getInputBox -- current Target : ", e.currentTarget.childNodes)
-                    // console.log("getInputBox -- target : ", e.target.childNodes)
-                }} >
-                    <Col xs={22} sm={11} md={11} lg={11}><Tooltip visible={this.state.isTooltipVisible} title="Please enter something here to add it to the list" > <Input onChange={this.textBoxValueChanged.bind(this)} value={this.state.newValueToAdd} /> </Tooltip></Col>
-                    <Col xs={2} sm={1} md={1} lg={1}><Button disabled={this.state.isAddButtonDisabled} shape="circle" onClick={this.addNewNoteEntry.bind(this)} ><Icon type="plus" /></Button></Col>
-                </Row>
-            )
+        return (
+            <Row style={{ marginBottom: '20px' }} onClick={(e) => {
+                // console.log("getInputBox -- current Target : ", e.currentTarget.childNodes)
+                // console.log("getInputBox -- target : ", e.target.childNodes)
+            }} >
+                <Col xs={22} sm={11} md={11} lg={11}><Tooltip visible={this.state.isTooltipVisible} title="Please enter something here to add it to the list" > <Input onChange={this.textBoxValueChanged.bind(this)} value={this.state.newValueToAdd} /> </Tooltip></Col>
+                <Col xs={2} sm={1} md={1} lg={1}><Button disabled={this.state.isAddButtonDisabled} shape="circle" onClick={this.addNewNoteEntry.bind(this)} ><Icon type="plus" /></Button></Col>
+            </Row>
+        )
 
     }
 
@@ -122,9 +127,9 @@ class AddNoteComponent extends Component {
             notesCollectionObject: this.state.notesCollectionObject.filter((element, idx) => {
                 return idx !== index
             })
-        }, () =>{
-            if(!this.state.notesCollectionObject.length)
-            this.setState({ isSubmitButtonDisabled : true })
+        }, () => {
+            if (!this.state.notesCollectionObject.length)
+                this.setState({ isSubmitButtonDisabled: true })
         })
 
 
@@ -134,12 +139,12 @@ class AddNoteComponent extends Component {
         this.setState({ title: e.target.value })
     }
 
-    onCancel(){
-        if(this.state.notesCollectionObject.length === 0 ){
-            this.props.history.push('/dashboard') 
+    onCancel() {
+        if (this.state.notesCollectionObject.length === 0) {
+            this.props.history.push('/dashboard')
         }
-        else{
-            this.setState({ notesCollectionObject : [] , newValueToAdd : '' , isSubmitButtonDisabled : true })
+        else {
+            this.setState({ notesCollectionObject: [], newValueToAdd: '', isSubmitButtonDisabled: true })
         }
     }
 
@@ -148,10 +153,10 @@ class AddNoteComponent extends Component {
             <div style={{ height: '90vh' }}>
                 <Row>
                     <Col xs></Col>
-                    <Col xs> <Card hoverable 
-                    title={ <Popover trigger = "click" content = { <Input onChange = { this.changeTitle.bind(this) } value = { this.state.title } placeholder = "Title input..."/> } >
-                    <div> {this.state.title} </div> </Popover> }
-                     style={{ textAlign: 'left', background: 'white', marginTop: '150px' }}>
+                    <Col xs> <Card hoverable
+                        title={<Popover trigger="click" content={<Input onChange={this.changeTitle.bind(this)} value={this.state.title} placeholder="Title input..." />} >
+                            <div> {this.state.title} </div> </Popover>}
+                        style={{ textAlign: 'left', background: 'white', marginTop: '150px' }}>
 
                         {
                             this.state.notesCollectionObject.map((entry, idx) => {
@@ -160,7 +165,7 @@ class AddNoteComponent extends Component {
                                         // console.log("current Target : ", e.currentTarget)
                                         // console.log("target : ", e.target)
                                     }} >
-                                        <Col xs={22} sm={11} md={11} lg={11}><Checkbox style={{ textAlign: 'left' }} onChange={this.onCBChecked.bind(this, idx)}> {entry.content} </Checkbox> </Col>
+                                        <Col xs={22} sm={11} md={11} lg={11}><Checkbox style={{ textAlign: 'left' }} onChange={ this.onCBChecked.bind(this, idx) }> {entry.content} </Checkbox> </Col>
                                         <Col xs={2} sm={1} md={1} lg={1}><Button onClick={this.toDeleteEntry.bind(this, idx)} shape="circle"><Icon type='close' /></Button></Col>
                                     </Row>
                                 )
@@ -172,7 +177,7 @@ class AddNoteComponent extends Component {
 
                         {/* <Button onClick={() => this.setState({ isAddInputBoxVisible: !this.state.isAddInputBoxVisible })} disabled={this.state.disableAddButton} style={{ width: '100%' }} type="primary">ADD</Button> */}
                         <Button onClick={this.submitNote.bind(this)} style={{ width: '50%', marginTop: '20px' }} disabled={this.state.isSubmitButtonDisabled} loading={this.state.displaySubmitButtonLoading} type="primary">Add note</Button>
-                        <Button style={{ width: '50%', marginTop: '20px' }} onClick = { this.onCancel.bind(this) } type="danger">Cancel</Button>
+                        <Button style={{ width: '50%', marginTop: '20px' }} onClick={this.onCancel.bind(this)} type="danger">Cancel</Button>
                     </Card> </Col>
                     <Col xs></Col>
                 </Row>
