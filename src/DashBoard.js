@@ -99,13 +99,13 @@ class DashBoard extends React.Component {
                 <Layout style={{ marginLeft: 200 }}>
                     <Content>
                         <Switch >
-                            <Route exact path='/dashboard' render={(props) => <CardPopulatorDashBoardComponent {...props}/>} />
-                            <Route exact path='/dashboard/addnote' render={(props) => <AddNoteComponent {...props}/>} />
-                            <Route exact path='/dashboard/profile' render={(props) => <ProfileComponent {...props}/>} />
+                            <Route exact path='/dashboard' render={(props) => <CardPopulatorDashBoardComponent {...props} />} />
+                            <Route exact path='/dashboard/addnote' render={(props) => <AddNoteComponent {...props} />} />
+                            <Route exact path='/dashboard/profile' render={(props) => <ProfileComponent {...props} />} />
                         </Switch>
                     </Content>
-                    <Footer style={{ textAlign: 'center', bottom : '0px' , width : '87%', position : " absolute" }}>
-                        ---=== Created by SreeraG with { <img src = {require('./img-src/heart-img.svg')} style = {{ height : '15px', width : '15px' }} /> } ===---
+                    <Footer style={{ height: '10px', textAlign: 'center', bottom: '0px', width: '87%', position: " absolute" }}>
+                        ---=== Created by SreeraG with {<img src={require('./img-src/heart-img.svg')} style={{ height: '15px', width: '15px' }} />} ===---
       </Footer>
                 </Layout>
 

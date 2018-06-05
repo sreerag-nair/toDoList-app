@@ -172,7 +172,7 @@ function getHandles() {
 var { userCollection, notesCollection, contentCollection, noteAttachmentCollection } = getHandles()
 
 
-
+//obsolete
 exports.read = function (notesObjArray) {
     //check if the user exists in the db
     userCollection.findOne({ username: 'yoda' }, function (err, msg) {

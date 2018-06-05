@@ -276,8 +276,7 @@ app.get('/getnotes', function (req, res, next) {
     },
         function (err, user, info) {
 
-            // console.log("user : ", user)
-
+            console.log("in getnotes route....")
             if (user) {
                 var objToSend = []
 

@@ -4,15 +4,14 @@ import { Button, Card, Checkbox, Icon, Input, message, Popover, Tooltip } from '
 import { Col, Row } from 'react-flexbox-grid'
 import axios from 'axios';
 
-class NoteEditingModalTab1 extends Component {
+class NoteEditingModalAttachments extends Component {
     
     state = {
-        title: this.props.noteObj.title || "Click here to add title",
+        title : this.props.title,
         isAddInputBoxVisible: false,
         isTooltipVisible: false,
         notesCollectionObject: [],
         newValueToAdd: '',
-        isLoading: true,
         showDivider: true,
         entriesToDelete : [],
         updateInProgress : false,
@@ -22,7 +21,7 @@ class NoteEditingModalTab1 extends Component {
     componentWillMount() {
         // console.log("ON SUBMIT : ", this.props.noteObj._id)
         
-        axios.get('http://localhost:8001/getcurrentnote/' + this.props.noteObj._id,
+        axios.get('http://localhost:8001/getcurrentnote/' + this.props._id,
         
         {
             headers: {
@@ -30,8 +29,9 @@ class NoteEditingModalTab1 extends Component {
             }
         })
         .then((response) => {
-            console.log("resbod : ", response.data)
-            this.setState({ notesCollectionObject: response.data, isLoading: false })
+            // console.log("resbod : ", response.data)
+            this.props.finishedLoading();
+            this.setState({ notesCollectionObject: response.data })
         })
     }
     
@@ -47,7 +47,7 @@ class NoteEditingModalTab1 extends Component {
     //editing the existing note
     submitNote() {
         var objToSend = {}
-        objToSend["noteTitle"] = this.state.title
+        objToSend["noteTitle"] = this.props.title
         objToSend["toUpdateOrEnter"] = this.state.notesCollectionObject
         objToSend["toDelete"] = this.state.entriesToDelete
         // objToSend["noteId"] = this.props.noteObj._id
@@ -56,14 +56,15 @@ class NoteEditingModalTab1 extends Component {
 
         axios({
             method : 'PUT',
-            url : 'http://localhost:8001/update/'+ this.props.noteObj._id,
+            url : 'http://localhost:8001/update/'+ this.props._id,
             data : objToSend ,
             headers :{
                 Authorization : "Bearer " + localStorage.getItem('JWT_TOKEN')
             }
         })
         .then((response) =>{
-            this.props.updateTitleInDashBoard(this.props.noteObj._id, this.state.title)
+            // console.log("propzzz  : ", this.props.title)
+            this.props.updateTitleInDashBoard(this.props._id, this.props.title)
             this.setState({ updateInProgress : false })
             message.success("Update successful.... :-)")
         })
@@ -166,9 +167,7 @@ render() {
         
         // <span id = "IDOFDIV" onClick={ this.displayPopoverToChangeTitle.bind(this) }> {this.state.title} </span>
         
-        <Card loading={this.state.isLoading} hoverable title={ <Popover trigger = "click" content = { <Input onChange = { this.changeTitle.bind(this) } value = { this.state.title } placeholder = "Title input..."/> } >
-        <div> {this.state.title} </div> </Popover> } style={{ textAlign: 'left', background: 'white',/* marginTop: '150px'*/ }}>
-        
+       <div>
         {
             
             this.state.notesCollectionObject.map((entry, idx) => {
@@ -197,7 +196,7 @@ render() {
         {/* <Button onClick={() => this.setState({ isAddInputBoxVisible: !this.state.isAddInputBoxVisible })} style={{ width: '100%' }} type="primary">ADD</Button> */}
         <Button loading = { this.state.updateInProgress } onClick={this.submitNote.bind(this)} style={{ width: '50%', marginTop: '20px' }} type="primary dashed">Update</Button>
         <Button style={{ width: '50%', marginTop: '20px' }} type="danger" onClick = { this.props.editingModalOnCancel } >Close</Button>
-        </Card>
+        </div>
         
         // </Col>
         // <Col xs></Col>
@@ -208,4 +207,4 @@ render() {
 }
 }
 
-export default NoteEditingModalTab1;
+export default NoteEditingModalAttachments;

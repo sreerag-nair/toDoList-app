@@ -17,22 +17,28 @@ class CardPopulatorDashBoardComponent extends Component {
     }
 
     componentWillMount() {
-
+        message.loading("Talking to the database.... please wait", 3)
         axios.get('http://localhost:8001/getnotes',
             {
                 headers: {
                     'Authorization': "Bearer " + localStorage.getItem('JWT_TOKEN')
                 }
             })
-            .then(message => {
-                console.log("CONSOLE DATA : ", message.data)
-                this.setState({ notesObjArray: message.data })
+            .then(messages => {
+                this.setState({ notesObjArray: messages.data })
+                message.success("Talking to the database complete...")
+                console.log("CONSOLE DATA : ", messages.data)
             })
             .catch((err) => {
-                if (err.response.status === 401) {
-                    console.log("UNAUTHORIZED USER IN CARD POPULATOR!! : ")
-                    message.error("You haven't logged in, have you ? .... please log in :(")
-                    this.props.history.push('/login')
+                if(err.response.status){
+                    if (err.response.status === 401) {
+                        console.log("UNAUTHORIZED USER IN CARD POPULATOR!! : ")
+                        message.error("You haven't logged in, have you ? .... please log in :(")
+                        this.props.history.push('/login')
+                    }
+                }
+                else{
+                    message.error("Some error occured, please try again later :(...")
                 }
             })
     }
@@ -103,6 +109,7 @@ class CardPopulatorDashBoardComponent extends Component {
     }
 
     updateTitleInDashBoard(idToUpdate, updateTitleTo) {
+        console.log("TITLE CHANGE RECEIVED : ", updateTitleTo)
         var tempNoteArray = this.state.notesObjArray.slice()
 
         tempNoteArray[tempNoteArray.findIndex(function (note) {

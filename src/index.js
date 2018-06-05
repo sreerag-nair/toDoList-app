@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import AppComponent from './App';
 import registerServiceWorker from './registerServiceWorker';
-
+import CardEditingModalComponent from './CardEditingModalComponent';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 // APP ENTRY POINT
