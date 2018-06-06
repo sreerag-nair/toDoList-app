@@ -19,6 +19,8 @@ class NoteEditingModal extends Component {
         key: 'tab1',
         _id: this.props.noteObj._id,
         isLoading : false,
+        shouldChildContentSort : false,
+
 
     }
 
@@ -36,6 +38,12 @@ class NoteEditingModal extends Component {
 
     finishedLoading(){
         this.setState({ isLoading : false })
+    }
+
+    toSortEntries(switchState){
+        
+        this.setState({ shouldChildContentSort : switchState })
+
     }
 
 
@@ -60,7 +68,7 @@ class NoteEditingModal extends Component {
         const contentList = {
             tab1: <NoteEditingModalContents title = { this.state.title } _id = { this.props.noteObj._id }
              updateTitleInDashBoard={this.props.updateTitleInDashBoard} editingModalOnCancel={this.props.editingModalOnCancel} 
-             finishedLoading = { this.finishedLoading.bind(this) }/>,
+             finishedLoading = { this.finishedLoading.bind(this) } shouldChildContentSort = { this.state.shouldChildContentSort } />,
             tab2: <ModalTestTab2 />,
             tab3: <h1>ModalTestTab3</h1>,
 
@@ -74,7 +82,7 @@ class NoteEditingModal extends Component {
 
         return (
 
-            <Card extra = { <Switch checkedChildren="S" unCheckedChildren="U"/> }
+            <Card extra = { <Switch disabled = { (this.state.key === 'tab1') ? false : true } checkedChildren="Sorted" unCheckedChildren="Unsorted" onChange = { this.toSortEntries.bind(this) } /> }
                 loading={this.state.isLoading} hoverable title={<Popover trigger="click" content={<Input onChange={this.changeTitle.bind(this)}
                     value={this.state.title} placeholder="Title input..." />} >
                     <div> {this.state.title} </div> </Popover>} style={{ textAlign: 'left', background: 'white',/* marginTop: '150px'*/ }}

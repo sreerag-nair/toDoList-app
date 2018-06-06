@@ -17,6 +17,34 @@ class NoteEditingModalAttachments extends Component {
         updateInProgress : false,
     }
     
+    componentWillReceiveProps(){
+        // console.log("props : " , this.props.shouldChildContentSort)
+        
+        var tempNoteArray = [];
+
+        if(this.props.shouldChildContentSort){
+            
+            tempNoteArray = this.state.notesCollectionObject.slice();
+            tempNoteArray.sort(function(a,b){
+                return a.isChecked - b.isChecked
+            })
+            
+            this.setState({ notesCollectionObject : tempNoteArray })
+            // console.log("temp : ", tempNoteArray)
+            
+        }
+        else{
+
+            tempNoteArray = this.state.notesCollectionObject.slice()
+            var randomArray = []
+
+            for(var i = tempNoteArray.length; i > 0; i--){
+                console.log(" : : : ", Math.floor(Math.random() * (tempNoteArray.length)))
+            }
+        }
+        
+        
+    }
     
     componentWillMount() {
         // console.log("ON SUBMIT : ", this.props.noteObj._id)
@@ -53,7 +81,7 @@ class NoteEditingModalAttachments extends Component {
         // objToSend["noteId"] = this.props.noteObj._id
         console.log("ON SUBMIT : ", objToSend)
         this.setState({ updateInProgress : true })
-
+        
         axios({
             method : 'PUT',
             url : 'http://localhost:8001/update/'+ this.props._id,
@@ -101,110 +129,110 @@ class NoteEditingModalAttachments extends Component {
         else{
             // console.log("HERE HERE : ", this.state.newValueToAdd);
             this.setState({ notesCollectionObject: [...this.state.notesCollectionObject, { content: this.state.newValueToAdd, isChecked: false }],
-                            newValueToAdd : '' })
+                newValueToAdd : '' })
+                
+            }
+        }
+        
+        
+        generateInputBox() {
+            return (
+                
+                <Row style={{ marginBottom: '20px' }} onClick={(e) => {
+                    // console.log("getInputBox -- current Target : ", e.currentTarget.childNodes)
+                    // console.log("getInputBox -- target : ", e.target.childNodes)
+                }} >
+                <Col xs={22} sm={11} md={11} lg={11}><Tooltip visible={this.state.isTooltipVisible} title="Input is required to add to the list" > <Input value = { this.state.newValueToAdd } onChange={this.textBoxValueChanged.bind(this)} /> </Tooltip></Col>
+                <Col xs={2} sm={1} md={1} lg={1}><Button shape="circle" onClick={this.addNewNoteEntry.bind(this)} ><Icon type="plus" /></Button></Col>
+                </Row>
+            )
             
         }
+        
+        onCBChecked(clicked_checkbox_index, event) {
+            
+            console.log("TRIGGERED.....")
+            var temp = this.state.notesCollectionObject.slice();
+            temp[clicked_checkbox_index].isChecked = !this.state.notesCollectionObject[clicked_checkbox_index].isChecked
+            this.setState({ noteContent: temp })
+        }
+        
+        editNoteEntry(index, e) {
+            console.log("INDEX  : ", index)
+            
+        }
+        
+        toDeleteEntry(index, event) {
+            // this.state.notesCollectionObject.filter((element, idx) => {
+            //     return idx != index
+            // })
+            var tempArray = this.state.notesCollectionObject.slice()
+            
+            this.setState({ entriesToDelete : [...this.state.entriesToDelete, tempArray.find(function(x,idx){
+                if((idx === index) && (x._id != null))
+                return x
+            })] , 
+            notesCollectionObject:  tempArray.filter((element, idx) => {
+                return idx !== index
+            })
+        })
+        
     }
     
     
-    generateInputBox() {
+    changeTitle(e){
+        this.setState({ title : e.target.value })
+    }
+    
+    render() {
         return (
             
-            <Row style={{ marginBottom: '20px' }} onClick={(e) => {
-                // console.log("getInputBox -- current Target : ", e.currentTarget.childNodes)
-                // console.log("getInputBox -- target : ", e.target.childNodes)
-            }} >
-            <Col xs={22} sm={11} md={11} lg={11}><Tooltip visible={this.state.isTooltipVisible} title="Input is required to add to the list" > <Input value = { this.state.newValueToAdd } onChange={this.textBoxValueChanged.bind(this)} /> </Tooltip></Col>
-            <Col xs={2} sm={1} md={1} lg={1}><Button shape="circle" onClick={this.addNewNoteEntry.bind(this)} ><Icon type="plus" /></Button></Col>
-            </Row>
-        )
-        
-    }
-    
-    onCBChecked(clicked_checkbox_index, event) {
-        
-        console.log("TRIGGERED.....")
-        var temp = this.state.notesCollectionObject.slice();
-        temp[clicked_checkbox_index].isChecked = !this.state.notesCollectionObject[clicked_checkbox_index].isChecked
-        this.setState({ noteContent: temp })
-    }
-    
-    editNoteEntry(index, e) {
-        console.log("INDEX  : ", index)
-        
-    }
-    
-    toDeleteEntry(index, event) {
-        // this.state.notesCollectionObject.filter((element, idx) => {
-        //     return idx != index
-        // })
-        var tempArray = this.state.notesCollectionObject.slice()
-
-        this.setState({ entriesToDelete : [...this.state.entriesToDelete, tempArray.find(function(x,idx){
-            if((idx === index) && (x._id != null))
-            return x
-        })] , 
-        notesCollectionObject:  tempArray.filter((element, idx) => {
-            return idx !== index
-        })
-    })
-    
-}
-
-
-changeTitle(e){
-    this.setState({ title : e.target.value })
-}
-
-render() {
-    return (
-        
-        // <div style = {{ height : '90vh' }}>
-        // <Row>
-        // <Col xs></Col>
-        // <Col xs> 
-        
-        
-        // <span id = "IDOFDIV" onClick={ this.displayPopoverToChangeTitle.bind(this) }> {this.state.title} </span>
-        
-       <div>
-        {
+            // <div style = {{ height : '90vh' }}>
+            // <Row>
+            // <Col xs></Col>
+            // <Col xs> 
             
-            this.state.notesCollectionObject.map((entry, idx) => {
-                return (
-                    <Row key={idx} style={{ marginBottom: '20px', }}>
-                    {/* style = {{ textDecorationLine: 'line-through' }} */}
-                    <Col xs={20} sm={10} md={10} lg={10}><Checkbox style={{ textAlign: 'left' }} checked={entry.isChecked} onChange={this.onCBChecked.bind(this, idx)} >
-                    <span style={{ textDecorationLine: entry.isChecked ? 'line-through' : 'none' }} >
-                    {entry.content}
-                    </span>
-                    </Checkbox> </Col>
-                    <Col xs={2} sm={1} md={1} lg={1}>
-                    <Popover trigger = "click" content = { <span><Input value = { entry.content } onChange = { this.updateEntryValue.bind(this,idx) } /></span> }>
-                    <Button shape="circle" onClick={this.editNoteEntry.bind(this, idx)} ><Icon type="edit" /></Button>
-                    </Popover>
-                    </Col><Col xs={2} sm={1} md={1} lg={1}><Button onClick={this.toDeleteEntry.bind(this, idx)} shape="circle"><Icon type='close' /></Button></Col>
-                    </Row>
-                )
-            })
-        }
-        
-        
-        {/*  input box - only 1 to be present at a time */}
-        {this.generateInputBox()}
-        
-        {/* <Button onClick={() => this.setState({ isAddInputBoxVisible: !this.state.isAddInputBoxVisible })} style={{ width: '100%' }} type="primary">ADD</Button> */}
-        <Button loading = { this.state.updateInProgress } onClick={this.submitNote.bind(this)} style={{ width: '50%', marginTop: '20px' }} type="primary dashed">Update</Button>
-        <Button style={{ width: '50%', marginTop: '20px' }} type="danger" onClick = { this.props.editingModalOnCancel } >Close</Button>
-        </div>
-        
-        // </Col>
-        // <Col xs></Col>
-        // </Row>
-        
-        // </div>
-    )
-}
+            
+            // <span id = "IDOFDIV" onClick={ this.displayPopoverToChangeTitle.bind(this) }> {this.state.title} </span>
+            
+            <div>
+            {
+                
+                this.state.notesCollectionObject.map((entry, idx) => {
+                    return (
+                        <Row key={idx} style={{ marginBottom: '20px', }}>
+                        {/* style = {{ textDecorationLine: 'line-through' }} */}
+                        <Col xs={20} sm={10} md={10} lg={10}><Checkbox style={{ textAlign: 'left' }} checked={entry.isChecked} onChange={this.onCBChecked.bind(this, idx)} >
+                        <span style={{ textDecorationLine: entry.isChecked ? 'line-through' : 'none' }} >
+                        {entry.content}
+                        </span>
+                        </Checkbox> </Col>
+                        <Col xs={2} sm={1} md={1} lg={1}>
+                        <Popover trigger = "click" content = { <span><Input value = { entry.content } onChange = { this.updateEntryValue.bind(this,idx) } /></span> }>
+                        <Button shape="circle" onClick={this.editNoteEntry.bind(this, idx)} ><Icon type="edit" /></Button>
+                        </Popover>
+                        </Col><Col xs={2} sm={1} md={1} lg={1}><Button onClick={this.toDeleteEntry.bind(this, idx)} shape="circle"><Icon type='close' /></Button></Col>
+                        </Row>
+                    )
+                })
+            }
+            
+            
+            {/*  input box - only 1 to be present at a time */}
+            {this.generateInputBox()}
+            
+            {/* <Button onClick={() => this.setState({ isAddInputBoxVisible: !this.state.isAddInputBoxVisible })} style={{ width: '100%' }} type="primary">ADD</Button> */}
+            <Button loading = { this.state.updateInProgress } onClick={this.submitNote.bind(this)} style={{ width: '50%', marginTop: '20px' }} type="primary dashed">Update</Button>
+            <Button style={{ width: '50%', marginTop: '20px' }} type="danger" onClick = { this.props.editingModalOnCancel } >Close</Button>
+            </div>
+            
+            // </Col>
+            // <Col xs></Col>
+            // </Row>
+            
+            // </div>
+        )
+    }
 }
 
 export default NoteEditingModalAttachments;
