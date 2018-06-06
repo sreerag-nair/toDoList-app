@@ -55,14 +55,14 @@ class NoteEditingModal extends Component {
 
         const tabList = [{
             key: 'tab1',
-            tab: 'Contents',
+            tab: <span><Icon type="bars" />Contents</span>,
         }, {
             key: 'tab2',
-            tab: 'Attachments',
+            tab: <span><Icon type="paper-clip" />Attachments</span>,
         },
         {
             key: 'tab3',
-            tab: 'Shared with...',
+            tab: <span><Icon type="share-alt" />Shared with...</span>,
         }];
 
         const contentList = {

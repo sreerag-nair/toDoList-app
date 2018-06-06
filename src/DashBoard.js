@@ -3,6 +3,7 @@ import './DashBoard.css';
 import { Icon, Layout, Menu, message } from 'antd';
 import { Link, Switch, Route } from 'react-router-dom';
 import './DashBoard.css'
+import axios from 'axios';
 import ProfileComponent from './ProfileComponent';
 import CardPopulatorDashBoardComponent from './CardPopulatorDashBoardComponent';
 import AddNoteComponent from './AddNoteComponent';
@@ -38,9 +39,21 @@ class DashBoard extends React.Component {
     // }
 
     loggingOutFunction() {
-        message.success("Goodbye.... see you soon  :D")
-        localStorage.removeItem('JWT_TOKEN')
-        this.props.history.push('/login')
+       axios.post('http://localhost:8001/logout',{},{
+           headers : {
+               Authorization : "Bearer "
+           }
+       })
+       .then((response) =>{
+        if(response.status == 200){
+            message.success("Goodbye.... see you soon  :D")
+            localStorage.removeItem('JWT_TOKEN')
+            this.props.history.push('/login')
+        }
+       })
+       .catch((err) =>{
+            message.error("Some error occured while logging you out.... Please try again later :(")
+       })
     }
 
 

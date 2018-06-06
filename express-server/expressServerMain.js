@@ -10,20 +10,48 @@ const passport = require('passport');
 const jwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const cors = require('cors')
-// to import the database functions
+
+// import the database functions
 const { getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser /*, read*/,
     removeNotesTitle, removeSingleEntry, searchUserCreds, searchUserEmail, updateEntry, updateTitle, updateUserInfo } = require('./dbCommunication');
-const { generateToken } = require('./tokenGenerator');
 
+    const { generateToken } = require('./tokenGenerator');
+const multer = require('multer');
+const del = require('del');
+const path = require('path');
 
 //THIS IS THE DEFAULT WAY OF PARSING POST REQUEST 
 // app.use(bodyParser.urlencoded({extended : false}))
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      /*
+        Files will be saved in the 'uploads' directory. Make
+        sure this directory already exists!
+      */
+      cb(null, './uploads');
+    },
+    filename: (req, file, cb) => {
+      /*
+        uuidv4() will generate a random ID that we'll use for the
+        new filename. We use path.extname() to get
+        the extension from the original file name and add that to the new
+        generated ID. These combined will create the file name used
+        to save the file on the server and will be available as
+        req.file.pathname in the router handler.
+      */
+      const newFilename = `${file.originalname}`;
+      cb(null, newFilename);
+    },
+  });
+  // create the multer instance that will be used to upload/save the file
+  const upload = multer({ storage });
 
 //----------------THE MIDDLEWARE FUNCTION BLOCK-----------//
 
 //very important as u are receiving a JSON object
-app.use(bodyParser.json())
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors({ origin: 'http://localhost:3000' }))
 app.use(passport.initialize())
 
@@ -176,14 +204,14 @@ app.post('/profileinfo', function (req, res, next) {
         // console.log("info : ", info);
         console.log("incoming reqzzz : ", req.body["password"])
         // this.user = user
-        
-        
+
+
         if (user) {
-            
+
             if (Object.keys(req.body) != 0) {
-                
+
                 req.body["password"] = (req.body["password"] == '') ? user.password :
-                crypto.createHash('sha256').update(req.body.password).digest('hex')
+                    crypto.createHash('sha256').update(req.body.password).digest('hex')
 
                 console.log("incoming req : ", req.body)
 
@@ -203,7 +231,7 @@ app.post('/profileinfo', function (req, res, next) {
             }
             else {
                 console.log("IN ELSE...........")
-                res.status(200).send({ userName: user.userName, emailId: user.emailId, password: user.password , name : user.name })
+                res.status(200).send({ userName: user.userName, emailId: user.emailId, password: user.password, name: user.name })
             }
 
 
@@ -288,8 +316,10 @@ app.get('/getnotes', function (req, res, next) {
                         notesTitleArray.map((noteTitle, titleIndex) => {
                             //create a new entry with the title and _id
 
-                            objToSend.push({ _id: noteTitle._id, title: noteTitle.title,
-                         createdDate: new Date(noteTitle.createdAt).toLocaleString("en-US"), updatedDate : new Date(noteTitle.updatedAt).toLocaleString("en-US") })
+                            objToSend.push({
+                                _id: noteTitle._id, title: noteTitle.title,
+                                createdDate: new Date(noteTitle.createdAt).toLocaleString("en-US"), updatedDate: new Date(noteTitle.updatedAt).toLocaleString("en-US")
+                            })
 
                         })
 
@@ -430,29 +460,21 @@ app.delete('/deletenote/:id', function (req, res, next) {
 
 app.post('/logout', function (req, res) {
     console.log("GOT LOGOUT");
-    res.json({ redirect: '/', message: 'OK' });
+    res.status(200).send();
 })
 
 
 
-// app.get('/dashboard', function (req, res, next) {
 
-//     passport.authenticate('jwt', {
-//         session: false
-//     }, function (err, user, info) {
+app.post('/sendFile',upload.single('bird'), function (req, res, next) {
 
-//         //valid token/user...
-//         if (user) {
+    
+    console.log("dfgb : ", req.file.filename)
+    res.send()
+    
 
-//         }
-//         else {
-//             // 401 - unauthorized request
-//             res.status(401).send();
-//         }
 
-//     })(req, res, next)
-
-// })
+})
 
 
 

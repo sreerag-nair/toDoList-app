@@ -22,7 +22,7 @@ class NoteEditingModalAttachments extends Component {
         
         var tempNoteArray = [];
 
-        if(this.props.shouldChildContentSort){
+        if(!this.props.shouldChildContentSort){
             
             tempNoteArray = this.state.notesCollectionObject.slice();
             tempNoteArray.sort(function(a,b){

@@ -11,9 +11,9 @@ import { BrowserRouter as Router } from 'react-router-dom';
 ReactDOM.render(
     
         <Router>
-            <AppComponent />
+            {/* <AppComponent /> */}
             {/* <AddNoteComponent /> */}
-            {/* <CardEditingModalComponent /> */}
+            <CardEditingModalComponent />
         </Router>
     
     , document.getElementById('root'));
