@@ -22,7 +22,7 @@ class CardEditingModalComponent extends Component {
 
         for(var i in e.target.files){
             if(!isNaN(i)){
-                imagesToSend.append('bird',e.target.files[i])
+                imagesToSend.append('images',e.target.files[i])
             }
         }
 
@@ -47,7 +47,7 @@ class CardEditingModalComponent extends Component {
                 {/* <Upload onChange = { this.uploadFile }> */}
                 <Button type="primary" onClick={this.uploadFile} >
                     <Icon type="upload" />Upload
-                    <Input id="hiddeninput" onChange={this.getFiles} type="file" hidden multiple />
+                    <input id="hiddeninput" onChange={this.getFiles} accept = ".jpg, .png, .jpeg" type="file" hidden multiple />
                 </Button>
                 {/* </Upload> */}
                 {/* </FormItem>

@@ -461,7 +461,7 @@ app.post('/logout', function (req, res) {
 
 
 
-app.post('/sendFile',upload.array('bird'), function (req, res, next) {
+app.post('/sendFile',upload.array('images'), function (req, res, next) {
 
     
     // console.log("dfgb : ", req.file.filename)
