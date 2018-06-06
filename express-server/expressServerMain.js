@@ -415,11 +415,6 @@ app.put('/update/:id', function (req, res, next) {
 })
 
 
-
-
-
-
-
 //for deletion operation
 app.delete('/deletenote/:id', function (req, res, next) {
 
@@ -466,10 +461,10 @@ app.post('/logout', function (req, res) {
 
 
 
-app.post('/sendFile',upload.single('bird'), function (req, res, next) {
+app.post('/sendFile',upload.array('bird'), function (req, res, next) {
 
     
-    console.log("dfgb : ", req.file.filename)
+    // console.log("dfgb : ", req.file.filename)
     res.send()
     
 

@@ -133,7 +133,8 @@ var noteAttachmentSchemaHandle = (function(){
             noteAttachmentSchemaHandle = new mongoose.Schema({
                 uId : String,
                 notesID : String,
-                attachmentName : String,
+                originalName : String,
+                savedName : String,
                 size : String,
                 mimeType : String
 
