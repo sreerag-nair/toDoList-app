@@ -15,7 +15,8 @@ const uuidv4 = require('uuid/v4')
 
 // import the database functions
 const { getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser /*, read*/,
-    removeNotesTitle, removeSingleEntry, searchUserCreds, searchUserEmail, updateEntry, updateTitle, updateUserInfo } = require('./dbCommunication');
+    removeNotesTitle, removeSingleEntry, searchUserCreds, searchUserEmail, updateEntry, updateTitle, updateUserInfo,
+    uploadNewFiles } = require('./dbCommunication');
 
 const { generateToken } = require('./tokenGenerator');
 const multer = require('multer');
@@ -42,12 +43,19 @@ const storage = multer.diskStorage({
           to save the file on the server and will be available as
           req.file.pathname in the router handler.
         */
+        setTimeout(() => {
+            // console.log("--------------------------------------------------------------------")
+            // console.log("req.fileszzzzzzzzzz : ",req.files)
+            // console.log("filexxx : ", file)
+            // console.log("--------------------------------------------------------------------")
+        }, 2000)
+
         const newFilename = `${uuidv4()}${file.originalname}`;
-        cb(null, newFilename);
+        cb(null, newFilename)
     },
 });
 // create the multer instance that will be used to upload/save the file
-const upload = multer({ storage });
+const upload = multer({ storage }).array("images");
 
 //----------------THE MIDDLEWARE FUNCTION BLOCK-----------//
 
@@ -272,8 +280,6 @@ app.post('/addnewnote', function (req, res, next) {
                                     }
                                 )
                                 res.status(200).send()
-                                setTimeout(() => {
-                                }, 1000)
                             })
                     })
 
@@ -463,14 +469,34 @@ app.post('/logout', function (req, res) {
 
 
 
-app.post('/sendFile', upload.array('images'), function (req, res, next) {
+app.post('/sendFile', function (req, res, next) {
 
+
+    upload(req, res, function (err) {
+        if (err) throw err
+        
+        var obj = {}
+        obj.uId = 'UIDDDDDDDD',
+        obj.notesID = 'notesIDDDDDDDDD', 
+
+
+        req.files.map((oneFile, idx) =>{
+            
+            obj.originalname = oneFile.originalname,
+            obj.filename = oneFile.filename,
+            obj.mimetype = oneFile.mimetype,
+
+            uploadNewFiles(obj).then((doc,err) =>{
+                if(err) throw err
+
+                console.log("UPLOADED : ", doc)
+            })
+
+        })
+    })
 
     // console.log("dfgb : ", req.file.filename)
     res.send()
-
-
-
 })
 
 

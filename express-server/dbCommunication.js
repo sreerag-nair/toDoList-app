@@ -42,7 +42,7 @@ var userTableSchemaHandle = (function () {
             name: String,
             emailId: {
                 type: String,
-                unique : true     
+                unique: true
             },
             // 'password' will be hashed 
             password: String,
@@ -74,11 +74,11 @@ var notesTableSchemaHandle = (function () {
             uId: String,
             title: String,
             createdAt: {
-                default : Date.now(),
-                type : Date
+                default: Date.now(),
+                type: Date
             },
-            updatedAt : Date,
-            deletedAt : Date,
+            updatedAt: Date,
+            deletedAt: Date,
             //collaborators of the note
             sharedWith: Array
 
@@ -107,8 +107,8 @@ var contentTableSchemaHandle = (function () {
             notesID: String,
             content: String,
             isChecked: {
-                type : Boolean,
-                default : false
+                type: Boolean,
+                default: false
             }
 
         })
@@ -126,31 +126,33 @@ var contentTableSchemaHandle = (function () {
 })();
 
 //used to return a handle of a singleton 'noteAttachmentsSchema' collection
-var noteAttachmentSchemaHandle = (function(){
-        var noteAttachmentSchemaHandle;
+var noteAttachmentSchemaHandle = (function () {
+    var noteAttachmentSchemaHandle;
 
-        function mountNoteAttachmentsSchemaHandle(db){
-            noteAttachmentSchemaHandle = new mongoose.Schema({
-                uId : String,
-                notesID : String,
-                originalName : String,
-                savedName : String,
-                size : String,
-                mimeType : String
+    function mountNoteAttachmentsSchemaHandle(db) {
+        noteAttachmentSchemaHandle = new mongoose.Schema({
 
-            })
+            imageId: String,
+            uId: String,
+            notesID: String,
+            originalName: String,
+            savedName: String,
+            deletedAt: Date,
+            mimeType: String
+
+        })
+
+        return noteAttachmentSchemaHandle;
+    }
+
+    return {
+        getInstance: function (db) {
+            if (!noteAttachmentSchemaHandle)
+                noteAttachmentSchemaHandle = mountNoteAttachmentsSchemaHandle(db)
 
             return noteAttachmentSchemaHandle;
         }
-
-        return{
-            getInstance : function(db){
-                if(!noteAttachmentSchemaHandle)
-                    noteAttachmentSchemaHandle = mountNoteAttachmentsSchemaHandle(db)
-
-                return noteAttachmentSchemaHandle;
-            }
-        }
+    }
 })();
 
 
@@ -165,7 +167,7 @@ function getHandles() {
     var notesCollection = dbHandle.model('notesTableCollection', notesTableSchemaHandle.getInstance());
     var contentCollection = dbHandle.model('contentTableCollection', contentTableSchemaHandle.getInstance());
     var noteAttachmentCollection = dbHandle.model('noteAttachmentCollection', noteAttachmentSchemaHandle.getInstance());
-    return { userCollection, notesCollection, contentCollection , noteAttachmentCollection }
+    return { userCollection, notesCollection, contentCollection, noteAttachmentCollection }
 }
 // ---------------------------------SINGLETON OBJECTS-----------------------
 
@@ -222,8 +224,8 @@ exports.searchUserCreds = function (emailId, password) {
 }
 
 // to check if the email id supplied exists in the database -> signup functionality
-exports.searchUserEmail = function(emailId){
-    return userCollection.findOne({ emailId : emailId })
+exports.searchUserEmail = function (emailId) {
+    return userCollection.findOne({ emailId: emailId })
 }
 
 //insert new users into the database -. sign up functionality
@@ -248,38 +250,58 @@ exports.insertNoteEntry = function (noteTitleId, individualNotesEntry, checkBoxS
 }
 
 //for notes title for dashboard
-exports.getNotesTitle = function(userId){
+exports.getNotesTitle = function (userId) {
 
     //returns an array consisting of note titles created
     // by a particular user 
-    return notesCollection.find({ uId : userId , deletedAt : { $eq : null } })
+    return notesCollection.find({ uId: userId, deletedAt: { $eq: null } })
 }
 
-exports.getAllNoteContent = function(notesTitleId){
-    return contentCollection.find({ notesID : notesTitleId })
+exports.getAllNoteContent = function (notesTitleId) {
+    return contentCollection.find({ notesID: notesTitleId })
 }
 
 //technically deleting a note
-exports.removeNotesTitle = function(notesTitleId){
-    return notesCollection.findOneAndUpdate({ _id : notesTitleId },
-        { $set : {deletedAt : Date.now()} }, {new : true} )
+exports.removeNotesTitle = function (notesTitleId) {
+    return notesCollection.findOneAndUpdate({ _id: notesTitleId },
+        { $set: { deletedAt: Date.now() } }, { new: true })
 }
 
 
-exports.updateEntry = function(entryId, content, isChecked){
-    return contentCollection.findOneAndUpdate({ _id : entryId } , { $set : { content : content, isChecked : isChecked } })
+exports.updateEntry = function (entryId, content, isChecked) {
+    return contentCollection.findOneAndUpdate({ _id: entryId }, { $set: { content: content, isChecked: isChecked } })
 }
 
-exports.updateTitle = function(noteId, title){
-    return notesCollection.findOneAndUpdate({ _id : noteId },{ $set : { title : title , updatedAt : new Date(Date.now()).toLocaleString("en-US") } })
+exports.updateTitle = function (noteId, title) {
+    return notesCollection.findOneAndUpdate({ _id: noteId }, { $set: { title: title, updatedAt: new Date(Date.now()).toLocaleString("en-US") } })
 }
 
 
-exports.removeSingleEntry = function(entryId){
-    return contentCollection.findOneAndRemove({ _id : entryId })
+exports.removeSingleEntry = function (entryId) {
+    return contentCollection.findOneAndRemove({ _id: entryId })
 }
 
-exports.updateUserInfo = function(userObj){
-    return userCollection.findOneAndUpdate({ emailId : userObj.emailId },{ $set : {  userName : userObj.userName, name : userObj.fullName, password : userObj.password } })
+exports.updateUserInfo = function (userObj) {
+    return userCollection.findOneAndUpdate({ emailId: userObj.emailId }, { $set: { userName: userObj.userName, name: userObj.fullName, password: userObj.password } })
+}
+
+//this call is made while a new note is created and it has files to upload...
+exports.uploadNewFiles = function (uploadWithAttachments) {
+    return noteAttachmentCollection({ uId : uploadWithAttachments.uId, notesID : uploadWithAttachments.notesID,
+         originalName : uploadWithAttachments.originalname, savedName : uploadWithAttachments.filename,
+          mimeType : uploadWithAttachments.mimetype }).save()
 }
 // ----------------------------------------------------------------------
+
+
+/*
+
+                imageId: String, 
+                uId: String, 
+                notesID: String, 
+                originalName: String, 
+                savedName: String, 
+                deletedAt:Date, 
+                mimeType: String
+
+*/
