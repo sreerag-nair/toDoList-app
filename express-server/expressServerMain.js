@@ -10,12 +10,14 @@ const passport = require('passport');
 const jwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const cors = require('cors')
+const uuidv4 = require('uuid/v4')
+
 
 // import the database functions
 const { getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser /*, read*/,
     removeNotesTitle, removeSingleEntry, searchUserCreds, searchUserEmail, updateEntry, updateTitle, updateUserInfo } = require('./dbCommunication');
 
-    const { generateToken } = require('./tokenGenerator');
+const { generateToken } = require('./tokenGenerator');
 const multer = require('multer');
 const del = require('del');
 const path = require('path');
@@ -25,27 +27,27 @@ const path = require('path');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      /*
-        Files will be saved in the 'uploads' directory. Make
-        sure this directory already exists!
-      */
-      cb(null, './uploads');
+        /*
+          Files will be saved in the 'uploads' directory. Make
+          sure this directory already exists!
+        */
+        cb(null, './assets');
     },
     filename: (req, file, cb) => {
-      /*
-        uuidv4() will generate a random ID that we'll use for the
-        new filename. We use path.extname() to get
-        the extension from the original file name and add that to the new
-        generated ID. These combined will create the file name used
-        to save the file on the server and will be available as
-        req.file.pathname in the router handler.
-      */
-      const newFilename = `${file.originalname}`;
-      cb(null, newFilename);
+        /*
+          uuidv4() will generate a random ID that we'll use for the
+          new filename. We use path.extname() to get
+          the extension from the original file name and add that to the new
+          generated ID. These combined will create the file name used
+          to save the file on the server and will be available as
+          req.file.pathname in the router handler.
+        */
+        const newFilename = `${uuidv4()}${file.originalname}`;
+        cb(null, newFilename);
     },
-  });
-  // create the multer instance that will be used to upload/save the file
-  const upload = multer({ storage });
+});
+// create the multer instance that will be used to upload/save the file
+const upload = multer({ storage });
 
 //----------------THE MIDDLEWARE FUNCTION BLOCK-----------//
 
@@ -461,12 +463,12 @@ app.post('/logout', function (req, res) {
 
 
 
-app.post('/sendFile',upload.array('images'), function (req, res, next) {
+app.post('/sendFile', upload.array('images'), function (req, res, next) {
 
-    
+
     // console.log("dfgb : ", req.file.filename)
     res.send()
-    
+
 
 
 })

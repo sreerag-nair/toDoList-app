@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { message, Button, Card, Checkbox, Icon, Input, Popover, Tooltip } from 'antd';
 // import { Col, Row } from 'antd';
-import { Col, Row } from 'react-flexbox-grid'
+import { Col, Row } from 'react-flexbox-grid';
+import axios from 'axios';
+
 
 class AddNoteAttachmentsComponent extends Component {
 
@@ -41,10 +43,10 @@ class AddNoteAttachmentsComponent extends Component {
         this.setState({ fileUploadList: x })
 
 
-        // axios.post('http://localhost:8001/sendFile', imagesToSend)
-        //     .then((response) => {
+        axios.post('http://localhost:8001/sendFile', imagesToSend)
+            .then((response) => {
 
-        //     })
+            })
 
         // console.log("E : ", e.target.files)
     }
@@ -92,24 +94,7 @@ class AddNoteAttachmentsComponent extends Component {
                                     </Row>
                                 }
 
-
-                                {/* TEST BUTTON .....DELETE AFTER  */}
-                                {
-                                    < Row style={{ marginBottom: '20px' }} onClick={(e) => {
-                                        // console.log("getInputBox -- current Target : ", e.currentTarget.childNodes)
-                                        // console.log("getInputBox -- target : ", e.target.childNodes)
-                                    }} >
-                                        <Col xs={24} sm={12} md={12} lg={12}>
-                                            <Button style={{ width: '100%' }} type="primary" onClick={this.uploadFile} >
-                                                <Icon type="upload" />Upload
-                                    <input id="hiddeninput" onChange={this.getFiles.bind(this)} accept=".jpg, .png, .jpeg" type="file" hidden multiple />
-                                            </Button>
-                                        </Col>
-                                    </Row>
-                                }
-
-
-
+                                
             </span>
 
                         )
