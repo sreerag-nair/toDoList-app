@@ -49,6 +49,8 @@ class CardEditingModalComponent extends Component {
                     <Icon type="upload" />Upload
                     <input id="hiddeninput" onChange={this.getFiles} accept = ".jpg, .png, .jpeg" type="file" hidden multiple />
                 </Button>
+
+                <img src = { require("/home/trainee11/Desktop/todolist-app/src/img-src/gecko-2299365_1920.jpg") } alt = { "dsxfvdsgg" } />
                 {/* </Upload> */}
                 {/* </FormItem>
                 </Form> */}
