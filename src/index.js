@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import AppComponent from './App';
+import AddNoteComponent from './AddNoteComponent';
 import registerServiceWorker from './registerServiceWorker';
 import CardEditingModalComponent from './CardEditingModalComponent';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -12,8 +13,8 @@ ReactDOM.render(
     
         <Router>
             {/* <AppComponent /> */}
-            {/* <AddNoteComponent /> */}
-            <CardEditingModalComponent />
+            <AddNoteComponent />
+            {/* <CardEditingModalComponent /> */}
         </Router>
     
     , document.getElementById('root'));
