@@ -5,6 +5,17 @@ import { Col, Row } from 'react-flexbox-grid';
 import axios from 'axios';
 
 
+
+
+/*
+
+__________________FOR GETTING ADDRESS OF SELECTED IMAGE FILES FOR PREVIEW__________________
+
+                        window.URL.createObjectURL(e.target.files[i])
+
+sauce : https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file  --> Examples section
+
+*/
 class AddNoteAttachmentsComponent extends Component {
 
 
@@ -14,33 +25,35 @@ class AddNoteAttachmentsComponent extends Component {
 
     state = {
 
-        fileUploadList: []
+        fileUploadList: [],
+        previewImage : [],
 
     }
 
     uploadFile(e) {
-
         document.getElementById("hiddeninput").click()
-        // console.log("HEEEEEEE", e.target.files)
-
     }
 
     getFiles(e) {
 
         var imagesToSend = new FormData();
 
+        var reader = new FileReader();
+
         let x = [];
+        let y = [];
         for (var i in e.target.files) {
             if (!isNaN(i)) {
                 imagesToSend.append('images', e.target.files[i])
                 x.push(e.target.files[i])
+                y.push(window.URL.createObjectURL(e.target.files[i]))
             }
         }
 
         // console.log('here birs detaisl', imagesToSend.values())
-        // console.log('here birs detais2', x)
-
-        this.setState({ fileUploadList: x })
+        console.log('here birs detais2', y)
+        
+        this.setState({ fileUploadList: x, previewImage : y })
 
 
         axios.post('http://localhost:8001/sendFile', imagesToSend)
@@ -61,8 +74,8 @@ class AddNoteAttachmentsComponent extends Component {
                         return (
                             <Row style = {{ marginBottom: '10px' }} key={idx}>
                                 <Col xs={4} sm={2} md={2} lg={2}>
-                                    <div style = {{ background : 'white' , height: '55px' , border : '1px black solid' }}>
-                                        <img style = {{ height : '100%', width : '100%' }} src = { require(`/home/trainee11/Desktop/todolist-app/src/img-src/${ singleUploadedContent.name }`) } alt = "I" />
+                                    <div style = {{ background : 'teal' , height: '55px' , border : '1px black solid' }}>
+                                        <img style = {{ height : '100%', width : '100%' }} src = { this.state.previewImage[idx] } alt = "placeholderForImage" />
                                     </div>
                                 </Col>
                                 <Col xs={18} sm={9} md={9} lg={9}>
