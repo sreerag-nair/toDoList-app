@@ -30,6 +30,7 @@ class AddNoteComponent extends Component {
         notesCollectionObjectToSend: [],
 
         fileUploadList: [],
+        previewImageList : [],
 
         sharedWith: [],
 
@@ -37,34 +38,36 @@ class AddNoteComponent extends Component {
 
     submitNote() {
 
-        // var objToSubmit = Object.assign({}, { title: this.state.title }, { entries: this.state.notesCollectionObjectToSend },
-        // {}, {})
+        // console.log()
+
+        var objToSubmit = Object.assign({}, { title: this.state.title },
+        { entries: this.state.notesCollectionObjectToSend },
+        { fileUploadList : this.state.fileUploadList },
+        { sharedWith : this.state.sharedWith })
 
 
-        // console.log(objToSubmit)
+        console.log("objToSubmit : ", this.state)
 
-        console.log("notesCollectionObject : ", this.state.notesCollectionObjectToSend)
+        // this.setState({ isAddInputBoxVisible: false, isAddButtonDisabled: true, isSubmitButtonDisabled: true, displaySubmitButtonLoading: true })
 
-        this.setState({ isAddInputBoxVisible: false, isAddButtonDisabled: true, isSubmitButtonDisabled: true, displaySubmitButtonLoading: true })
-
-        // axios.post('http://localhost:8001/addnewnote', objToSubmit,
-        // {
-        //     headers: {
-        //         "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
-        //     }
-        // })
-        // .then((response) => {
-        //     // this.setState(this.state);
-        //     message.success('Note added to database successfully.')
-        //     this.setState({
-        //         isAddInputBoxVisible: true, disableAddButton: false, isSubmitButtonDisabled: false, displaySubmitButtonLoading: false,
-        //         notesCollectionObject: [], title: "Click here to enter title"
-        //     })
-        // })
-        // .catch((err) => {
-        //     message.error('There was an error')
-        // }
-        // )
+        axios.post('http://localhost:8001/addnewnote', objToSubmit,
+        {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
+            }
+        })
+        .then((response) => {
+            // this.setState(this.state);
+            message.success('Note added to database successfully.')
+            this.setState({
+                isAddInputBoxVisible: true, disableAddButton: false, isSubmitButtonDisabled: false, displaySubmitButtonLoading: false,
+                notesCollectionObject: [], title: "Click here to enter title"
+            })
+        })
+        .catch((err) => {
+            message.error('There was an error')
+        }
+        )
     }
 
     changeTitle(e) {
@@ -78,6 +81,10 @@ class AddNoteComponent extends Component {
 
     sendNotesCollectionObjectToParent(noteObj) {
         this.setState({ notesCollectionObjectToSend: noteObj })
+    }
+
+    sendAttachmentsCollectionObjectToParent(attachmentListObj,previewImageList,cb){
+        this.setState({ fileUploadList : attachmentListObj ,previewImageList : previewImageList },cb.bind(this))
     }
 
     render() {
@@ -100,7 +107,9 @@ class AddNoteComponent extends Component {
         const contentList = {
 
             tab1: <AddNoteContentComponent sendNotesCollectionObjectToParent={this.sendNotesCollectionObjectToParent.bind(this)} notesCollectionObjectToSend={this.state.notesCollectionObjectToSend} />,
-            tab2: <AddNoteComponentAttachments />,
+            tab2: <AddNoteComponentAttachments sendAttachmentsCollectionObjectToParent = { this.sendAttachmentsCollectionObjectToParent.bind(this) } 
+             fileUploadList = { this.state.fileUploadList } previewImageList = { this.state.previewImageList }
+              />,
             tab3: <h1>Modal Component 3</h1>,
 
             // tab1 : <AddNoteComponentContent>,

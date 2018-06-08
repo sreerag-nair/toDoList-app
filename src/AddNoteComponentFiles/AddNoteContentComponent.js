@@ -22,9 +22,9 @@ class AddNoteContentComponent extends Component {
         this.setState({ notesCollectionObject : this.props.notesCollectionObjectToSend })
     }
 
-    componentWillUnmount(){
-        this.props.sendNotesCollectionObjectToParent(this.state.notesCollectionObject)
-    }
+    // componentWillUnmount(){
+    //     this.props.sendNotesCollectionObjectToParent(this.state.notesCollectionObject)
+    // }
 
 
 
@@ -40,35 +40,7 @@ class AddNoteContentComponent extends Component {
 
     }
 
-    submitNote() {
-
-        var objToSubmit = Object.assign({}, { title: this.state.title }, { entries: this.state.notesCollectionObject })
-
-        
-        // console.log(objToSubmit)
-
-        this.setState({ isAddInputBoxVisible: false, disableAddButton: true, isSubmitButtonDisabled: true, displaySubmitButtonLoading: true })
-
-        axios.post('http://localhost:8001/addnewnote', objToSubmit,
-            {
-                headers: {
-                    "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
-                }
-            })
-            .then((response) => {
-                // this.setState(this.state);
-                message.success('Note added to database successfully.')
-                this.setState({
-                    isAddInputBoxVisible: true, disableAddButton: false, isSubmitButtonDisabled: false, displaySubmitButtonLoading: false,
-                    notesCollectionObject: [], title: "Click here to enter title"
-                })
-            })
-            .catch((err) => {
-                message.error('There was an error')
-            }
-            )
-
-    }
+    
 
     // {isChecked : , value : },
 
@@ -79,7 +51,10 @@ class AddNoteContentComponent extends Component {
         }
         //SOME PROBLEM HERE
         else if (e.target.value.length >= 0) {
-            this.setState({ newValueToAdd: e.target.value, isTooltipVisible: false, isAddButtonDisabled: false })
+            this.setState({ newValueToAdd: e.target.value, isTooltipVisible: false, isAddButtonDisabled: false },
+            () =>{
+                this.props.sendNotesCollectionObjectToParent(this.state.notesCollectionObject)
+            })
             return
         }
 
@@ -99,6 +74,7 @@ class AddNoteContentComponent extends Component {
                 notesCollectionObject: [...this.state.notesCollectionObject, { content: this.state.newValueToAdd, isChecked: false }],
                 newValueToAdd: '', isSubmitButtonDisabled: false
             }, () =>{
+                this.props.sendNotesCollectionObjectToParent(this.state.notesCollectionObject)
                 console.log("state : ", this.state.notesCollectionObject)
             })
     }
@@ -126,7 +102,7 @@ class AddNoteContentComponent extends Component {
 
         this.setState({ notesCollectionObject: temp })
 
-        // this.setState( { notesCollectionObject[clicked_checkbox_index].isChecked : !this.state.notesCollectionObject[clicked_checkbox_index].isChecked } );
+        this.props.sendNotesCollectionObjectToParent(this.state.notesCollectionObject)
 
     }
 
@@ -139,10 +115,12 @@ class AddNoteContentComponent extends Component {
                 return idx !== index
             })
         }, () => {
+            this.props.sendNotesCollectionObjectToParent(this.state.notesCollectionObject)
             if (!this.state.notesCollectionObject.length)
                 this.setState({ isSubmitButtonDisabled: true })
         })
 
+        
 
     }
 

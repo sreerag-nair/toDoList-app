@@ -43,13 +43,6 @@ const storage = multer.diskStorage({
           to save the file on the server and will be available as
           req.file.pathname in the router handler.
         */
-        setTimeout(() => {
-            // console.log("--------------------------------------------------------------------")
-            // console.log("req.fileszzzzzzzzzz : ",req.files)
-            // console.log("filexxx : ", file)
-            // console.log("--------------------------------------------------------------------")
-        }, 2000)
-
         const newFilename = `${uuidv4()}${file.originalname}`;
         cb(null, newFilename)
     },
@@ -261,26 +254,56 @@ app.post('/addnewnote', function (req, res, next) {
     passport.authenticate('jwt',
         function (err, user, info) {
 
-            // console.log("ADDNEWNOTE : ", req.body.title)
+            console.log("ADDNEWNOTE : ", req.body)
 
             if (user) {
 
                 searchUserCreds(user.emailId, user.password)
-                    .then(function (doc, err) {
+                    .then(function (userCredDoc, err) {
                         if (err) throw err
 
-                        insertNoteTitle(doc._id, req.body.title)
-                            .then(function (doc, err) {   //returns the inserted document
+                        insertNoteTitle(userCredDoc._id, req.body.title)
+                            .then(function (noteTitleDoc, err) {   //returns the inserted document
 
                                 //loop over the entries array and insert each one by one
                                 req.body.entries.map(
                                     (entryObj, idx) => {
-                                        insertNoteEntry(doc._id, entryObj.content, entryObj.isChecked)
+                                        insertNoteEntry(noteTitleDoc._id, entryObj.content, entryObj.isChecked)
                                         // console.log("expressServer - ln 210")
                                     }
                                 )
+
+                                //add the files sent by the app to the db and then to the assets 
+
+                                if (req.body.fileUploadList.length)
+                                    upload(req, res, function (err) {
+                                        if (err) throw err
+
+                                        var obj = {}
+                                        obj.uId = userCredDoc._id
+                                        obj.notesID = noteTitleDoc._id,
+
+
+                                            req.files.map((oneFile, idx) => {
+
+                                                obj.originalname = oneFile.originalname,
+                                                    obj.filename = oneFile.filename,
+                                                    obj.mimetype = oneFile.mimetype
+
+                                                console.log("obj : ", obj)
+
+                                                uploadNewFiles(obj).then((doc, err) => {
+                                                    if (err) throw err
+
+                                                    console.log("UPLOADED : ", doc)
+                                                })
+
+                                            })
+                                    })
+
                                 res.status(200).send()
                             })
+
                     })
 
             }
@@ -468,31 +491,32 @@ app.post('/logout', function (req, res) {
 
 
 
+var x = upload.fields
 
 app.post('/sendFile', function (req, res, next) {
 
 
     upload(req, res, function (err) {
         if (err) throw err
-        
+
         var obj = {}
         obj.uId = 'UIDDDDDDDD',
-        obj.notesID = 'notesIDDDDDDDDD', 
+            obj.notesID = 'notesIDDDDDDDDD',
 
 
-        req.files.map((oneFile, idx) =>{
-            
-            obj.originalname = oneFile.originalname,
-            obj.filename = oneFile.filename,
-            obj.mimetype = oneFile.mimetype,
+            req.files.map((oneFile, idx) => {
 
-            uploadNewFiles(obj).then((doc,err) =>{
-                if(err) throw err
+                obj.originalname = oneFile.originalname,
+                    obj.filename = oneFile.filename,
+                    obj.mimetype = oneFile.mimetype,
 
-                console.log("UPLOADED : ", doc)
+                    uploadNewFiles(obj).then((doc, err) => {
+                        if (err) throw err
+
+                        console.log("UPLOADED : ", doc)
+                    })
+
             })
-
-        })
     })
 
     // console.log("dfgb : ", req.file.filename)
