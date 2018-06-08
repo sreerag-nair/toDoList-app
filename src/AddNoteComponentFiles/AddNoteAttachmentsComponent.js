@@ -9,12 +9,15 @@ import axios from 'axios';
 
 /*
 
-__________________FOR GETTING ADDRESS OF SELECTED IMAGE FILES FOR PREVIEW__________________
+__________________FOR GETTING ADDRESS OF SELECTED IMAGE FILES FOR PREVIEW___________________
 
                         window.URL.createObjectURL(e.target.files[i])
 
-sauce : https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file  --> Examples section
+source : https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file  --> Examples section
 
+_____________________________________________________________________________________________
+
+https://jsbin.com/gokeponamo/2/edit?html,css,output     <---- button hover effect
 */
 class AddNoteAttachmentsComponent extends Component {
 
@@ -40,20 +43,20 @@ class AddNoteAttachmentsComponent extends Component {
 
         var reader = new FileReader();
 
-        let x = [];
-        let y = [];
+        let fileUploadList = [];
+        let imageThumbnailArray = [];
         for (var i in e.target.files) {
             if (!isNaN(i)) {
                 imagesToSend.append('images', e.target.files[i])
-                x.push(e.target.files[i])
-                y.push(window.URL.createObjectURL(e.target.files[i]))
+                fileUploadList.push(e.target.files[i])
+                imageThumbnailArray.push(window.URL.createObjectURL(e.target.files[i]))
             }
         }
 
         // console.log('here birs detaisl', imagesToSend.values())
-        console.log('here birs detais2', y)
+        console.log('here birs detais2', imageThumbnailArray)
         
-        this.setState({ fileUploadList: x, previewImage : y })
+        this.setState({ fileUploadList: fileUploadList, previewImage : imageThumbnailArray })
 
 
         axios.post('http://localhost:8001/sendFile', imagesToSend)
