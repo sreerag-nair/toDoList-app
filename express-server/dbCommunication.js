@@ -288,8 +288,8 @@ exports.updateUserInfo = function (userObj) {
 //this call is made while a new note is created and it has files to upload...
 exports.uploadNewFiles = function (uploadWithAttachments) {
     return noteAttachmentCollection({ uId : uploadWithAttachments.uId, notesID : uploadWithAttachments.notesID,
-         originalName : uploadWithAttachments.originalname, savedName : uploadWithAttachments.filename,
-          mimeType : uploadWithAttachments.mimetype }).save()
+        originalName : uploadWithAttachments.originalname, savedName : uploadWithAttachments.filename,
+        mimeType : uploadWithAttachments.mimetype ,imageId : uploadWithAttachments.generatedUId  }).save()
 }
 // ----------------------------------------------------------------------
 
