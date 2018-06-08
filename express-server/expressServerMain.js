@@ -32,6 +32,7 @@ const storage = multer.diskStorage({
           Files will be saved in the 'uploads' directory. Make
           sure this directory already exists!
         */
+        // console.log("filename block : ", req.body)
         cb(null, './assets');
     },
     filename: (req, file, cb) => {
@@ -43,6 +44,7 @@ const storage = multer.diskStorage({
           to save the file on the server and will be available as
           req.file.pathname in the router handler.
         */
+        // console.log("filename block : ", req.body)
         const newFilename = `${uuidv4()}${file.originalname}`;
         cb(null, newFilename)
     },
@@ -254,8 +256,6 @@ app.post('/addnewnote', function (req, res, next) {
     passport.authenticate('jwt',
         function (err, user, info) {
 
-            console.log("ADDNEWNOTE : ", req.body)
-
             if (user) {
 
                 searchUserCreds(user.emailId, user.password)
@@ -273,35 +273,8 @@ app.post('/addnewnote', function (req, res, next) {
                                     }
                                 )
 
-                                //add the files sent by the app to the db and then to the assets 
-
-                                if (req.body.fileUploadList.length)
-                                    upload(req, res, function (err) {
-                                        if (err) throw err
-
-                                        var obj = {}
-                                        obj.uId = userCredDoc._id
-                                        obj.notesID = noteTitleDoc._id,
-
-
-                                            req.files.map((oneFile, idx) => {
-
-                                                obj.originalname = oneFile.originalname,
-                                                    obj.filename = oneFile.filename,
-                                                    obj.mimetype = oneFile.mimetype
-
-                                                console.log("obj : ", obj)
-
-                                                uploadNewFiles(obj).then((doc, err) => {
-                                                    if (err) throw err
-
-                                                    console.log("UPLOADED : ", doc)
-                                                })
-
-                                            })
-                                    })
-
-                                res.status(200).send()
+                                //send the note id as response.... 
+                                res.status(200).send({ noteID: noteTitleDoc._id })
                             })
 
                     })
@@ -490,34 +463,51 @@ app.post('/logout', function (req, res) {
 })
 
 
-
-var x = upload.fields
-
 app.post('/sendFile', function (req, res, next) {
 
+    console.log("sendFIle : ", req.headers)
 
-    upload(req, res, function (err) {
-        if (err) throw err
+    // if (req.body.fileUploadList.length)
+    passport.authenticate('jwt', {
+        session: false
+    }, function (err, user, info) {
 
-        var obj = {}
-        obj.uId = 'UIDDDDDDDD',
-            obj.notesID = 'notesIDDDDDDDDD',
+        if (user) {
 
+            upload(req, res, function (err) {
+                
+                if (err) throw err
 
-            req.files.map((oneFile, idx) => {
+                var obj = {}
+                obj.uId = userCredDoc._id
+                obj.notesID = noteTitleDoc._id,
 
-                obj.originalname = oneFile.originalname,
-                    obj.filename = oneFile.filename,
-                    obj.mimetype = oneFile.mimetype,
+                    // console.log("hkjdsxfgdufixhj : " ,(req.files))
 
-                    uploadNewFiles(obj).then((doc, err) => {
-                        if (err) throw err
+                    req.files.map((oneFile, idx) => {
 
-                        console.log("UPLOADED : ", doc)
+                        obj.originalname = oneFile.originalname,
+                            obj.filename = oneFile.filename,
+                            obj.mimetype = oneFile.mimetype
+
+                        console.log("obj : ", obj)
+
+                        uploadNewFiles(obj).then((doc, err) => {
+                            if (err) throw err
+
+                            console.log("UPLOADED : ", doc)
+                        })
+
                     })
-
             })
+
+        }
+        else{
+            res.status(401).send({ error : "Unauthorized user in sendFile..!!!" })
+        }
+
     })
+
 
     // console.log("dfgb : ", req.file.filename)
     res.send()

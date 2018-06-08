@@ -29,8 +29,10 @@ class AddNoteComponent extends Component {
 
         notesCollectionObjectToSend: [],
 
+        //this is used to display the files to upload, not  to send to the server
         fileUploadList: [],
-        previewImageList : [],
+        previewImageList: [],
+        imagesToSend : null,
 
         sharedWith: [],
 
@@ -41,9 +43,8 @@ class AddNoteComponent extends Component {
         // console.log()
 
         var objToSubmit = Object.assign({}, { title: this.state.title },
-        { entries: this.state.notesCollectionObjectToSend },
-        { fileUploadList : this.state.fileUploadList },
-        { sharedWith : this.state.sharedWith })
+            { entries: this.state.notesCollectionObjectToSend },
+            { sharedWith: this.state.sharedWith })
 
 
         console.log("objToSubmit : ", this.state)
@@ -51,23 +52,42 @@ class AddNoteComponent extends Component {
         // this.setState({ isAddInputBoxVisible: false, isAddButtonDisabled: true, isSubmitButtonDisabled: true, displaySubmitButtonLoading: true })
 
         axios.post('http://localhost:8001/addnewnote', objToSubmit,
-        {
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
-            }
-        })
-        .then((response) => {
-            // this.setState(this.state);
-            message.success('Note added to database successfully.')
-            this.setState({
-                isAddInputBoxVisible: true, disableAddButton: false, isSubmitButtonDisabled: false, displaySubmitButtonLoading: false,
-                notesCollectionObject: [], title: "Click here to enter title"
+            {
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
+                }
             })
-        })
-        .catch((err) => {
-            message.error('There was an error')
-        }
-        )
+            .then((response) => {
+                // this.setState(this.state);
+                var x = response
+                console.log("RESBODY : ", response)
+                message.success('Note added to database successfully.')
+                this.setState({
+                    isAddInputBoxVisible: true, disableAddButton: false, isSubmitButtonDisabled: false, displaySubmitButtonLoading: false,
+                    notesCollectionObject: [], title: "Click here to enter title"
+                })
+
+
+                //if there is sometrhing in fileUploadList 
+                    if(this.state.imagesToSend){
+                        console.log("OHHH SO U HAVE FILES TO SEND : ", x.data)
+                        axios.post('http://localhost:8001/sendFile', this.state.imagesToSend , {
+                            headers: {
+                                "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN'),
+                                "noteID" : response.data.noteID
+                            }
+                        })
+
+                    .then((response) => {
+                        console.log("response from sendFile : ")
+                    })
+                }
+            })
+            .catch((err) => {
+                console.log("ERROR : ", err)
+                message.error('There was an error')
+            }
+            )
     }
 
     changeTitle(e) {
@@ -83,8 +103,8 @@ class AddNoteComponent extends Component {
         this.setState({ notesCollectionObjectToSend: noteObj })
     }
 
-    sendAttachmentsCollectionObjectToParent(attachmentListObj,previewImageList,cb){
-        this.setState({ fileUploadList : attachmentListObj ,previewImageList : previewImageList },cb.bind(this))
+    sendAttachmentsCollectionObjectToParent(imageListToDisplay, attachmentListObj, previewImageList, cb) {
+        this.setState({ fileUploadList : imageListToDisplay, imagesToSend: attachmentListObj, previewImageList: previewImageList }, cb.bind(this))
     }
 
     render() {
@@ -107,9 +127,9 @@ class AddNoteComponent extends Component {
         const contentList = {
 
             tab1: <AddNoteContentComponent sendNotesCollectionObjectToParent={this.sendNotesCollectionObjectToParent.bind(this)} notesCollectionObjectToSend={this.state.notesCollectionObjectToSend} />,
-            tab2: <AddNoteComponentAttachments sendAttachmentsCollectionObjectToParent = { this.sendAttachmentsCollectionObjectToParent.bind(this) } 
-             fileUploadList = { this.state.fileUploadList } previewImageList = { this.state.previewImageList }
-              />,
+            tab2: <AddNoteComponentAttachments sendAttachmentsCollectionObjectToParent={this.sendAttachmentsCollectionObjectToParent.bind(this)}
+                fileUploadList={this.state.fileUploadList} previewImageList={this.state.previewImageList}
+            />,
             tab3: <h1>Modal Component 3</h1>,
 
             // tab1 : <AddNoteComponentContent>,

@@ -61,17 +61,20 @@ class AddNoteAttachmentsComponent extends Component {
         this.setState({ fileUploadList: fileUploadList, previewImageList: imageThumbnailArray },
             () => {
                 //every change is sent to the parent component
-                this.props.sendAttachmentsCollectionObjectToParent(this.state.fileUploadList, this.state.previewImageList, function () {
-                    console.log("is state updating with every change?? : ", this.state)
+                this.props.sendAttachmentsCollectionObjectToParent(this.state.fileUploadList,imagesToSend, this.state.previewImageList, function () {
+                    // console.log("is state updating with every change?? : ", this.state)
                 })
             })
 
         console.log('here birs detaisl', imagesToSend)
+        // axios.post('http://localhost:8001/sendFile', imagesToSend , {
+        //     headers : {
+        //         'noteID' : ''
+        //     }
+        // })
+        //     .then((response) => {
 
-        axios.post('http://localhost:8001/sendFile', { a : imagesToSend })
-            .then((response) => {
-
-            })
+        //     })
 
         // console.log("E : ", e.target.files)
     }
