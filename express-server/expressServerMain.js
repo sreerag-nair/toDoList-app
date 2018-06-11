@@ -46,7 +46,7 @@ const { getAllAttachments, getAllNoteContent, getNotesTitle, insertNoteTitle, in
             */
             // console.log("filename block : ", req.body)
             const newFilename = `${uuidv4()}${file.originalname}`;
-            console.log("nf : ", newFilename)
+            console.log("filename : ", newFilename)
             cb(null, newFilename)
         },
     });
@@ -348,20 +348,75 @@ app.get('/getnotes', function (req, res, next) {
 })
 
 app.get('/getcurrentnote/:noteID', function (req, res, next) {
+    // console.log("req body : ", req.params.noteID)
+    
+    passport.authenticate('jwt',{
+        session : false
+    },  function(err, user, info){
+        
+        if(user){
+            
+            console.log("in getcurrentnote route....")
+            var valueToSend = {
+                contents : [],
+                attachments : [],
+                sharedWith : []
+            }
+            
+            /*
+            
+            valueToSend : {
+                contents : [{ content: eachEntry.content, _id: eachEntry._id, isChecked: eachEntry.isChecked  }],
+                attachments : [],
+                sharedWith : []
+            }
+            
+            */
+            
+            //try an alternative here .... like Promise.all()
+            getAllNoteContent(req.params.noteID)
+            .then((noteEntryArray) => {
+                noteEntryArray.map((eachEntry) => {
+                    valueToSend.contents.push({ content: eachEntry.content, _id: eachEntry._id, isChecked: eachEntry.isChecked })
+                })
+                
+                getAllAttachments( user._id , req.params.noteID )
+                .then((attachmentArray) =>{
+                    valueToSend.attachments = attachmentArray
+                    res.status(200).send(valueToSend)
+                })
+            })
+            
+        
+        }   
+        else{
+            req.status(401).send()
+        }
+        
+    })(req,res,next)
+    
+})
+
+app.get('/assets/:imageSavedName', function(req, res, next){
     passport.authenticate('jwt',{
         session : false
     }, function(err, user, info){
 
-            if(user){
-                console.log("BHUBIJHYUGFVTRYGF")
-            }
-            else{
-                res.status(401).send()
-            }
+        if(user){
+            console.log("/getImage route...")
+            console.log("imageSavedName : ", __dirname)
 
-    })(req,res,next)
-    
+            // res.sendFile({root : __dirname} , '/../assets/' + req.params.imageSavedName)
+
+        }
+
+        else{
+            res.status(401).send()
+        }
+
+    })(req, res, next)
 })
+
 
 // update an existing card - update operation
 app.put('/update/:id', function (req, res, next) {
@@ -465,7 +520,7 @@ app.post('/logout', function (req, res) {
 
 // !!!!! this only works with this version of calling the passport middleware !!!
 // ----- the conventional one doesnt call the upload method of multer --------
-app.post('/sendFile'
+app.post('/sendFiles'
 , passport.authenticate('jwt',{
     session : false
 })
@@ -477,44 +532,44 @@ app.post('/sendFile'
     // passport.authenticate('jwt', {
     //     session: false
     // }, function (err, user, info) {
+    
+    // console.log("err : ",err)
+    // console.log("user : ",user)
+    // console.log("info : ",info)
+    
+    // if (req.user) {
+    
+    upload(req, res, function (err) {
         
-        // console.log("err : ",err)
-        // console.log("user : ",user)
-        // console.log("info : ",info)
-
-        // if (req.user) {
+        if (err) throw err
+        
+        var obj = {}
+        obj.uId = req.user._id
+        obj.notesID = req.headers.noteid,
+        
+        console.log("hkjdsxfgdufixhj : " ,req.headers)
+        
+        req.files.map((oneFile, idx) => {
             
-            upload(req, res, function (err) {
-                
+            obj.originalname = oneFile.originalname,
+            obj.filename = oneFile.filename,
+            obj.mimetype = oneFile.mimetype
+            obj.generatedUId = oneFile.filename.slice(0,oneFile.filename.length - oneFile.originalname.length)
+            console.log("obj : ", obj)
+            
+            uploadNewFiles(obj).then((doc, err) => {
                 if (err) throw err
                 
-                var obj = {}
-                obj.uId = req.user._id
-                obj.notesID = req.headers.noteid,
-                
-                console.log("hkjdsxfgdufixhj : " ,req.headers)
-                
-                req.files.map((oneFile, idx) => {
-                    
-                    obj.originalname = oneFile.originalname,
-                    obj.filename = oneFile.filename,
-                    obj.mimetype = oneFile.mimetype
-                    obj.generatedUId = oneFile.filename.slice(0,oneFile.filename.length - oneFile.originalname.length)
-                    console.log("obj : ", obj)
-                    
-                    uploadNewFiles(obj).then((doc, err) => {
-                        if (err) throw err
-                    
-                        console.log("UPLOADED : ", doc)
-                    })
-                    
-                })
+                console.log("UPLOADED : ", doc)
             })
+            
+        })
+    })
     //     }
     //     else{
     //         res.status(401).send({ error : "Unauthorized user in sendFile..!!!" })
     //     }
-
+    
     // })(req, res, next)
     
     

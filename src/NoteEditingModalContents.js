@@ -50,20 +50,6 @@ class NoteEditingModalContents extends Component {
 
     componentWillMount() {
         this.setState({ notesCollectionObject: this.props.notesCollectionObject })
-
-
-        // axios.get('http://localhost:8001/getcurrentnote/' + this.props._id,
-
-        // {
-        //     headers: {
-        //         "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
-        //     }
-        // })
-        // .then((response) => {
-        //     console.log("resbod : ", response.data)
-
-        //     this.setState({ notesCollectionObject: response.data })
-        // })
     }
 
 
@@ -106,6 +92,7 @@ class NoteEditingModalContents extends Component {
             },
                 () => {
                     this.props.populateNotesCollectionObject(this.state.notesCollectionObject)
+                    this.props.editedSomething()
                 })
 
         }
@@ -133,6 +120,7 @@ class NoteEditingModalContents extends Component {
         this.setState({ noteContent: temp },
             () => {
                 this.props.populateNotesCollectionObject(this.state.notesCollectionObject)
+                this.props.editedSomething()
             })
     }
 

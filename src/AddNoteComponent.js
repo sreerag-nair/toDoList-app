@@ -71,7 +71,7 @@ class AddNoteComponent extends Component {
                 //if there is sometrhing in fileUploadList 
                     if(this.state.imagesToSend){
                         console.log("OHHH SO U HAVE FILES TO SEND : ", this.state.imagesToSend)
-                        axios.post('http://localhost:8001/sendFile', this.state.imagesToSend , {
+                        axios.post('http://localhost:8001/sendFiles', this.state.imagesToSend , {
                             headers: {
                                 "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN'),
                                 "noteID" : response.data.noteID
