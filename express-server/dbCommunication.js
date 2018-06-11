@@ -291,6 +291,11 @@ exports.uploadNewFiles = function (uploadWithAttachments) {
         originalName : uploadWithAttachments.originalname, savedName : uploadWithAttachments.filename,
         mimeType : uploadWithAttachments.mimetype ,imageId : uploadWithAttachments.generatedUId  }).save()
 }
+
+exports.getAllAttachments = function(userId, notesId){
+    return noteAttachmentCollection.find({ uId : userId, notesID : notesId })
+}
+
 // ----------------------------------------------------------------------
 
 

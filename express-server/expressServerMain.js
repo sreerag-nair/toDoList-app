@@ -14,7 +14,7 @@ const uuidv4 = require('uuid/v4')
 
 
 // import the database functions
-const { getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser /*, read*/,
+const { getAllAttachments, getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser /*, read*/,
     removeNotesTitle, removeSingleEntry, searchUserCreds, searchUserEmail, updateEntry, updateTitle, updateUserInfo,
     uploadNewFiles } = require('./dbCommunication');
     
@@ -348,20 +348,18 @@ app.get('/getnotes', function (req, res, next) {
 })
 
 app.get('/getcurrentnote/:noteID', function (req, res, next) {
-    // console.log("req body : ", req.params.noteID)
-    
-    //TRY ASYNC-AWAIT HERE
-    
-    var valueToSend = []
-    
-    getAllNoteContent(req.params.noteID)
-    .then((noteEntryArray) => {
-        noteEntryArray.map((eachEntry) => {
-            valueToSend.push({ content: eachEntry.content, _id: eachEntry._id, isChecked: eachEntry.isChecked })
-        })
-        
-        res.status(200).send(valueToSend)
-    })
+    passport.authenticate('jwt',{
+        session : false
+    }, function(err, user, info){
+
+            if(user){
+                console.log("BHUBIJHYUGFVTRYGF")
+            }
+            else{
+                res.status(401).send()
+            }
+
+    })(req,res,next)
     
 })
 

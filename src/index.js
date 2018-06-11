@@ -12,8 +12,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 ReactDOM.render(
     
         <Router>
-            {/* <AppComponent /> */}
-            <AddNoteComponent />
+            <AppComponent />
+            {/* <AddNoteComponent /> */}
             {/* <CardEditingModalComponent /> */}
         </Router>
     
