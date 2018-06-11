@@ -69,6 +69,7 @@ class AddNoteAttachmentsComponent extends Component {
         console.log('here birs detaisl', imagesToSend)
         // axios.post('http://localhost:8001/sendFile', imagesToSend , {
         //     headers : {
+        //         "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN'),
         //         'noteID' : ''
         //     }
         // })
