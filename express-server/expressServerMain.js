@@ -348,17 +348,32 @@ app.get('/getnotes', function (req, res, next) {
 })
 
 app.get('/getcurrentnote/:noteID', function (req, res, next) {
+    // console.log("req body : ", req.params.noteID)
+    
     passport.authenticate('jwt',{
         session : false
-    }, function(err, user, info){
-
-            if(user){
-                console.log("BHUBIJHYUGFVTRYGF")
-            }
-            else{
-                res.status(401).send()
-            }
-
+    },  function(err, user, info){
+        
+        if(user){
+            
+            //TRY ASYNC-AWAIT HERE
+            
+            var valueToSend = []
+            
+            getAllNoteContent(req.params.noteID)
+            .then((noteEntryArray) => {
+                noteEntryArray.map((eachEntry) => {
+                    valueToSend.push({ content: eachEntry.content, _id: eachEntry._id, isChecked: eachEntry.isChecked })
+                })
+                
+                res.status(200).send(valueToSend)
+            })
+            
+        }   
+        else{
+            req.status(401).send()
+        }
+        
     })(req,res,next)
     
 })
@@ -477,44 +492,44 @@ app.post('/sendFile'
     // passport.authenticate('jwt', {
     //     session: false
     // }, function (err, user, info) {
+    
+    // console.log("err : ",err)
+    // console.log("user : ",user)
+    // console.log("info : ",info)
+    
+    // if (req.user) {
+    
+    upload(req, res, function (err) {
         
-        // console.log("err : ",err)
-        // console.log("user : ",user)
-        // console.log("info : ",info)
-
-        // if (req.user) {
+        if (err) throw err
+        
+        var obj = {}
+        obj.uId = req.user._id
+        obj.notesID = req.headers.noteid,
+        
+        console.log("hkjdsxfgdufixhj : " ,req.headers)
+        
+        req.files.map((oneFile, idx) => {
             
-            upload(req, res, function (err) {
-                
+            obj.originalname = oneFile.originalname,
+            obj.filename = oneFile.filename,
+            obj.mimetype = oneFile.mimetype
+            obj.generatedUId = oneFile.filename.slice(0,oneFile.filename.length - oneFile.originalname.length)
+            console.log("obj : ", obj)
+            
+            uploadNewFiles(obj).then((doc, err) => {
                 if (err) throw err
                 
-                var obj = {}
-                obj.uId = req.user._id
-                obj.notesID = req.headers.noteid,
-                
-                console.log("hkjdsxfgdufixhj : " ,req.headers)
-                
-                req.files.map((oneFile, idx) => {
-                    
-                    obj.originalname = oneFile.originalname,
-                    obj.filename = oneFile.filename,
-                    obj.mimetype = oneFile.mimetype
-                    obj.generatedUId = oneFile.filename.slice(0,oneFile.filename.length - oneFile.originalname.length)
-                    console.log("obj : ", obj)
-                    
-                    uploadNewFiles(obj).then((doc, err) => {
-                        if (err) throw err
-                    
-                        console.log("UPLOADED : ", doc)
-                    })
-                    
-                })
+                console.log("UPLOADED : ", doc)
             })
+            
+        })
+    })
     //     }
     //     else{
     //         res.status(401).send({ error : "Unauthorized user in sendFile..!!!" })
     //     }
-
+    
     // })(req, res, next)
     
     
