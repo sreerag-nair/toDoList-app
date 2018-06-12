@@ -9,14 +9,14 @@ import axios from 'axios';
 class AddNoteContentComponent extends Component {
 
 
-    componentWillMount() {
+    // componentWillMount() {
 
-        axios.post('http://localhost:8001/shouldRedirect', {}, {
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
-            }
-        })
-    }
+    //     axios.post('http://localhost:8001/shouldRedirect', {}, {
+    //         headers: {
+    //             "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN')
+    //         }
+    //     })
+    // }
 
     componentWillMount(){
         this.setState({ notesCollectionObject : this.props.notesCollectionObjectToSend })
@@ -40,9 +40,7 @@ class AddNoteContentComponent extends Component {
 
     }
 
-    
 
-    // {isChecked : , value : },
 
     textBoxValueChanged(e) {
         if ((e.target.value.length === 0) && (!this.state.isTooltipVisible)) {
@@ -55,7 +53,6 @@ class AddNoteContentComponent extends Component {
             () =>{
                 this.props.sendNotesCollectionObjectToParent(this.state.notesCollectionObject)
             })
-            return
         }
 
     }

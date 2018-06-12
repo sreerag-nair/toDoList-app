@@ -72,7 +72,7 @@ class NoteEditingModalAttachments extends Component {
                                 </Col>
                                 <Col xs={18} sm={9} md={9} lg={9}>
                                     <div style={{ background: 'azure', height: '55px', }}>
-                                        <a href={"http://localhost:8001/assets/" + singleContent.savedName} > {singleContent.originalName} </a>
+                                        <a href={"http://localhost:8001/assets/" + singleContent.savedName}> {singleContent.originalName} </a>
                                     </div>
                                 </Col>
 

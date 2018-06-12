@@ -32,15 +32,30 @@ class AddNoteComponent extends Component {
         //this is used to display the files to upload, not  to send to the server
         fileUploadList: [],
         previewImageList: [],
-        imagesToSend : null,
+        imagesToSend: [],
 
         sharedWith: [],
 
     }
 
+    getFocusTitleBox(event) {
+        if (event.target.value == 'Click here to enter title') {
+            this.setState({ title: '' })
+        }
+    }
+
+    loseFocusTitleBox(event) {
+        if (event.target.value == '') {
+            this.setState({ title: 'Click here to enter title' })
+        }
+    }
+
     submitNote() {
 
-        // console.log()
+        if (!this.state.notesCollectionObjectToSend.length) {
+            console.log("HEREEEEE")
+            return;
+        }
 
         var objToSubmit = Object.assign({}, { title: this.state.title },
             { entries: this.state.notesCollectionObjectToSend },
@@ -68,19 +83,29 @@ class AddNoteComponent extends Component {
                 })
 
 
-                //if there is sometrhing in fileUploadList 
-                    if(this.state.imagesToSend){
-                        console.log("OHHH SO U HAVE FILES TO SEND : ", this.state.imagesToSend)
-                        axios.post('http://localhost:8001/sendFiles', this.state.imagesToSend , {
-                            headers: {
-                                "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN'),
-                                "noteID" : response.data.noteID
-                            }
-                        })
+                //if there is something in fileUploadList 
 
-                    .then((response) => {
-                        console.log("response from sendFile : ")
+                if (this.state.fileUploadList.length) {
+
+
+                    let attachmentsToSend = new FormData()
+
+                    this.state.fileUploadList.map((fileObj, idx) => {
+                        attachmentsToSend.append('images', fileObj)
                     })
+
+
+                    console.log("OHHH SO U HAVE FILES TO SEND : ", attachmentsToSend)
+                    axios.post('http://localhost:8001/sendFiles', attachmentsToSend, {
+                        headers: {
+                            "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN'),
+                            "noteID": response.data.noteID
+                        }
+                    })
+
+                        .then((response) => {
+                            console.log("response from sendFile : ")
+                        })
                 }
             })
             .catch((err) => {
@@ -103,8 +128,8 @@ class AddNoteComponent extends Component {
         this.setState({ notesCollectionObjectToSend: noteObj })
     }
 
-    sendAttachmentsCollectionObjectToParent(imageListToDisplay, attachmentListObj, previewImageList, cb) {
-        this.setState({ fileUploadList : imageListToDisplay, imagesToSend: attachmentListObj, previewImageList: previewImageList }, cb.bind(this))
+    sendAttachmentsCollectionObjectToParent(imageListToDisplay, previewImageList) {
+        this.setState({ fileUploadList: imageListToDisplay, previewImageList: previewImageList })
     }
 
     render() {
@@ -126,15 +151,19 @@ class AddNoteComponent extends Component {
 
         const contentList = {
 
-            tab1: <AddNoteContentComponent sendNotesCollectionObjectToParent={this.sendNotesCollectionObjectToParent.bind(this)} notesCollectionObjectToSend={this.state.notesCollectionObjectToSend} />,
-            tab2: <AddNoteComponentAttachments sendAttachmentsCollectionObjectToParent={this.sendAttachmentsCollectionObjectToParent.bind(this)}
-                fileUploadList={this.state.fileUploadList} previewImageList={this.state.previewImageList}
-            />,
-            tab3: <h1>Modal Component 3</h1>,
+            tab1: <AddNoteContentComponent
+                sendNotesCollectionObjectToParent={this.sendNotesCollectionObjectToParent.bind(this)}
+                notesCollectionObjectToSend={this.state.notesCollectionObjectToSend} />,
 
-            // tab1 : <AddNoteComponentContent>,
-            // tab2 : <AddNoteComponentAttachments>,
-            // tab3 : <AddNoteComponentSharedWith>,
+
+            tab2: <AddNoteComponentAttachments
+                sendAttachmentsCollectionObjectToParent={this.sendAttachmentsCollectionObjectToParent.bind(this)}
+                fileUploadList={this.state.fileUploadList}
+                previewImageList={this.state.previewImageList}
+            />,
+
+
+            tab3: <h1>FEATURE UNAVAILABLE...</h1>
         }
 
         return (
@@ -142,7 +171,7 @@ class AddNoteComponent extends Component {
                 <Row>
                     <Col xs></Col>
                     <Col xs> <Card hoverable
-                        title={<Popover trigger="click" content={<Input onChange={this.changeTitle.bind(this)} value={this.state.title} placeholder="Title input..." />} >
+                        title={<Popover trigger="click" content={<Input onBlur={this.loseFocusTitleBox.bind(this)} onFocus={this.getFocusTitleBox.bind(this)} onChange={this.changeTitle.bind(this)} value={this.state.title} placeholder="Title input..." />} >
                             <div> {this.state.title} </div> </Popover>}
                         style={{ textAlign: 'left', background: 'white', marginTop: '150px' }}
                         tabList={tabList}
@@ -152,8 +181,14 @@ class AddNoteComponent extends Component {
 
                         {contentList[this.state.key]}
 
-                        <Button onClick={this.submitNote.bind(this)} style={{ width: '50%', marginTop: '20px' }} disabled={this.state.isSubmitButtonDisabled} loading={this.state.displaySubmitButtonLoading} type="primary">Add note</Button>
-                        <Button style={{ width: '50%', marginTop: '20px' }} onClick={this.props.onCancel} type="danger">Cancel</Button>
+                        <Button onClick={this.submitNote.bind(this)} style={{ width: '50%', marginTop: '20px' }} disabled={this.state.isSubmitButtonDisabled} loading={this.state.displaySubmitButtonLoading} type="primary">
+                            <Icon type="plus" />
+                            Add note
+                        </Button>
+                        <Button style={{ width: '50%', marginTop: '20px' }} onClick={this.props.onCancel} type="danger">
+                            <Icon type="close" />
+                            Cancel
+                        </Button>
                     </Card> </Col>
                     <Col xs></Col>
                 </Row>

@@ -20,7 +20,6 @@ ________________________________________________________________________________
 https://jsbin.com/gokeponamo/2/edit?html,css,output     <---- button hover effect
 */
 
-
 class AddNoteAttachmentsComponent extends Component {
 
 
@@ -29,10 +28,19 @@ class AddNoteAttachmentsComponent extends Component {
     }
 
 
+    componentWillReceiveProps(newProps, oldProps) {
+        this.setState({
+            fileUploadList: newProps.fileUploadList,
+            previewImageList: newProps.previewImageList
+        })
+    }
+
+
     state = {
 
         fileUploadList: [],
         previewImageList: [],
+
 
     }
 
@@ -40,44 +48,62 @@ class AddNoteAttachmentsComponent extends Component {
         document.getElementById("hiddeninput").click()
     }
 
+
+
     getFiles(e) {
 
-        var imagesToSend = new FormData();
-
-        var reader = new FileReader();
+        // imagesToSend = new FormData();
 
         let fileUploadList = [];
         let imageThumbnailArray = [];
         for (var i in e.target.files) {
             if (!isNaN(i)) {
-                imagesToSend.append('images', e.target.files[i])
+                console.log('images : ', e.target.files[i])
+                
+                //do the line below when submitting the form... in the parent component
+                // imagesToSend.append('images', e.target.files[i])
+                
                 fileUploadList.push(e.target.files[i])
                 imageThumbnailArray.push(window.URL.createObjectURL(e.target.files[i]))
             }
         }
 
-        // console.log('here birs detais2', imageThumbnailArray)
 
-        this.setState({ fileUploadList: fileUploadList, previewImageList: imageThumbnailArray },
+
+
+        this.setState({
+            fileUploadList: this.state.fileUploadList.concat(fileUploadList),
+            previewImageList: this.state.previewImageList.concat(imageThumbnailArray)
+        },
             () => {
                 //every change is sent to the parent component
-                this.props.sendAttachmentsCollectionObjectToParent(this.state.fileUploadList,imagesToSend, this.state.previewImageList, function () {
-                    // console.log("is state updating with every change?? : ", this.state)
-                })
+
+                console.log('tis state fileuploadlist : ', this.state.fileUploadList)
+                this.props.sendAttachmentsCollectionObjectToParent(this.state.fileUploadList, this.state.previewImageList)
             })
 
-        console.log('here birs detaisl', imagesToSend)
-        // axios.post('http://localhost:8001/sendFile', imagesToSend , {
-        //     headers : {
-        //         "Authorization": "Bearer " + localStorage.getItem('JWT_TOKEN'),
-        //         'noteID' : ''
-        //     }
-        // })
-        //     .then((response) => {
+        // for( var x of imagesToSend.entries()){
+        // }
 
-        //     })
+        // console.log('here birs detaisl', imagesToSend)
+    }
 
-        // console.log("E : ", e.target.files)
+    removeAttachment(idx) {
+
+        var tempfileUploadList = this.state.fileUploadList.slice()
+
+        tempfileUploadList = tempfileUploadList.filter((singleAttachment, index) => {
+            return index !== idx
+        })
+
+        var tempPreviewImageList = this.state.previewImageList.slice();
+        tempPreviewImageList = tempPreviewImageList.filter((singlePreviewImage, index) => {
+            return index !== idx;
+        })
+
+
+        this.props.sendAttachmentsCollectionObjectToParent(tempfileUploadList, tempPreviewImageList)
+
     }
 
     render() {
@@ -87,6 +113,7 @@ class AddNoteAttachmentsComponent extends Component {
             <span>
                 {
                     this.state.fileUploadList.map((singleUploadedContent, idx) => {
+                        // { console.log("suC : ", singleUploadedContent.name) }
                         return (
                             <Row style={{ marginBottom: '10px' }} key={idx}>
                                 <Col xs={4} sm={2} md={2} lg={2}>
@@ -101,7 +128,7 @@ class AddNoteAttachmentsComponent extends Component {
                                 </Col>
 
                                 <Col xs={2} sm={1} md={1} lg={1}>
-                                    <div style={{ height: '55px', }}><Button shape="circle" size="default" type="danger">
+                                    <div style={{ height: '55px', }}><Button onClick={this.removeAttachment.bind(this, idx)} shape="circle" size="default" type="danger">
                                         <Icon type="close" />
                                     </Button></div>
                                 </Col>
@@ -110,6 +137,7 @@ class AddNoteAttachmentsComponent extends Component {
                     })
                 }
                 {
+                    //the button to select files to upload....
                     < Row style={{ marginBottom: '20px' }} onClick={(e) => {
                         // console.log("getInputBox -- current Target : ", e.currentTarget.childNodes)
                         // console.log("getInputBox -- target : ", e.target.childNodes)
