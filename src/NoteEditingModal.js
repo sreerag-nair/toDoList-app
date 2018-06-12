@@ -186,8 +186,13 @@ class NoteEditingModal extends Component {
                 // }, 2000)
             }
             
-            <Button loading={this.state.updateInProgress} onClick={this.submitNote.bind(this)} style={{ width: '50%', marginTop: '20px' }} type="primary dashed">Update</Button>
-            <Button style={{ width: '50%', marginTop: '20px' }} type="danger" onClick={this.props.editingModalOnCancel} >Close</Button>
+            <Button loading={this.state.updateInProgress} onClick={this.submitNote.bind(this)} style={{ width: '50%', marginTop: '20px' }} type="primary dashed">
+            <Icon type="save" />Update
+            </Button>
+            
+            <Button style={{ width: '50%', marginTop: '20px' }} type="danger" onClick={this.props.editingModalOnCancel} >
+            <Icon type="close"/>Close
+            </Button>
             </Card>
         )
     }

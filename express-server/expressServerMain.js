@@ -423,19 +423,14 @@ app.get('/assets/:imageSavedName', function (req, res, next) {
     //     }
 
     // })(req, res, next)
-
-    res.sendFile(__dirname +'/assets/' + req.params.imageSavedName)
+    
+    res.download(__dirname +'/../assets/' + req.params.imageSavedName)
 
 })
 
 
 // update an existing card - update operation
 app.put('/update/:id', function (req, res, next) {
-
-    // console.log("ID : ", req.params.id)
-    // console.log("Code : ", req.body)
-
-
 
     updateTitle(req.params.id, req.body.noteTitle)
         .then((doc, err) => {
