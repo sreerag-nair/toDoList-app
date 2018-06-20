@@ -11,10 +11,10 @@ const jwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const cors = require('cors')
 // to import the database functions
-const { getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser /*, read*/,
+const { getAllNoteContent, getNotesTitle, insertNoteTitle, insertNoteEntry, newUser,
     removeNotesTitle, removeSingleEntry, searchUserCreds, searchUserEmail, updateEntry, updateTitle, updateUserInfo } = require('./dbCommunication');
 const { generateToken } = require('./tokenGenerator');
-
+const GitHubStrategy = require('passport-github');
 
 //THIS IS THE DEFAULT WAY OF PARSING POST REQUEST 
 // app.use(bodyParser.urlencoded({extended : false}))
@@ -64,6 +64,98 @@ passport.use(new jwtStrategy(opts, function (jwttoken, done) {
 }))
 // --------------PASSPORT CUSTOM JWT STRATEGY---------------//
 
+//---------------PASSPORT GITHUB STRATEGY------------------//
+
+passport.use(new GitHubStrategy({
+    clientID: '3fb8c782622ac4a1d0a6',
+    clientSecret: 'fe62abf8e17b91d71e2c94c367af00e6ba7ba8e6',
+    callbackURL: 'http://localhost:3000/redirect',
+    passReqToCallback: true,
+    scope: 'user:email',         //the dealbreaker!!!
+}, function (req, accessToken, refreshToken, profile, done) {
+    // console.log("profile : ", profile)
+    // console.log("email : ", profile.emails[0].value);
+    // console.log("node_id : " , profile['_json'].node_id)
+
+    searchUserEmail(profile.emails[0].value)
+        .then((userObj) => {
+            if (!userObj) {
+                //its a new user
+                console.log("No such user")
+                done(null, {
+                    emailId: profile.emails[0].value, password: crypto.createHash('sha256').update(profile['_json'].node_id).digest('hex'),
+                    name: profile['_json'].name, userName: profile['_json'].login
+                }, { message: "new user" })
+            }
+            else {
+                console.log("Some existing user user")
+                done(null, { emailId: profile.emails[0].value },null)
+            }
+        })
+
+}))
+
+//---------------PASSPORT GITHUB STRATEGY------------------//
+
+//--------------------------GITHUB ROUTES--------------------------//
+
+// app.get('/authenticate',passport.authenticate('github',{
+//     session : false
+// }))
+
+// THIS ROUTE WILL BE USED 2 TIMES ON EVERY LOGIN
+app.get('/authenticate', function (req, res, next) {
+
+    passport.authenticate('github', {
+        session: false
+    }, function (err, user, info) {
+
+        if(err){
+            res.status(400).send({ error : "Some error occured... please try again" })
+        }
+
+        console.log("info : ", info)
+
+        //throw error if user reloads the redirect page with an invalid token
+        if(info){
+            if(info.message) {    //new user   //status code -- 201
+                console.log("INFO BLOCK....")
+                newUser(user)
+                    .then((userObj) => {
+    
+                        //create a token and send it back to the app
+                        console.log("userObj : ", userObj)
+    
+                        // var hashedPassword = crypto.createHash('sha256').update(userObj.password).digest('hex')
+                        var token = generateToken(userObj.emailId, userObj.password)
+                        res.status(201).send({ token : token , message : "Welcome new user.... :D" })
+                    })
+                    .catch((err) =>{
+                        console.log("err in newUser : ", )
+                    })
+    
+            }
+            else {       //existing user // status code -- 200
+                console.log("else : ", user)
+                searchUserEmail(user.emailId)
+                    .then((userObj) => {
+                        // var hashedPassword = crypto.createHash('sha256').update(userObj.password).digest('hex')
+                        var token = generateToken(userObj.emailId, userObj.password)
+                        res.status(200).send({ token: token, message: "Welcome back.... :)" })
+                    })
+    
+            }
+        }
+        
+
+    })(req, res, next);
+
+    // res.end();
+
+})
+
+
+//--------------------------GITHUB ROUTES--------------------------//
 
 
 //SIGNIN ROUTE
@@ -176,14 +268,14 @@ app.post('/profileinfo', function (req, res, next) {
         // console.log("info : ", info);
         console.log("incoming reqzzz : ", req.body["password"])
         // this.user = user
-        
-        
+
+
         if (user) {
-            
+
             if (Object.keys(req.body) != 0) {
-                
+
                 req.body["password"] = (req.body["password"] == '') ? user.password :
-                crypto.createHash('sha256').update(req.body.password).digest('hex')
+                    crypto.createHash('sha256').update(req.body.password).digest('hex')
 
                 console.log("incoming req : ", req.body)
 
@@ -203,7 +295,7 @@ app.post('/profileinfo', function (req, res, next) {
             }
             else {
                 console.log("IN ELSE...........")
-                res.status(200).send({ userName: user.userName, emailId: user.emailId, password: user.password , name : user.name })
+                res.status(200).send({ userName: user.userName, emailId: user.emailId, password: user.password, name: user.name })
             }
 
 
@@ -276,8 +368,6 @@ app.get('/getnotes', function (req, res, next) {
     },
         function (err, user, info) {
 
-            // console.log("user : ", user)
-
             if (user) {
                 var objToSend = []
 
@@ -289,8 +379,10 @@ app.get('/getnotes', function (req, res, next) {
                         notesTitleArray.map((noteTitle, titleIndex) => {
                             //create a new entry with the title and _id
 
-                            objToSend.push({ _id: noteTitle._id, title: noteTitle.title,
-                         createdDate: new Date(noteTitle.createdAt).toLocaleString("en-US"), updatedDate : new Date(noteTitle.updatedAt).toLocaleString("en-US") })
+                            objToSend.push({
+                                _id: noteTitle._id, title: noteTitle.title,
+                                createdDate: new Date(noteTitle.createdAt).toLocaleString("en-US"), updatedDate: new Date(noteTitle.updatedAt).toLocaleString("en-US")
+                            })
 
                         })
 

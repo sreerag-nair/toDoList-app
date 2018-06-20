@@ -102,7 +102,11 @@ class SignInComponent extends React.Component {        //WORKING
                 <p><Button type="primary" htmlType="submit" size={this.props.size} style={{ width: '100%' }} >Log in</Button></p>
               </Col>
               <Col span={12}>
-                <p><Link to={'/git-login'}><Button type="primary" size={this.props.size} style={{ width: '100%', backgroundColor: 'black' }}><Icon type="github" />GitHub</Button></Link></p>
+                <p>
+                  <a href="http://localhost:8001/authenticate">
+                    <Button type="primary" size={this.props.size} style={{ width: '100%', backgroundColor: 'black' }}><Icon type="github" />GitHub</Button>
+                  </a>
+                </p>
               </Col>
             </Row>
           </div>
@@ -111,8 +115,8 @@ class SignInComponent extends React.Component {        //WORKING
         <FormItem>
           <div>
             {
-              (this.state.spinnerVar) ? 
-               (<SpinnerClass />) : null
+              (this.state.spinnerVar) ?
+                (<SpinnerClass />) : null
             }
           </div>
         </FormItem>

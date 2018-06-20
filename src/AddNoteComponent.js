@@ -52,6 +52,8 @@ class AddNoteComponent extends Component {
                 this.setState({
                     isAddInputBoxVisible: true, disableAddButton: false, isSubmitButtonDisabled: false, displaySubmitButtonLoading: false,
                     notesCollectionObject: [], title: "Click here to enter title"
+                }, () =>{
+                    this.props.history.push("/dashboard")
                 })
             })
             .catch((err) => {
@@ -165,7 +167,7 @@ class AddNoteComponent extends Component {
                                         // console.log("current Target : ", e.currentTarget)
                                         // console.log("target : ", e.target)
                                     }} >
-                                        <Col xs={22} sm={11} md={11} lg={11}><Checkbox style={{ textAlign: 'left' }} onChange={ this.onCBChecked.bind(this, idx) }> {entry.content} </Checkbox> </Col>
+                                        <Col xs={22} sm={11} md={11} lg={11}><Checkbox style={{ textAlign: 'left' }} onChange={this.onCBChecked.bind(this, idx)}> {entry.content} </Checkbox> </Col>
                                         <Col xs={2} sm={1} md={1} lg={1}><Button onClick={this.toDeleteEntry.bind(this, idx)} shape="circle"><Icon type='close' /></Button></Col>
                                     </Row>
                                 )

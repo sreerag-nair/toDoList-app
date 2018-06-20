@@ -172,7 +172,11 @@ class SignUpComponent extends React.Component {        //WORKING
           <div>
             <Row gutter={{ md: 3 }}>
               <Col span={12}><p><Button type="primary" htmlType="submit" size={this.props.size} style={{ width: '100%' }} >Sign up</Button></p></Col>
-              <Col span={12}><p><Button type="primary" size={this.props.size} style={{ width: '100%', backgroundColor: 'black' }}><Icon type="github" />GitHub</Button></p></Col>
+              <Col span={12}><p>
+                <a href = "http://localhost:8001/authenticate">
+                <Button type="primary" size={this.props.size} style={{ width: '100%', backgroundColor: 'black' }}><Icon type="github" />GitHub</Button>
+                </a>
+                </p></Col>
             </Row>
           </div>
         </FormItem>

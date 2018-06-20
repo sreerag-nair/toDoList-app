@@ -3,7 +3,7 @@ import './App.css';
 import LoginComponent from './LoginComponent';
 import { Route, Switch } from 'react-router-dom';
 import DashBoard from './DashBoard';
-
+import RedirectPageComponent from './RedirectPageComponent';
 
 
 class App extends Component {
@@ -23,6 +23,7 @@ class App extends Component {
       <div>
         <Switch>
           <Route path="/dashboard" render = {(props) => <DashBoard {...props} />} />
+          <Route path = "/redirect" render = {(props) => <RedirectPageComponent {...props}/>} />
           <Route path="/" render = {(props) => <LoginComponent {...props} />} />
         </Switch>
       </div>
